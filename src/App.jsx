@@ -19,27 +19,13 @@ export default function App() {
       {/* <Navbar /> */}
       <br />
       <Switch>
-        <Route exact path="/login">
-          <Login />
-        </Route>
-        <Route exact path="/register">
-          <Register />
-        </Route>
-        <Route exact path="/Chats">
-          <Chats />
-        </Route>
-        <Route exact path="/Stories">
-          <Stories />
-        </Route>
-        <Route exact path="/Notifications">
-          <Notifications />
-        </Route>
-        <Route exact path="/">
-          <Login /> {/* home page */}
-        </Route>
-        <Route>
-          <Submit /> {/* page not found */}
-        </Route>
+        <Route exact path="/login"><Login /></Route>
+        <Route exact path="/register"><Register /></Route>
+        <Route exact path="/Chats"><Chats /></Route>
+        <Route exact path="/Stories"><Stories /></Route>
+        <Route exact path="/Notifications"><Notifications /></Route>
+        <Route exact path="/"><Login /></Route> {/* Home page */}
+        <Route><Submit /></Route> {/* Page not found */}
       </Switch>
     </BrowserRouter>
   )
