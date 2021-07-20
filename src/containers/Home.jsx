@@ -1,7 +1,7 @@
 export const Home = () => {
     return (
         <>
-        Home
+        Welcome to Ghostmeme! Insert more text later
         </>
     )
 }
