@@ -9,6 +9,8 @@ import Register from './containers/Register'
 import Chats from './containers/Chats'
 import Stories from './containers/Stories'
 import Notifications from './containers/Notifications'
+import Home from './containers/Home'
+import NotFound from './containers/NotFound'
 
 export default function App() {
   return (
