@@ -9,6 +9,8 @@ import Register from './containers/Register'
 import Chats from './containers/Chats'
 import Stories from './containers/Stories'
 import Notifications from './containers/Notifications'
+import Home from './containers/Home'
+import NotFound from './containers/NotFound'
 
 export default function App() {
   return (
@@ -21,8 +23,8 @@ export default function App() {
           <Route exact path="/Chats"><Chats /></Route>
           <Route exact path="/Stories"><Stories /></Route>
           <Route exact path="/Notifications"><Notifications /></Route>
-          <Route exact path="/"><Login /></Route> {/* Home page */}
-          <Route><Login /></Route> {/* Page not found */}
+          <Route exact path="/"><Home /></Route> {/* Home page */}
+          <Route><NotFound /></Route> {/* Page not found */}
         </div>
       </Switch>
     </BrowserRouter>
