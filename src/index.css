@@ -12,7 +12,7 @@ code {
     monospace;
 }
 
-body {
+div.body {
   max-width: 1000px;
   margin: 20px auto 20px auto;
 }

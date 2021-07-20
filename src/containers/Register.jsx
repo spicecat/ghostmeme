@@ -8,6 +8,8 @@ import PaperContent from '../components/Paper'
 
 export default function Register() {
     return (
+        <>
         <PaperContent Component={Form} name='Register' action={register} schema={registerSchema} />
+        </>
     )
 }

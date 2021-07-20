@@ -6,8 +6,13 @@ import Form from '../components/Form'
 import PaperContent from '../components/Paper'
 
 
-export default function Login() {
+export const Login = () => {
     return (
-        <PaperContent Component={Form} name='Login' action={login} schema={loginSchema} />
+        <>
+        Login
+        {/* <PaperContent Component={Form} name='Login' action={login} schema={loginSchema} /> */}
+        </>
     )
 }
+
+export default Login
