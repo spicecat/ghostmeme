@@ -1,28 +1,39 @@
 import React from 'react'
-import { makeStyles } from '@material-ui/core/styles';
-import { AppBar, Toolbar, Typography, IconButton } from '@material-ui/core'
+import { Link } from "react-router-dom"
+import { makeStyles } from '@material-ui/core/styles'
+import { AppBar, Toolbar, Typography, IconButton, Button } from '@material-ui/core'
 import MenuIcon from '@material-ui/icons/Menu'
 
-const useStyles = makeStyles((theme) => ({
-    menuButton: {
-        marginRight: theme.spacing(2),
-    },
-    title: {
-        flexGrow: 1,
-    }
+import { logout } from '../services/userService'
+
+const useStyles = makeStyles(theme => ({
+    menuButton: { marginRight: theme.spacing(2) },
+    userControl: { marginLeft: 'auto' }
 }))
 
-export default function Navbar({ page }) {
+export default function Navbar({ page, username }) {
     const classes = useStyles()
+
     return (
         <AppBar position='static'>
             <Toolbar variant='dense'>
                 <IconButton color='inherit' className={classes.menuButton}>
                     <MenuIcon />
                 </IconButton>
-                <Typography className={classes.menuButton}>
-                    {page}
-                </Typography>
+                &nbsp;
+                <Typography>{page}</Typography>
+                <span className={classes.userControl} />
+                {username ?
+                    <>
+                        <Typography>Logged in as: {username}</Typography>
+                        &nbsp;
+                        <Button color='inherit' variant='outlined' size='small' onClick={logout}>Logout</Button>
+                    </> :
+                    <>
+                        <Button color='inherit' variant='outlined' size='small' to='/register' component={Link}>Register</Button>
+                        &nbsp;
+                        <Button color='inherit' variant='outlined' size='small' to='/login' component={Link}>Login</Button>
+                    </>}
             </Toolbar>
         </AppBar >
 
