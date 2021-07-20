@@ -9,8 +9,7 @@ import PaperContent from '../components/Paper'
 export const Register = () => {
     return (
         <>
-        Register
-        {/* <PaperContent Component={Form} name='Register' action={register} schema={registerSchema} /> */}
+        <PaperContent Component={Form} name='Register' action={register} schema={registerSchema} />
         </>
     )
 }
