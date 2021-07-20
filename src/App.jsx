@@ -1,8 +1,7 @@
 import React, { useState } from 'react'
 import { BrowserRouter, Switch, Route } from "react-router-dom"
-import Cookies from 'universal-cookie'
 
-import './styles/App.css'
+import './App.css'
 // import Navbar from './components/Navbar'
 
 import Login from './containers/Login'
@@ -10,8 +9,6 @@ import Register from './containers/Register'
 import Chats from './containers/Chats'
 import Stories from './containers/Stories'
 import Notifications from './containers/Notifications'
-
-const cookies = new Cookies()
 
 export default function App() {
   return (
@@ -38,7 +35,7 @@ export default function App() {
           <Login /> {/* home page */}
         </Route>
         <Route>
-          <Submit /> {/* page not found */}
+          <Login /> {/* page not found */}
         </Route>
       </Switch>
     </BrowserRouter>
