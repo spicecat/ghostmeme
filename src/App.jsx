@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { BrowserRouter, Switch, Route } from "react-router-dom"
+import { BrowserRouter, Switch, Route, Redirect } from "react-router-dom"
 
 import './index.css'
 import Navbar from './components/Navbar'
@@ -16,13 +16,13 @@ export default function App() {
       <Navbar />
       <Switch>
         <div class='body'>
-          <Route exact path="/login"><Login /></Route>
-          <Route exact path="/register"><Register /></Route>
-          <Route exact path="/Chats"><Chats /></Route>
-          <Route exact path="/Stories"><Stories /></Route>
-          <Route exact path="/Notifications"><Notifications /></Route>
+          <Route exact path="/login" component={Login} />
+          <Route exact path="/register" component={Register} />
+          <Route exact path="/chats" component={Chats} />
+          <Route exact path="/stories" component={Stories} />
+          <Route exact path="/notifications" component={Notifications} />
           <Route exact path="/"><Login /></Route> {/* Home page */}
-          <Route><Login /></Route> {/* Page not found */}
+          <Redirect to="login" />
         </div>
       </Switch>
     </BrowserRouter>
