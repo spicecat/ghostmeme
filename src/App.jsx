@@ -23,8 +23,8 @@ export default function App() {
           <Route exact path="/chats" component={Chats} />
           <Route exact path="/stories" component={Stories} />
           <Route exact path="/notifications" component={Notifications} />
-          <Route exact path="/"><Login /></Route> {/* Home page */}
-          <Redirect to="login" />
+          <Route exact path="/" component={Home} />
+          {/* <Redirect to="login" /> */}
         </div>
       </Switch>
     </BrowserRouter>
