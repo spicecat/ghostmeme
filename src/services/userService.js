@@ -3,14 +3,15 @@ import Cookies from 'universal-cookie'
 
 import { serverUrl } from '../var.js'
 
-const baseUrl = serverUrl + '/user'
+const baseUrl = serverUrl + '/users'
 const cookies = new Cookies()
 
-export const register = async ({ username, password }) => {
-    const url = baseUrl + '/register'
+export const register = async (user) => {
+    const url = baseUrl
     try {
+        const { username, password, ...info } = user
         const auth = Buffer.from(username + ':' + password, 'ascii').toString('base64')
-        const response = await superagent.post(url).set('Authorization', 'Basic ' + auth)
+        const response = await superagent.post(url, info).set('Authorization', 'Basic ' + auth)
         const token = response.text
         cookies.set('token', token)
         cookies.set('username', username)
