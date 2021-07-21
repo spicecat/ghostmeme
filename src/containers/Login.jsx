@@ -9,7 +9,7 @@ import PaperContent from '../components/Paper'
 export const Login = () => {
     return (
         <>
-        <PaperContent Component={Form} name='Login' action={login} schema={loginSchema} />
+            <PaperContent Component={Form} name='Login' action={login} schema={loginSchema} />
         </>
     )
 }
