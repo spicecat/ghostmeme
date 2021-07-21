@@ -8,7 +8,7 @@ const useStyles = makeStyles(theme => ({
     login: {
         margin: 'auto',
         padding: theme.spacing(2),
-        width: theme.spacing(32),
+        // width: theme.spacing(32)
     }
 }))
 
@@ -35,7 +35,7 @@ export default function PaperContent({ Component, ...props }) {
         <Paper className={classes.login}>
             <Alert open={open} type='error' msg={msg} setOpen={setOpen} />
             <br />
-            <Component {...props} action={async values => { setStatusCode(await props.action(values)) }} />
+            <Component {...props} action={(async values => { setStatusCode(await props.action(values)) })} />
         </Paper>
     )
 }
