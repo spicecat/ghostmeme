@@ -34,6 +34,30 @@ export const getAllMemes = async () => {
     }
 }
 
+export const createMeme = async (json) => {
+    const URL = `${apiUrl}/memes`
+
+    try {
+        console.log(json)
+        const body = JSON.stringify({
+            owner: json.owner,
+            receiver: json.receiver,
+            expiredAt: Number(json.expiredAt),
+            description: json.description,
+            private: false,
+            replyTo: json.replyTo,
+            imageUrl: json.imageUrl,
+            imageBase64: json.imageBase64,
+        })
+        console.log(body)
+
+        const response = await superagent.post(URL).set('key', apiKey).set('Content-Type', 'application/json').send(body)
+    } catch (err) {
+        console.log(err)
+    }
+}
+
+
 export const getAllUsers = async () => {
     const URL = `${apiUrl}/users`
 
