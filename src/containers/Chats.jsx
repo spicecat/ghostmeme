@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react'
-import { BrowserRouter, Switch, Route, Link } from 'react-router-dom'
 import {
     Button,
     Table,
@@ -12,22 +11,75 @@ import {
     TextField
 } from '@material-ui/core'
 
-import { getAllMemes } from '../services/memeService'
+import { getAllMemes, getAllUsers } from '../services/memeService'
 
 export const Chats = () => {
     const [memes, setMemes] = useState([])
+    const [users, setUsers] = useState([])
 
-    const makePostRequest = async () => {
-        const response = await getAllMemes()
-        setMemes(response)
-
+    const requestMemes = async () => {
+        setMemes(await getAllMemes())
     }
 
-    // useEffect(makePostRequest)
+    const requestUsers = async () => {
+        setUsers(await getAllUsers())
+    }
+
+    const handleSubmit = (event) => {
+        // event.preventDefault()
+        // const formData = new FormData(event.target)
+        // const jsonData = JSON.stringify(Object.fromEntries(formData.entries()))
+        // const response = createPost(jsonData)
+    }
 
     return (
         <>
-            <Button variant='contained' color='primary' onClick={makePostRequest}>Get All Memes</Button>
+            {/* Add new meme */}
+            <form onSubmit={handleSubmit} autoComplete='off'>
+                <TextField label='Title' name='title' variant='outlined' />
+                <TextField label='Text' name='text' variant='outlined' multiline />
+
+                <Button type='submit' variant='contained' color='primary'>Add new meme</Button>
+            </form>
+
+            {/* Get all users */}
+            <Button variant='contained' color='primary' onClick={requestUsers}>Get All Users</Button>
+            <br /><br />
+            <TableContainer component={Paper}>
+                <Table>
+                    <TableHead>
+                        <TableRow>
+                            <TableCell>name</TableCell>
+                            <TableCell>email</TableCell>
+                            <TableCell>phone</TableCell>
+                            <TableCell>username</TableCell>
+                            <TableCell>imageUrl</TableCell>
+                            {/* <TableCell>deleted</TableCell> */}
+                            <TableCell>user_id</TableCell>
+                            <TableCell>friends</TableCell>
+                            <TableCell>liked</TableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {users.map(user => (
+                            <TableRow key={user.user_id}>
+                                <TableCell>{user.name}</TableCell>
+                                <TableCell>{user.email}</TableCell>
+                                <TableCell>{user.phone}</TableCell>
+                                <TableCell>{user.username}</TableCell>
+                                <TableCell>{user.imageUrl}</TableCell>
+                                {/* <TableCell>{user.deleted}</TableCell> */}
+                                <TableCell>{user.user_id}</TableCell>
+                                <TableCell>{user.friends}</TableCell>
+                                <TableCell>{user.liked}</TableCell>
+                            </TableRow>
+                        ))}
+                    </TableBody>
+                </Table>
+            </TableContainer>
+
+            {/* Get all memes */}
+            <Button variant='contained' color='primary' onClick={requestMemes}>Get All Memes</Button>
             <br /><br />
             <TableContainer component={Paper}>
                 <Table>

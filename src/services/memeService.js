@@ -30,3 +30,29 @@ export const getAllMemes = async () => {
         console.error(err)
     }
 }
+
+export const getAllUsers = async () => {
+    const URL = `${apiUrl}/users`
+
+    try {
+        const response = await superagent.get(URL).set('key', apiKey)
+
+        const usersList = response.body.users.map(user => {
+            return {
+                name: user.name,
+                email: user.email,
+                phone: user.phone,
+                username: user.username,
+                imageUrl: user.imageUrl,
+                deleted: user.deleted,
+                user_id: user.user_id,
+                friends: user.friends,
+                liked: user.liked,
+            }
+        })
+
+        return usersList
+    } catch (err) {
+        console.error(err)
+    }
+}
