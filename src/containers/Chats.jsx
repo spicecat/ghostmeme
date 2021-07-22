@@ -29,9 +29,9 @@ export const Chats = () => {
 
     const getConversationRequest = async () => {
         // const otherUser = '60f5c300aa69860008702933'
-        // let response = await getConversation(localUser, otherUser)
-        // (response == null) ? console.log('Error') : setMemes(response)
-        setMemes(await getConversation(localUser, otherUser))
+        const response = await getConversation(localUser, otherUser)
+        response ? setMemes(response) : console.log('Error')
+        // setMemes(await getConversation(localUser, otherUser))
     }
 
     const handleConversationUser = (event) => {
