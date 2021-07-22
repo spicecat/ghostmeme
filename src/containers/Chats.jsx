@@ -11,39 +11,54 @@ import {
     TextField
 } from '@material-ui/core'
 
-import { getAllMemes, getAllUsers } from '../services/memeService'
+import { getAllMemes, getChatMemes, createMeme, getAllUsers } from '../services/memeService'
 
 export const Chats = () => {
     const [memes, setMemes] = useState([])
     const [users, setUsers] = useState([])
 
-    const requestMemes = async () => {
+    const getMemesRequest = async () => {
         setMemes(await getAllMemes())
     }
 
-    const requestUsers = async () => {
+    const getUsersRequest = async () => {
         setUsers(await getAllUsers())
     }
 
-    const handleSubmit = (event) => {
-        // event.preventDefault()
-        // const formData = new FormData(event.target)
-        // const jsonData = JSON.stringify(Object.fromEntries(formData.entries()))
-        // const response = createPost(jsonData)
+    const createMemeRequest = (event) => {
+        event.preventDefault()
+        const formData = new FormData(event.target)
+        const jsonData = Object.fromEntries(formData.entries())
+        const response = createMeme(jsonData)
+    }
+    
+    const searchChatMemesRequest = async () => {
+        const user1 = '60f72d7d680fdc0008d79ad2'
+        const user2 = '60f5c300aa69860008702933'
+        setMemes(await getChatMemes(user1, user2))
     }
 
     return (
         <>
+            {/* Search memes from X sender to X receiver */}
+            <Button variant='contained' color='primary' onClick={searchChatMemesRequest}>Search Memes</Button>
+
             {/* Add new meme */}
-            <form onSubmit={handleSubmit} autoComplete='off'>
-                <TextField label='Title' name='title' variant='outlined' />
-                <TextField label='Text' name='text' variant='outlined' multiline />
+            <form onSubmit={createMemeRequest} autoComplete='off'>
+                <TextField label='owner' name='owner' variant='outlined' />
+                <TextField label='receiver' name='receiver' variant='outlined' />
+                <TextField label='expiredAt' name='expiredAt' variant='outlined' />
+                <TextField label='description' name='description' variant='outlined' />
+                <TextField label='private' name='private' variant='outlined' />
+                <TextField label='replyTo' name='replyTo' variant='outlined' />
+                <TextField label='imageUrl' name='imageUrl' variant='outlined' />
+                <TextField label='imageBase64' name='imageBase64' variant='outlined' />
 
                 <Button type='submit' variant='contained' color='primary'>Add new meme</Button>
             </form>
 
             {/* Get all users */}
-            <Button variant='contained' color='primary' onClick={requestUsers}>Get All Users</Button>
+            <Button variant='contained' color='primary' onClick={getUsersRequest}>Get All Users</Button>
             <br /><br />
             <TableContainer component={Paper}>
                 <Table>
@@ -79,7 +94,7 @@ export const Chats = () => {
             </TableContainer>
 
             {/* Get all memes */}
-            <Button variant='contained' color='primary' onClick={requestMemes}>Get All Memes</Button>
+            <Button variant='contained' color='primary' onClick={getMemesRequest}>Get All Memes</Button>
             <br /><br />
             <TableContainer component={Paper}>
                 <Table>
