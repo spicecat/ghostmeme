@@ -7,12 +7,11 @@ import Alert from './Alert'
 const useStyles = makeStyles(theme => ({
     login: {
         margin: 'auto',
-        padding: theme.spacing(2),
-        // width: theme.spacing(32)
+        padding: theme.spacing(2)
     }
 }))
 
-export default function PaperContent({ Component, ...props }) {
+export default function PaperContent({ Component }) {
     const classes = useStyles()
 
     const [statusCode, setStatusCode] = useState(100)
@@ -35,7 +34,7 @@ export default function PaperContent({ Component, ...props }) {
         <Paper className={classes.login}>
             <Alert open={open} type='error' msg={msg} setOpen={setOpen} />
             <br />
-            <Component {...props} action={(async values => { setStatusCode(await props.action(values)) })} />
+            {Component(setStatusCode)}
         </Paper>
     )
 }
