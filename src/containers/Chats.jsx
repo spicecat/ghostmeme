@@ -17,7 +17,7 @@ export const Chats = () => {
     const localUser = '60f72d7d680fdc0008d79ad2'
     const [memes, setMemes] = useState([])
     const [users, setUsers] = useState([])
-    const [otherUser, setOtherUser] = useState('')
+    const [otherUser, setOtherUser] = useState('60f5c300aa69860008702933')
 
     const getMemesRequest = async () => {
         setMemes(await getMemes())
@@ -26,12 +26,14 @@ export const Chats = () => {
     const getUsersRequest = async () => {
         setUsers(await getUsers())
     }
-    
+
     const getConversationRequest = async () => {
         // const otherUser = '60f5c300aa69860008702933'
+        // let response = await getConversation(localUser, otherUser)
+        // (response == null) ? console.log('Error') : setMemes(response)
         setMemes(await getConversation(localUser, otherUser))
     }
-    
+
     const handleConversationUser = (event) => {
         setOtherUser(event.target.value)
     }
@@ -41,10 +43,37 @@ export const Chats = () => {
         const formData = new FormData(event.target)
         const jsonData = Object.fromEntries(formData.entries())
         const response = await createMeme(jsonData)
-        
+
         await getConversationRequest()
     }
-    
+
+    // const [showLoading, setShowLoading] = useState(true)
+    // useEffect(
+    //     () => {
+    //         let timer1 = setInterval(async () => {
+    //             console.log('Updating conversations')
+    //             await getConversationRequest()
+    //         }, 10000)
+    //         return () => {
+    //             clearTimeout(timer1)
+    //         }
+    //     },
+    //     []
+    // )
+
+    useEffect(
+        () => {
+            let timer = setInterval(() => {
+                console.log('Updating conversations...')
+                getConversationRequest()
+            }, 4000)
+            return () => {
+                clearTimeout(timer)
+            }
+        },
+        []
+    )
+
     return (
         <>
             {/* Search memes from X sender to X receiver */}
@@ -121,7 +150,7 @@ export const Chats = () => {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {memes.map(meme => (
+                        {memes && memes.map(meme => (
                             <TableRow key={meme.meme_id}>
                                 <TableCell>{meme.createdAt}</TableCell>
                                 <TableCell>{meme.expiredAt}</TableCell>
