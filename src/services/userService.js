@@ -20,7 +20,7 @@ export const register = async (user) => {
 }
 
 export const login = async ({ username, password }) => {
-    const url = baseUrl + '/login'
+    const url = baseUrl
     try {
         const auth = Buffer.from(username + ':' + password, 'ascii').toString('base64')
         const response = await superagent.get(url).set('Authorization', 'Basic ' + auth)

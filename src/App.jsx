@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { BrowserRouter, Switch, Route } from 'react-router-dom'
+import Cookies from 'universal-cookie'
 
 import './index.css'
 import Navbar from './components/Navbar'
@@ -12,10 +13,12 @@ import Stories from './containers/Stories'
 import Notifications from './containers/Notifications'
 import NotFound from './containers/NotFound'
 
+const cookies = new Cookies()
+
 export default function App() {
   return (
     <BrowserRouter>
-      <Navbar />
+      <Navbar username={cookies.get('username')} />
       <div class='body'>
         <Switch>
           <Route exact path='/' component={Home} />

@@ -28,8 +28,9 @@ export default function Navbar({ page, username }) {
                 <span className={classes.userControl} />
                 {username ?
                     <>
+                        <Typography>Logged in as: {username}</Typography>
+                        &nbsp;&nbsp;&nbsp;
                         <Button color='inherit' variant='outlined' size='small' onClick={logout}>Logout</Button>
-                        <Typography>Logged in as: {username}</Typography>&nbsp;
                     </> :
                     <>
                         <Button color='inherit' variant='outlined' size='small' to='/register' component={Link}>Register</Button>&nbsp;
