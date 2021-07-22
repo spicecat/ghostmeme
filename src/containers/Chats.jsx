@@ -11,45 +11,53 @@ import {
     TextField
 } from '@material-ui/core'
 
-import { getAllMemes, getChatMemes, createMeme, getAllUsers } from '../services/memeService'
+import { getMemes, getConversation, createMeme, getUsers } from '../services/memeService'
 
 export const Chats = () => {
+    const localUser = '60f72d7d680fdc0008d79ad2'
     const [memes, setMemes] = useState([])
     const [users, setUsers] = useState([])
+    const [otherUser, setOtherUser] = useState('')
 
     const getMemesRequest = async () => {
-        setMemes(await getAllMemes())
+        setMemes(await getMemes())
     }
 
     const getUsersRequest = async () => {
-        setUsers(await getAllUsers())
+        setUsers(await getUsers())
+    }
+    
+    const getConversationRequest = async () => {
+        // const otherUser = '60f5c300aa69860008702933'
+        setMemes(await getConversation(localUser, otherUser))
+    }
+    
+    const handleConversationUser = (event) => {
+        setOtherUser(event.target.value)
     }
 
-    const createMemeRequest = (event) => {
+    const createMemeRequest = async (event) => {
         event.preventDefault()
         const formData = new FormData(event.target)
         const jsonData = Object.fromEntries(formData.entries())
-        const response = createMeme(jsonData)
+        const response = await createMeme(jsonData)
+        
+        await getConversationRequest()
     }
     
-    const searchChatMemesRequest = async () => {
-        const user1 = '60f72d7d680fdc0008d79ad2'
-        const user2 = '60f5c300aa69860008702933'
-        setMemes(await getChatMemes(user1, user2))
-    }
-
     return (
         <>
             {/* Search memes from X sender to X receiver */}
-            <Button variant='contained' color='primary' onClick={searchChatMemesRequest}>Search Memes</Button>
+            <TextField label='otherUser' name='otherUser' value={otherUser} variant='outlined' onChange={handleConversationUser} />
+            <Button variant='contained' color='primary' onClick={getConversationRequest}>Search Conversations</Button>
 
             {/* Add new meme */}
             <form onSubmit={createMemeRequest} autoComplete='off'>
-                <TextField label='owner' name='owner' variant='outlined' />
-                <TextField label='receiver' name='receiver' variant='outlined' />
-                <TextField label='expiredAt' name='expiredAt' variant='outlined' />
+                <TextField label='owner' value={localUser} name='owner' variant='outlined' />
+                <TextField label='receiver' value={otherUser} name='receiver' variant='outlined' />
+                <TextField label='expiredAt' value='-1' name='expiredAt' variant='outlined' />
                 <TextField label='description' name='description' variant='outlined' />
-                <TextField label='private' name='private' variant='outlined' />
+                <TextField label='private' value='true' name='private' variant='outlined' />
                 <TextField label='replyTo' name='replyTo' variant='outlined' />
                 <TextField label='imageUrl' name='imageUrl' variant='outlined' />
                 <TextField label='imageBase64' name='imageBase64' variant='outlined' />
