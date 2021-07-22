@@ -34,6 +34,41 @@ export const getAllMemes = async () => {
     }
 }
 
+export const getChatMemes = async (user1, user2) => {
+    const query = encodeURIComponent(JSON.stringify({
+        "owner": `${user1}|${user2}`,
+        "receiver": `${user1}|${user2}`,
+    }))
+
+    const URL = `${apiUrl}/memes/search?match=${query}`
+    console.log(URL)
+
+    try {
+        const response = await superagent.get(URL).set('key', apiKey)
+
+        const memesList = response.body.memes.map(meme => {
+            return {
+                createdAt: meme.createdAt,
+                expiredAt: meme.expiredAt,
+                description: meme.description,
+                private: meme.private,
+                imageUrl: meme.imageUrl,
+                meme_id: meme.meme_id,
+                owner: meme.owner,
+                receiver: meme.receiver,
+                likes: meme.likes,
+                replyTo: meme.replyTo
+            }
+        })
+
+        console.log(memesList)
+        return memesList
+    } catch (err) {
+        console.error(err)
+    }
+}
+
+
 export const createMeme = async (json) => {
     const URL = `${apiUrl}/memes`
 
@@ -44,7 +79,7 @@ export const createMeme = async (json) => {
             receiver: json.receiver,
             expiredAt: Number(json.expiredAt),
             description: json.description,
-            private: false,
+            private: true,
             replyTo: json.replyTo,
             imageUrl: json.imageUrl,
             imageBase64: json.imageBase64,

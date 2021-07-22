@@ -11,7 +11,7 @@ import {
     TextField
 } from '@material-ui/core'
 
-import { getAllMemes, createMeme, getAllUsers } from '../services/memeService'
+import { getAllMemes, getChatMemes, createMeme, getAllUsers } from '../services/memeService'
 
 export const Chats = () => {
     const [memes, setMemes] = useState([])
@@ -31,9 +31,18 @@ export const Chats = () => {
         const jsonData = Object.fromEntries(formData.entries())
         const response = createMeme(jsonData)
     }
+    
+    const searchChatMemesRequest = async () => {
+        const user1 = '60f72d7d680fdc0008d79ad2'
+        const user2 = '60f5c300aa69860008702933'
+        setMemes(await getChatMemes(user1, user2))
+    }
 
     return (
         <>
+            {/* Search memes from X sender to X receiver */}
+            <Button variant='contained' color='primary' onClick={searchChatMemesRequest}>Search Memes</Button>
+
             {/* Add new meme */}
             <form onSubmit={createMemeRequest} autoComplete='off'>
                 <TextField label='owner' name='owner' variant='outlined' />
