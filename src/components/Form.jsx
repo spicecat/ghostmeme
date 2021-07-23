@@ -3,11 +3,12 @@ import { upperFirst } from 'lodash/string'
 import { useFormik } from 'formik'
 import { Button, TextField, Typography } from '@material-ui/core'
 
+import { fieldInfo } from '../services/schemas'
 
 export default function Form({ name, action, schema }) {
     const fields = Object.keys(schema.fields)
     const formik = useFormik({
-        initialValues: fields.reduce((o, i) => ({ ...o, [i]: "" }), {}),
+        initialValues: fields.reduce((o, i) => ({ ...o, [i]: '' }), {}),
         validationSchema: schema,
         onSubmit: async values => action(values)
     })
@@ -23,9 +24,10 @@ export default function Form({ name, action, schema }) {
                         id={field}
                         name={field}
                         label={upperFirst(field.replaceAll('_', ' '))}
-                        type={['password', 'confirm_password'].includes(field) ? 'password' : ''}
-                        value={formik.values[field]}
-                        onChange={formik.handleChange}
+                        type={fieldInfo[field]}
+                        {...fieldInfo[field] === 'file' ?
+                            { onChange: e => formik.setFieldValue(field, e.target.files[0]) } :
+                            { onChange: formik.handleChange, value: formik.values[field] }}
                         error={Boolean(formik.touched[field] && formik.errors[field])}
                         helperText={formik.touched[field] && formik.errors[field]}
                     />
