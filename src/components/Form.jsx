@@ -29,7 +29,7 @@ export default function Form({ name, action, schema }) {
                             { onChange: e => formik.setFieldValue(field, e.target.files[0]) } :
                             { onChange: formik.handleChange, value: formik.values[field] }}
                         error={Boolean(formik.touched[field] && formik.errors[field])}
-                        helperText={formik.touched[field] && (formik.errors[field] || (field === 'password' && `Password strength: ${passwordStrength(formik.values.password)}`))}
+                        helperText={formik.touched[field] && (formik.errors[field] || (field === 'password' && name === 'Register' && `Password strength: ${passwordStrength(formik.values.password)}`))}
                     />
                 )}
             </div>
