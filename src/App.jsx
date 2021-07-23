@@ -16,9 +16,11 @@ import NotFound from './containers/NotFound'
 const cookies = new Cookies()
 
 export default function App() {
+  // const [avatar, setUsername] = useState('')
+
   return (
     <BrowserRouter>
-      <Navbar username={cookies.get('username')} />
+      <Navbar username={cookies.get('username')} avatar={cookies.get('avatar')} />
       <div class='body'>
         <Switch>
           <Route exact path='/' component={Home} />
