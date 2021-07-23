@@ -2,12 +2,12 @@ import superagent from 'superagent'
 
 import { serverUrl, apiUrl, apiKey } from '../var.js'
 
-export async function getMemes() {
-    try { return (await superagent.get(serverUrl,)).body }
-    catch (err) { console.log('Error') }
-}
+// export async function getMemes() {
+//     try { return (await superagent.get(serverUrl,)).body }
+//     catch (err) { console.log('Error') }
+// }
 
-export const getAllMemes = async () => {
+export const getMemes = async () => {
     try {
         const URL = `${apiUrl}/memes`
         const response = await superagent.get(URL).set('key', apiKey)
@@ -31,7 +31,7 @@ export const getAllMemes = async () => {
     }
 }
 
-export const getChatMemes = async (user1, user2) => {
+export const getConversation = async (user1, user2) => {
     const query = encodeURIComponent(JSON.stringify({
         "owner": `${user1}|${user2}`,
         "receiver": `${user1}|${user2}`,
@@ -76,7 +76,7 @@ export const createMeme = async (json) => {
             receiver: json.receiver,
             expiredAt: Number(json.expiredAt),
             description: json.description,
-            private: true,
+            private: (json.private) == 'true' ? true : false,
             replyTo: json.replyTo,
             imageUrl: json.imageUrl,
             imageBase64: json.imageBase64,
@@ -90,7 +90,7 @@ export const createMeme = async (json) => {
 }
 
 
-export const getAllUsers = async () => {
+export const getUsers = async () => {
     const URL = `${apiUrl}/users`
 
     try {
