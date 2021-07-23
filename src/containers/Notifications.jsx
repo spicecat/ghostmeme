@@ -2,6 +2,8 @@ import React from 'react'
 
 import Form from '../components/Form'
 import PaperContent from '../components/Paper'
+import ReactDOM from 'react-dom'
+import Button from '@material-ui/core/Button'
 
 
 export const Notifications = () => {
