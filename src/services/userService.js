@@ -9,9 +9,9 @@ const cookies = new Cookies()
 export const register = async (user) => {
     const url = baseUrl
     try {
-        const { username, password, ...info } = user
+        const { username, password, profile_picture, ...info } = user
         const auth = Buffer.from(username + ':' + password, 'ascii').toString('base64')
-        const response = await superagent.post(url, info).set('Authorization', 'Basic ' + auth)
+        const response = await superagent.post(url, { ...info, imageBase64: await profile_picture.text() }).set('Authorization', 'Basic ' + auth)
         const { token } = response.body
         cookies.set('token', token)
         cookies.set('username', username)
