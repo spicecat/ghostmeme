@@ -30,11 +30,11 @@ export const Chats = () => {
 
     const getConversationRequest = async (selectedUserID) => {
         // const selectedUser = '60f5c300aa69860008702933'
+        setMemes(await getConversation(localUser, selectedUserID))
 
         // GRACEFULLY HANDLE API
         // const response = await getConversation(localUser, selectedUser)
         // response ? setMemes(response) : console.log('Error')
-        setMemes(await getConversation(localUser, selectedUserID))
     }
 
     const selectUserRequest = async (userID) => {
@@ -58,8 +58,8 @@ export const Chats = () => {
         () => {
             let timer = setInterval(() => {
                 console.log('Updating conversations...')
-                console.log(selectedUserRef.current)
-                getConversationRequest(selectedUserRef.current)
+                // selectedUserRef.current ? console.log(selectedUserRef.current) : console.log('No user selected')
+                selectedUserRef.current ? getConversationRequest(selectedUserRef.current) : console.log('No user selected')
             }, 4000)
             return () => {
                 clearTimeout(timer)
@@ -71,17 +71,17 @@ export const Chats = () => {
     return (
         <>
             {/* Search memes from X sender to X receiver */}
-            <TextField label='selectedUser' name='selectedUser' value={selectedUser} variant='outlined' />
-            <Button variant='contained' color='primary' onClick={() => getConversationRequest(selectedUser)}>Search Conversations</Button>
+            {/* <TextField label='selectedUser' name='selectedUser' value={selectedUser} variant='outlined' />
+            <Button variant='contained' color='primary' onClick={() => getConversationRequest(selectedUser)}>Search Conversations</Button> */}
 
             {/* Add new meme */}
             <form onSubmit={createMemeRequest} autoComplete='off'>
-                <TextField label='owner' value={localUser} name='owner' variant='outlined' />
-                <TextField label='receiver' value={selectedUser} name='receiver' variant='outlined' />
+                <TextField type='hidden' value={localUser} name='owner' />
+                <TextField type='hidden' value={selectedUser} name='receiver' />
                 <TextField label='expiredAt' value='-1' name='expiredAt' variant='outlined' />
                 <TextField label='description' name='description' variant='outlined' />
-                <TextField label='private' value='true' name='private' variant='outlined' />
-                <TextField label='replyTo' name='replyTo' variant='outlined' />
+                <TextField type='hidden' value='true' name='private' />
+                <TextField type='hidden' name='replyTo' />
                 <TextField label='imageUrl' name='imageUrl' variant='outlined' />
                 <TextField label='imageBase64' name='imageBase64' variant='outlined' />
 
@@ -89,8 +89,8 @@ export const Chats = () => {
             </form>
 
             {/* Get all memes */}
-            <Button variant='contained' color='primary' onClick={getMemesRequest}>Get All Memes</Button>
-            <br /><br />
+            {/* <Button variant='contained' color='primary' onClick={getMemesRequest}>Get All Memes</Button>
+            <br /><br /> */}
             <TableContainer component={Paper}>
                 <Table>
                     <TableHead>
