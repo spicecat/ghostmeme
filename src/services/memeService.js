@@ -38,7 +38,7 @@ export const getConversation = async (user1, user2) => {
     }))
 
     const URL = `${apiUrl}/memes/search?match=${query}`
-    console.log(URL)
+    // console.log(URL)
 
     try {
         const response = await superagent.get(URL).set('key', apiKey)
@@ -58,7 +58,7 @@ export const getConversation = async (user1, user2) => {
             }
         })
 
-        console.log(memesList)
+        // console.log(memesList)
         return memesList
     } catch (err) {
         console.error(err)

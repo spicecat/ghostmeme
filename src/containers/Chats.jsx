@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import {
     Button,
     Table,
@@ -17,7 +17,8 @@ export const Chats = () => {
     const localUser = '60f72d7d680fdc0008d79ad2'
     const [memes, setMemes] = useState([])
     const [users, setUsers] = useState([])
-    const [otherUser, setOtherUser] = useState('60f5c300aa69860008702933')
+    const [selectedUser, setSelectedUser] = useState('')
+    // const [selectedUser, setSelectedUser] = useState('60f5c300aa69860008702933')
 
     const getMemesRequest = async () => {
         setMemes(await getMemes())
@@ -27,15 +28,18 @@ export const Chats = () => {
         setUsers(await getUsers())
     }
 
-    const getConversationRequest = async () => {
-        // const otherUser = '60f5c300aa69860008702933'
-        const response = await getConversation(localUser, otherUser)
-        response ? setMemes(response) : console.log('Error')
-        // setMemes(await getConversation(localUser, otherUser))
+    const getConversationRequest = async (selectedUserID) => {
+        // const selectedUser = '60f5c300aa69860008702933'
+
+        // GRACEFULLY HANDLE API
+        // const response = await getConversation(localUser, selectedUser)
+        // response ? setMemes(response) : console.log('Error')
+        setMemes(await getConversation(localUser, selectedUserID))
     }
 
-    const handleConversationUser = (event) => {
-        setOtherUser(event.target.value)
+    const selectUserRequest = async (userID) => {
+        setSelectedUser(userID)
+        await getConversationRequest(userID)
     }
 
     const createMemeRequest = async (event) => {
@@ -44,28 +48,18 @@ export const Chats = () => {
         const jsonData = Object.fromEntries(formData.entries())
         const response = await createMeme(jsonData)
 
-        await getConversationRequest()
+        await getConversationRequest(selectedUser)
     }
 
-    // const [showLoading, setShowLoading] = useState(true)
-    // useEffect(
-    //     () => {
-    //         let timer1 = setInterval(async () => {
-    //             console.log('Updating conversations')
-    //             await getConversationRequest()
-    //         }, 10000)
-    //         return () => {
-    //             clearTimeout(timer1)
-    //         }
-    //     },
-    //     []
-    // )
+    const selectedUserRef = useRef(selectedUser)
+    selectedUserRef.current = selectedUser
 
     useEffect(
         () => {
             let timer = setInterval(() => {
                 console.log('Updating conversations...')
-                getConversationRequest()
+                console.log(selectedUserRef.current)
+                getConversationRequest(selectedUserRef.current)
             }, 4000)
             return () => {
                 clearTimeout(timer)
@@ -77,13 +71,13 @@ export const Chats = () => {
     return (
         <>
             {/* Search memes from X sender to X receiver */}
-            <TextField label='otherUser' name='otherUser' value={otherUser} variant='outlined' onChange={handleConversationUser} />
-            <Button variant='contained' color='primary' onClick={getConversationRequest}>Search Conversations</Button>
+            <TextField label='selectedUser' name='selectedUser' value={selectedUser} variant='outlined' />
+            <Button variant='contained' color='primary' onClick={() => getConversationRequest(selectedUser)}>Search Conversations</Button>
 
             {/* Add new meme */}
             <form onSubmit={createMemeRequest} autoComplete='off'>
                 <TextField label='owner' value={localUser} name='owner' variant='outlined' />
-                <TextField label='receiver' value={otherUser} name='receiver' variant='outlined' />
+                <TextField label='receiver' value={selectedUser} name='receiver' variant='outlined' />
                 <TextField label='expiredAt' value='-1' name='expiredAt' variant='outlined' />
                 <TextField label='description' name='description' variant='outlined' />
                 <TextField label='private' value='true' name='private' variant='outlined' />
@@ -93,42 +87,6 @@ export const Chats = () => {
 
                 <Button type='submit' variant='contained' color='primary'>Add new meme</Button>
             </form>
-
-            {/* Get all users */}
-            <Button variant='contained' color='primary' onClick={getUsersRequest}>Get All Users</Button>
-            <br /><br />
-            <TableContainer component={Paper}>
-                <Table>
-                    <TableHead>
-                        <TableRow>
-                            <TableCell>name</TableCell>
-                            <TableCell>email</TableCell>
-                            <TableCell>phone</TableCell>
-                            <TableCell>username</TableCell>
-                            <TableCell>imageUrl</TableCell>
-                            {/* <TableCell>deleted</TableCell> */}
-                            <TableCell>user_id</TableCell>
-                            <TableCell>friends</TableCell>
-                            <TableCell>liked</TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {users.map(user => (
-                            <TableRow key={user.user_id}>
-                                <TableCell>{user.name}</TableCell>
-                                <TableCell>{user.email}</TableCell>
-                                <TableCell>{user.phone}</TableCell>
-                                <TableCell>{user.username}</TableCell>
-                                <TableCell>{user.imageUrl}</TableCell>
-                                {/* <TableCell>{user.deleted}</TableCell> */}
-                                <TableCell>{user.user_id}</TableCell>
-                                <TableCell>{user.friends}</TableCell>
-                                <TableCell>{user.liked}</TableCell>
-                            </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
-            </TableContainer>
 
             {/* Get all memes */}
             <Button variant='contained' color='primary' onClick={getMemesRequest}>Get All Memes</Button>
@@ -162,6 +120,44 @@ export const Chats = () => {
                                 <TableCell>{meme.receiver}</TableCell>
                                 <TableCell>{meme.likes}</TableCell>
                                 <TableCell>{meme.replyTo}</TableCell>
+                            </TableRow>
+                        ))}
+                    </TableBody>
+                </Table>
+            </TableContainer>
+
+            {/* Get all users */}
+            <Button variant='contained' color='primary' onClick={getUsersRequest}>Get All Users</Button>
+            <br /><br />
+            <TableContainer component={Paper}>
+                <Table>
+                    <TableHead>
+                        <TableRow>
+                            <TableCell>name</TableCell>
+                            <TableCell>email</TableCell>
+                            <TableCell>phone</TableCell>
+                            <TableCell>username</TableCell>
+                            <TableCell>imageUrl</TableCell>
+                            {/* <TableCell>deleted</TableCell> */}
+                            <TableCell>user_id</TableCell>
+                            <TableCell>friends</TableCell>
+                            <TableCell>liked</TableCell>
+                            <TableCell>Select User?</TableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {users && users.map(user => (
+                            <TableRow key={user.user_id}>
+                                <TableCell>{user.name}</TableCell>
+                                <TableCell>{user.email}</TableCell>
+                                <TableCell>{user.phone}</TableCell>
+                                <TableCell>{user.username}</TableCell>
+                                <TableCell>{user.imageUrl}</TableCell>
+                                {/* <TableCell>{user.deleted}</TableCell> */}
+                                <TableCell>{user.user_id}</TableCell>
+                                <TableCell>{user.friends}</TableCell>
+                                <TableCell>{user.liked}</TableCell>
+                                <TableCell><Button variant='contained' color='primary' onClick={() => selectUserRequest(user.user_id)}>Select User</Button></TableCell>
                             </TableRow>
                         ))}
                     </TableBody>
