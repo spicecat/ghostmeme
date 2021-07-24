@@ -45,20 +45,22 @@ export const Chats = () => {
         setUsers(await getUsers())
     }
 
-    const getConversationRequest = async (selectedUserID) => {
+    const getConversationRequest = async (selectedUserID, requestType) => {
         // const selectedUser = '60f5c300aa69860008702933'
-        setMemes(await getConversation(localUser, selectedUserID))
-
-        // GRACEFULLY HANDLE API
-        // const response = await getConversation(localUser, selectedUser)
-        // response ? setMemes(response) : console.log('Error')
+        if (requestType == 'refresh') {
+            setMemes(await getConversation(localUser, selectedUserID))
+        } else {
+            // GRACEFULLY HANDLE API
+            const response = await getConversation(localUser, selectedUserID)
+            response ? setMemes(response) : console.log('Error')
+        }
     }
 
     const selectUserRequest = async (userID) => {
         setSelectedUser(userID)
         getUserInfoRequest(localUser, 'local')
         getUserInfoRequest(userID, 'selected')
-        await getConversationRequest(userID)
+        await getConversationRequest(userID, 'refresh')
     }
 
     const createMemeRequest = async (event) => {
