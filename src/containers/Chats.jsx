@@ -11,17 +11,34 @@ import {
     TextField
 } from '@material-ui/core'
 
-import { getMemes, getConversation, createMeme, getUsers } from '../services/memeService'
+import { getMemes, getConversation, createMeme, getUserInfo, getUsers } from '../services/memeService'
 
 export const Chats = () => {
     const localUser = '60f72d7d680fdc0008d79ad2'
     const [memes, setMemes] = useState([])
     const [users, setUsers] = useState([])
     const [selectedUser, setSelectedUser] = useState('')
+    const [localUserInfo, setLocalUserInfo] = useState([])
+    const [selectedUserInfo, setSelectedUserInfo] = useState([])
     // const [selectedUser, setSelectedUser] = useState('60f5c300aa69860008702933')
 
     const getMemesRequest = async () => {
         setMemes(await getMemes())
+    }
+
+    const getUserInfoRequest = async (userID, user) => {
+        if (user == 'local') {
+            setLocalUserInfo(await getUserInfo(userID))
+            // console.log(localUserInfo)
+        }
+
+        if (user == 'selected') {
+            setSelectedUserInfo(await getUserInfo(userID))
+            // console.log(selectedUserInfo)
+        }
+        // const response = await getUserInfo(userID)
+        // console.log(response.username)
+        // return response.username
     }
 
     const getUsersRequest = async () => {
@@ -30,6 +47,8 @@ export const Chats = () => {
 
     const getConversationRequest = async (selectedUserID) => {
         // const selectedUser = '60f5c300aa69860008702933'
+        getUserInfoRequest(localUser, 'local')
+        getUserInfoRequest(selectedUserID, 'selected')
         setMemes(await getConversation(localUser, selectedUserID))
 
         // GRACEFULLY HANDLE API
@@ -73,12 +92,14 @@ export const Chats = () => {
             {/* Search memes from X sender to X receiver */}
             {/* <TextField label='selectedUser' name='selectedUser' value={selectedUser} variant='outlined' />
             <Button variant='contained' color='primary' onClick={() => getConversationRequest(selectedUser)}>Search Conversations</Button> */}
+            {/* <Button variant='contained' color='primary' onClick={() => getUserInfoRequest(localUser, 'local')}>Selected User Info</Button>
+            <Button variant='contained' color='primary' onClick={() => getUserInfoRequest(selectedUser, 'selected')}>Selected User Info</Button> */}
 
             {/* Add new meme */}
             <form onSubmit={createMemeRequest} autoComplete='off'>
                 <TextField type='hidden' value={localUser} name='owner' />
                 <TextField type='hidden' value={selectedUser} name='receiver' />
-                <TextField label='expiredAt' value='-1' name='expiredAt' variant='outlined' />
+                <TextField label='expiredAt' placeholder='-1' name='expiredAt' variant='outlined' />
                 <TextField label='description' name='description' variant='outlined' />
                 <TextField type='hidden' value='true' name='private' />
                 <TextField type='hidden' name='replyTo' />
@@ -98,28 +119,28 @@ export const Chats = () => {
                             <TableCell>createdAt</TableCell>
                             <TableCell>expiredAt</TableCell>
                             <TableCell>description</TableCell>
-                            <TableCell>private</TableCell>
+                            {/* <TableCell>private</TableCell> */}
                             <TableCell>imageUrl</TableCell>
-                            <TableCell>meme_id</TableCell>
+                            {/* <TableCell>meme_id</TableCell> */}
                             <TableCell>owner</TableCell>
                             <TableCell>receiver</TableCell>
                             <TableCell>likes</TableCell>
-                            <TableCell>replyTo</TableCell>
+                            {/* <TableCell>replyTo</TableCell> */}
                         </TableRow>
                     </TableHead>
                     <TableBody>
                         {memes && memes.map(meme => (
                             <TableRow key={meme.meme_id}>
-                                <TableCell>{meme.createdAt}</TableCell>
-                                <TableCell>{meme.expiredAt}</TableCell>
+                                <TableCell>{meme.createdAt.toLocaleString()}</TableCell>
+                                <TableCell>{meme.expiredAt == '-1' ? 'Does not expire' : meme.expiredAt.toLocaleString()}</TableCell>
                                 <TableCell>{meme.description}</TableCell>
-                                <TableCell>{meme.privates}</TableCell>
-                                <TableCell>{meme.imageUrl}</TableCell>
-                                <TableCell>{meme.meme_id}</TableCell>
-                                <TableCell>{meme.owner}</TableCell>
-                                <TableCell>{meme.receiver}</TableCell>
+                                {/* <TableCell>{meme.privates}</TableCell> */}
+                                <TableCell><img className='chat-img' src={meme.imageUrl} /></TableCell>
+                                {/* <TableCell>{meme.meme_id}</TableCell> */}
+                                <TableCell>{(localUserInfo && selectedUserInfo) ? (meme.owner == localUser) ? localUserInfo.username : selectedUserInfo.username : 'Error'}</TableCell>
+                                <TableCell>{(localUserInfo && selectedUserInfo) ? (meme.receiver == localUser) ? localUserInfo.username : selectedUserInfo.username : 'Error'}</TableCell>
                                 <TableCell>{meme.likes}</TableCell>
-                                <TableCell>{meme.replyTo}</TableCell>
+                                {/* <TableCell>{meme.replyTo}</TableCell> */}
                             </TableRow>
                         ))}
                     </TableBody>

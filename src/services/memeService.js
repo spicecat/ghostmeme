@@ -44,8 +44,8 @@ export const getConversation = async (user1, user2) => {
 
         const memesList = response.body.memes.map(meme => {
             return {
-                createdAt: meme.createdAt,
-                expiredAt: meme.expiredAt,
+                createdAt: new Date(meme.createdAt),
+                expiredAt: meme.expiredAt == '-1' ? meme.expiredAt : new Date(meme.expiredAt),
                 description: meme.description,
                 private: meme.private,
                 imageUrl: meme.imageUrl,
@@ -75,7 +75,7 @@ export const createMeme = async (json) => {
             receiver: json.receiver,
             expiredAt: Number(json.expiredAt),
             description: json.description,
-            private: (json.private) == 'true' ? true : false,
+            private: json.private == 'true' ? true : false,
             replyTo: json.replyTo,
             imageUrl: json.imageUrl,
             imageBase64: json.imageBase64,
@@ -88,6 +88,33 @@ export const createMeme = async (json) => {
     }
 }
 
+export const getUserInfo = async (userID) => {
+    const URL = `${apiUrl}/users/${userID}`
+    
+    try {
+        const response = await superagent.get(URL).set('key', apiKey)
+        
+        const userList = response.body.user
+
+        // const usersList = response.body.user.map(user => {
+        //     return {
+        //         name: user.name,
+        //         email: user.email,
+        //         phone: user.phone,
+        //         username: user.username,
+        //         imageUrl: user.imageUrl,
+        //         deleted: user.deleted,
+        //         user_id: user.user_id,
+        //         friends: user.friends,
+        //         liked: user.liked,
+        //     }
+        // })
+
+        return userList
+    } catch (err) {
+        console.error(err)
+    }
+}
 
 export const getUsers = async () => {
     const URL = `${apiUrl}/users`

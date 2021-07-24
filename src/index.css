@@ -20,3 +20,8 @@ div.body {
 div.header {
   text-align: center;
 }
+
+img.chat-img {
+  max-width: 200px;
+  max-height: 200px;
+}
