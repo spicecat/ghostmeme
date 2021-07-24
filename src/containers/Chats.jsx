@@ -47,8 +47,6 @@ export const Chats = () => {
 
     const getConversationRequest = async (selectedUserID) => {
         // const selectedUser = '60f5c300aa69860008702933'
-        getUserInfoRequest(localUser, 'local')
-        getUserInfoRequest(selectedUserID, 'selected')
         setMemes(await getConversation(localUser, selectedUserID))
 
         // GRACEFULLY HANDLE API
@@ -58,6 +56,8 @@ export const Chats = () => {
 
     const selectUserRequest = async (userID) => {
         setSelectedUser(userID)
+        getUserInfoRequest(localUser, 'local')
+        getUserInfoRequest(userID, 'selected')
         await getConversationRequest(userID)
     }
 
