@@ -132,17 +132,17 @@ export const Chats = () => {
                     </TableHead>
                     <TableBody>
                         {memes && memes.map(meme => (
-                            <TableRow key={meme.meme_id}>
-                                <TableCell>{meme.createdAt.toLocaleString()}</TableCell>
-                                <TableCell>{meme.expiredAt == '-1' ? 'Does not expire' : meme.expiredAt.toLocaleString()}</TableCell>
-                                <TableCell>{meme.description}</TableCell>
-                                {/* <TableCell>{meme.privates}</TableCell> */}
-                                <TableCell><img className='chat-img' src={meme.imageUrl} /></TableCell>
-                                {/* <TableCell>{meme.meme_id}</TableCell> */}
-                                <TableCell>{(localUserInfo && selectedUserInfo) ? (meme.owner === localUser) ? localUserInfo.username : selectedUserInfo.username : 'Error'}</TableCell>
-                                <TableCell>{(localUserInfo && selectedUserInfo) ? (meme.receiver === localUser) ? localUserInfo.username : selectedUserInfo.username : 'Error'}</TableCell>
-                                <TableCell>{meme.likes}</TableCell>
-                                {/* <TableCell>{meme.replyTo}</TableCell> */}
+                            <TableRow className={(meme.owner === localUser) ? 'localChat' : 'otherChat'} key={meme.meme_id}>
+                                <TableCell className={(meme.owner === localUser) ? 'localChatText' : ''}>{meme.createdAt.toLocaleString()}</TableCell>
+                                <TableCell className={(meme.owner === localUser) ? 'localChatText' : ''}>{meme.expiredAt == '-1' ? 'Does not expire' : meme.expiredAt.toLocaleString()}</TableCell>
+                                <TableCell className={(meme.owner === localUser) ? 'localChatText' : ''}>{meme.description}</TableCell>
+                                {/* <TableCell className={(meme.owner === localUser) ? 'localChatText' : ''}>{meme.privates}</TableCell> */}
+                                <TableCell className={(meme.owner === localUser) ? 'localChatText' : ''}><img className='chat-img' src={meme.imageUrl} /></TableCell>
+                                {/* <TableCell className={(meme.owner === localUser) ? 'localChatText' : ''}>{meme.meme_id}</TableCell> */}
+                                <TableCell className={(meme.owner === localUser) ? 'localChatText' : ''}>{(localUserInfo && selectedUserInfo) ? (meme.owner === localUser) ? localUserInfo.username : selectedUserInfo.username : 'Error'}</TableCell>
+                                <TableCell className={(meme.owner === localUser) ? 'localChatText' : ''}>{(localUserInfo && selectedUserInfo) ? (meme.receiver === localUser) ? localUserInfo.username : selectedUserInfo.username : 'Error'}</TableCell>
+                                <TableCell className={(meme.owner === localUser) ? 'localChatText' : ''}>{meme.likes}</TableCell>
+                                {/* <TableCell className={(meme.owner === localUser) ? 'localChatText' : ''}>{meme.replyTo}</TableCell> */}
                             </TableRow>
                         ))}
                     </TableBody>
