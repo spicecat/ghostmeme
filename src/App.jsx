@@ -1,6 +1,8 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { BrowserRouter, Switch, Route } from 'react-router-dom'
-import Cookies from 'universal-cookie'
+// import Cookies from 'universal-cookie'
+
+import { getUser } from './services/userService'
 
 import './index.css'
 import Navbar from './components/Navbar'
@@ -13,14 +15,18 @@ import Stories from './containers/Stories'
 import Notifications from './containers/Notifications'
 import NotFound from './containers/NotFound'
 
-const cookies = new Cookies()
+// const cookies = new Cookies()
 
 export default function App() {
-  // const [avatar, setUsername] = useState('')
+  const [user, setUser] = useState({})
 
+  useEffect(() => {
+    const updateUser = async () => { setUser(await getUser()) }
+    updateUser()
+  }, [])
   return (
     <BrowserRouter>
-      <Navbar username={cookies.get('username')} avatar={cookies.get('avatar')} />
+      <Navbar username={user.username} avatar={user.imageBase64} />
       <div class='body'>
         <Switch>
           <Route exact path='/' component={Home} />

@@ -1,7 +1,7 @@
 import React from 'react'
 import { Link } from "react-router-dom"
 import { makeStyles } from '@material-ui/core/styles'
-import { AppBar, Toolbar, Typography, IconButton, Button } from '@material-ui/core'
+import { AppBar, Toolbar, Typography, IconButton, Button, Avatar } from '@material-ui/core'
 import MenuIcon from '@material-ui/icons/Menu'
 
 import { logout } from '../services/userService'
@@ -29,6 +29,8 @@ export default function Navbar({ page, username, avatar }) {
                 {username ?
                     <>
                         <Typography>Logged in as: {username}</Typography>
+                        &nbsp;&nbsp;&nbsp;
+                        <Avatar alt={username} />
                         &nbsp;&nbsp;&nbsp;
                         <Button color='inherit' variant='outlined' size='small' onClick={logout}>Logout</Button>
                     </> :
