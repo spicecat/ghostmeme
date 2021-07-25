@@ -27,12 +27,12 @@ export const Chats = () => {
     }
 
     const getUserInfoRequest = async (userID, user) => {
-        if (user == 'local') {
+        if (user === 'local') {
             setLocalUserInfo(await getUserInfo(userID))
             // console.log(localUserInfo)
         }
 
-        if (user == 'selected') {
+        if (user === 'selected') {
             setSelectedUserInfo(await getUserInfo(userID))
             // console.log(selectedUserInfo)
         }
@@ -47,7 +47,7 @@ export const Chats = () => {
 
     const getConversationRequest = async (selectedUserID, requestType) => {
         // const selectedUser = '60f5c300aa69860008702933'
-        if (requestType == 'refresh') {
+        if (requestType === 'refresh') {
             setMemes(await getConversation(localUser, selectedUserID))
         } else {
             // GRACEFULLY HANDLE API
@@ -139,8 +139,8 @@ export const Chats = () => {
                                 {/* <TableCell>{meme.privates}</TableCell> */}
                                 <TableCell><img className='chat-img' src={meme.imageUrl} /></TableCell>
                                 {/* <TableCell>{meme.meme_id}</TableCell> */}
-                                <TableCell>{(localUserInfo && selectedUserInfo) ? (meme.owner == localUser) ? localUserInfo.username : selectedUserInfo.username : 'Error'}</TableCell>
-                                <TableCell>{(localUserInfo && selectedUserInfo) ? (meme.receiver == localUser) ? localUserInfo.username : selectedUserInfo.username : 'Error'}</TableCell>
+                                <TableCell>{(localUserInfo && selectedUserInfo) ? (meme.owner === localUser) ? localUserInfo.username : selectedUserInfo.username : 'Error'}</TableCell>
+                                <TableCell>{(localUserInfo && selectedUserInfo) ? (meme.receiver === localUser) ? localUserInfo.username : selectedUserInfo.username : 'Error'}</TableCell>
                                 <TableCell>{meme.likes}</TableCell>
                                 {/* <TableCell>{meme.replyTo}</TableCell> */}
                             </TableRow>
