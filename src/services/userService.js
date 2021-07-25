@@ -30,7 +30,7 @@ export const login = async ({ username, password }) => {
 
 export const getUser = async () => {
     const token = cookies.get('token')
-    if (!token) return
+    if (!token) return {}
 
     const url = baseUrl + '/getUser'
     try {
