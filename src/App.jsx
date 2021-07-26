@@ -14,6 +14,7 @@ import Register from './containers/Register'
 import Chats from './containers/Chats'
 import Stories from './containers/Stories'
 import Notifications from './containers/Notifications'
+import Friends from './containers/Friends'
 import NotFound from './containers/NotFound'
 
 export default function App() {
@@ -37,19 +38,11 @@ export default function App() {
               <Route exact path='/notifications' >< Notifications user={user} /></Route>
               <Route exact path='/login' component={Login} />
               <Route exact path='/register' component={Register} />
+              <Route exact path='/friends' >< Friends user={user} /></Route>
               <Route path='*' component={NotFound} />
             </Switch>
           </>
         } />
-        {/* <Switch>
-          <Route exact path='/' component={Home} />
-          <Route exact path='/chats'><Chats user={user} /></Route>
-          <Route exact path='/stories' ><Stories user={user} /></Route>
-          <Route exact path='/notifications' >< Notifications user={user} /></Route>
-          <Route exact path='/login' component={Login} />
-          <Route exact path='/register' component={Register} />
-          <Route path='*' component={NotFound} />
-        </Switch> */}
       </div>
     </BrowserRouter>
   )
