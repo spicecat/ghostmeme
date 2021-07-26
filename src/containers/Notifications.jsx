@@ -1,14 +1,4 @@
-// import React, { useEffect } from 'react'
-
-// import { redirect } from '../services/userService'
-
-// export default function Notifications({ user }) {
-//     useEffect(() => { redirect(user) }, [user])
-
-//     return (
-//         <>
-            // Notifications
-import React from 'react'
+import React, { useEffect } from 'react'
 
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
@@ -20,6 +10,8 @@ import Typography from '@material-ui/core/Typography';
 import Alert from '@material-ui/lab/Alert';
 import { makeStyles } from '@material-ui/core/styles';
 
+import { redirect } from '../services/userService'
+
 const useStyles = makeStyles((theme) => ({
     root: {
         width: '100%',
@@ -27,12 +19,13 @@ const useStyles = makeStyles((theme) => ({
             marginTop: theme.spacing(2),
         },
     },
-}));
+}))
 
+export default function Notifications({ user }) {
+    const classes = useStyles()
 
+    useEffect(() => { redirect(user) }, [user])
 
-export const Notifications = () => {
-    const classes = useStyles();
     return (
         <>
             <div id='notifications'>
