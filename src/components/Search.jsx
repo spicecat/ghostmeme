@@ -1,14 +1,20 @@
-import React from 'react'
-import { AppBar, Toolbar, Typography, IconButton, Button, Avatar } from '@material-ui/core'
+import { useState, useEffect } from 'react'
 
-import { logout } from '../services/userService'
+import { getMemes } from '../services/memeService'
 
+import Meme from './Meme'
 
-export default function Search({ page, username, avatar }) {
+export default function Search({ user }) {
+    const [memes, setMemes] = useState([])
 
-    return (
+    const updateMemes = async () => { setMemes(await getMemes()) }
+
+    useEffect(() => {
+        updateMemes()
+    }, [])
+
+    return !user.loading &&
         <>
-            asdf
+            {/* {memes.map(meme => <Meme {...meme} />)} */}
         </>
-    )
 }

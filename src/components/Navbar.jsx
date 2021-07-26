@@ -17,7 +17,7 @@ export default function Navbar({ page, username, avatar }) {
     return (
         <AppBar position='static'>
             <Toolbar variant='dense'>
-                <IconButton color='inherit' className={classes.menuButton}>
+                <IconButton color='inherit' className={classes.menuButton} onClick={() => window.location.href = '/'}>
                     <MenuIcon />
                 </IconButton>
                 &nbsp;

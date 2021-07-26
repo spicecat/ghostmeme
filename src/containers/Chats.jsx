@@ -88,7 +88,7 @@ export default function Chats({ user }) {
         return () => { clearTimeout(timer) }
     }, [])
 
-    return (
+    return user.loading === undefined &&
         <>
             {/* Search memes from X sender to X receiver */}
             {/* <TextField label='selectedUser' name='selectedUser' value={selectedUser} variant='outlined' />
@@ -239,5 +239,4 @@ export default function Chats({ user }) {
                 </Table>
             </TableContainer>
         </>
-    )
 }

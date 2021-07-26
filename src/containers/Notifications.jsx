@@ -26,7 +26,7 @@ export default function Notifications({ user }) {
 
     useEffect(() => { redirect(user) }, [user])
 
-    return (
+    return user.loading === undefined &&
         <>
             <div id='notifications'>
                 <h1>Notifications</h1>
@@ -409,8 +409,5 @@ export default function Notifications({ user }) {
 
                 </div>
             </div>
-
-
         </>
-    )
 }

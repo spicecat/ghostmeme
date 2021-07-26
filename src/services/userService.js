@@ -8,7 +8,7 @@ const cookies = new Cookies()
 
 export const redirect = async user => {
     // comment below to disable redirect
-    if (!user.username && !user.loading) window.location.href = '/login'
+    if (!user.username && user.loading === false) window.location.href = '/login'
 }
 
 export const register = async ({ username, password, profile_picture, rememberMe, ...info }) => {
@@ -52,7 +52,7 @@ export const login = async ({ username, password, rememberMe }) => {
 
 export const getUser = async () => {
     const token = cookies.get('token')
-    if (!token) return {}
+    if (!token) return { loading: false }
 
     const url = baseUrl + '/getUser'
     try {
