@@ -42,4 +42,7 @@ img.chat-img {
 
 .tableChat {
   border-bottom: none !important;
+  
+#notifications{
+  margin: 50px;
 }
