@@ -39,3 +39,7 @@ img.chat-img {
 .otherChat {
   background: #F1F3F4 !important;
 }
+
+.tableChat {
+  border-bottom: none !important;
+}
