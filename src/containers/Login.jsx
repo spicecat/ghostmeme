@@ -9,8 +9,11 @@ import PaperContent from '../components/Paper'
 export const Login = () => {
     const LoginContent = update =>
         <>
-            <Form name='Login' action={async values => update(await login(values))} schema={loginSchema} />
-            
+            <Form name='Login' action={async values => {
+                update(102)
+                update(await login(values))
+            }
+            } schema={loginSchema} />
         </>
 
     return (

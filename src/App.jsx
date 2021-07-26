@@ -30,11 +30,11 @@ export default function App() {
       <div class='body'>
         <Switch>
           <Route exact path='/' component={Home} />
+          <Route exact path='/chats'><Chats user={user} /></Route>
+          <Route exact path='/stories' ><Stories user={user} /></Route>
+          <Route exact path='/notifications' >< Notifications user={user} /></Route>
           <Route exact path='/login' component={Login} />
           <Route exact path='/register' component={Register} />
-          <Route exact path='/chats' component={Chats} />
-          <Route exact path='/stories' component={Stories} />
-          <Route exact path='/notifications' component={Notifications} />
           <Route path='*' component={NotFound} />
         </Switch>
       </div>

@@ -15,24 +15,14 @@ export default function PaperContent({ Component }) {
     const classes = useStyles()
 
     const [statusCode, setStatusCode] = useState(100)
-    const [open, setOpen] = useState(false)
-    const [msg, setMsg] = useState('Error')
 
     useEffect(() => {
         if ([201, 202].includes(statusCode)) window.location.href = '/'
-        else if (statusCode !== 100) { // don't show Alert on mount and reset
-            setMsg({ 400: 'Bad Request', 401: 'Incorrect username or password', 409: 'Username Taken' }[statusCode] || 'Error')
-            setOpen(true)
-        }
     }, [statusCode])
 
-    // reset statusCode
-    useEffect(() => {
-        if (!open) setStatusCode(100)
-    }, [open])
     return (
         <Paper className={classes.login}>
-            <Alert open={open} type='error' msg={msg} setOpen={setOpen} />
+            <Alert statusCode={statusCode} />
             <br />
             {Component(setStatusCode)}
         </Paper>

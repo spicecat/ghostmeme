@@ -11,9 +11,12 @@ import {
     TextField
 } from '@material-ui/core'
 
+import { redirect } from '../services/userService'
 import { getMemes, getConversation, createMeme, getUserInfo, getUsers } from '../services/memeService'
 
-export const Chats = () => {
+export default function Chats({ user }) {
+    useEffect(() => { redirect(user) }, [user])
+
     const localUser = '60f72d7d680fdc0008d79ad2'
     const [memes, setMemes] = useState([])
     const [users, setUsers] = useState([])
@@ -75,19 +78,15 @@ export const Chats = () => {
     const selectedUserRef = useRef(selectedUser)
     selectedUserRef.current = selectedUser
 
-    useEffect(
-        () => {
-            let timer = setInterval(() => {
-                console.log('Updating conversations...')
-                // selectedUserRef.current ? console.log(selectedUserRef.current) : console.log('No user selected')
-                selectedUserRef.current ? getConversationRequest(selectedUserRef.current) : console.log('No user selected')
-            }, 4000)
-            return () => {
-                clearTimeout(timer)
-            }
-        },
-        []
-    )
+
+    useEffect(() => {
+        let timer = setInterval(() => {
+            console.log('Updating conversations...')
+            // selectedUserRef.current ? console.log(selectedUserRef.current) : console.log('No user selected')
+            selectedUserRef.current ? getConversationRequest(selectedUserRef.current) : console.log('No user selected')
+        }, 4000)
+        return () => { clearTimeout(timer) }
+    }, [])
 
     return (
         <>
@@ -189,5 +188,3 @@ export const Chats = () => {
         </>
     )
 }
-
-export default Chats
