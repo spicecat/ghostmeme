@@ -26,6 +26,7 @@ export default function Navbar({ page, username, avatar }) {
                     <Button color='inherit' variant='outlined' size='small' to='/chats' component={Link}>Chats</Button>&nbsp;
                     <Button color='inherit' variant='outlined' size='small' to='/stories' component={Link}>Stories</Button>&nbsp;
                     <Button color='inherit' variant='outlined' size='small' to='/notifications' component={Link}>Notifications</Button>&nbsp;
+                    <Button color='inherit' variant='outlined' size='small' to='/friendsview' component={Link}>Friends View</Button>&nbsp;
                 </>
                 <span className={classes.userControl} />
                 {username ?

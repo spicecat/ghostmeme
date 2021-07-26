@@ -13,6 +13,7 @@ import Register from './containers/Register'
 import Chats from './containers/Chats'
 import Stories from './containers/Stories'
 import Notifications from './containers/Notifications'
+import FriendsView from './containers/FriendsView'
 import NotFound from './containers/NotFound'
 
 export default function App() {
@@ -34,6 +35,7 @@ export default function App() {
             <Route exact path='/notifications' >< Notifications user={user} /></Route>
             <Route exact path='/login' component={Login} />
             <Route exact path='/register' component={Register} />
+            <Route exact path='/friendsview' component={FriendsView} />
             <Route path='*' component={NotFound} />
           </Switch>
         } />
