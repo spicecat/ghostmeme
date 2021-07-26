@@ -7,8 +7,8 @@ const baseUrl = serverUrl + '/users'
 const cookies = new Cookies()
 
 export const redirect = async user => {
-    // uncomment for redirect
-    // if (!user.username) window.location.href = '/login'
+    // comment below to disable redirect
+    if (!user.username && !user.loading) window.location.href = '/login'
 }
 
 export const register = async ({ username, password, profile_picture, rememberMe, ...info }) => {
@@ -62,7 +62,7 @@ export const getUser = async () => {
         return
     }
     const { user } = response.body
-    console.log(user, 321)
+    console.log(user)
     return user
 }
 

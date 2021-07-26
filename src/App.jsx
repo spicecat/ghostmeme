@@ -18,7 +18,7 @@ import NotFound from './containers/NotFound'
 // const cookies = new Cookies()
 
 export default function App() {
-  const [user, setUser] = useState({})
+  const [user, setUser] = useState({ loading: true })
 
   useEffect(() => {
     const updateUser = async () => { setUser(await getUser()) }
