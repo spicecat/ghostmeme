@@ -1,3 +1,4 @@
+// eslint-disable-next-line
 import React, { useState } from 'react'
 import { BrowserRouter, Switch, Route } from 'react-router-dom'
 import Cookies from 'universal-cookie'
