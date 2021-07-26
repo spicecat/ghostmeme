@@ -1,17 +1,13 @@
 import React from 'react'
 import { Typography } from '@material-ui/core'
 
-import PaperContent from '../components/Paper'
+import Search from '../components/Search'
 
-export const Home = () => {
-    const LoginContent = () =>
+export default function Home() {
+    return (
         <>
+            <Search />
             <Typography>Welcome to Ghostmeme! </Typography>
         </>
-
-    return (
-        <PaperContent Component={LoginContent} />
     )
 }
-
-export default Home

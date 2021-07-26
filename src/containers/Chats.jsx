@@ -17,7 +17,7 @@ import { getMemes, getConversation, createMeme, getUserInfo, getUsers } from '..
 export default function Chats({ user }) {
     useEffect(() => { redirect(user) }, [user])
 
-    const localUser = '60f72d7d680fdc0008d79ad2'
+    const user_id = user.user_id
     const [memes, setMemes] = useState([])
     const [users, setUsers] = useState([])
     const [selectedUser, setSelectedUser] = useState('')
@@ -51,17 +51,17 @@ export default function Chats({ user }) {
     const getConversationRequest = async (selectedUserID, requestType) => {
         // const selectedUser = '60f5c300aa69860008702933'
         if (requestType === 'refresh') {
-            setMemes(await getConversation(localUser, selectedUserID))
+            setMemes(await getConversation(user_id, selectedUserID))
         } else {
             // GRACEFULLY HANDLE API
-            const response = await getConversation(localUser, selectedUserID)
+            const response = await getConversation(user_id, selectedUserID)
             response ? setMemes(response) : console.log('Error')
         }
     }
 
     const selectUserRequest = async (userID) => {
         setSelectedUser(userID)
-        getUserInfoRequest(localUser, 'local')
+        getUserInfoRequest(user_id, 'local')
         getUserInfoRequest(userID, 'selected')
         await getConversationRequest(userID, 'refresh')
     }
@@ -98,7 +98,7 @@ export default function Chats({ user }) {
 
             {/* Add new meme */}
             <form onSubmit={createMemeRequest} autoComplete='off'>
-                <TextField type='hidden' value={localUser} name='owner' />
+                <TextField type='hidden' value={user_id} name='owner' />
                 <TextField type='hidden' value={selectedUser} name='receiver' />
                 <TextField label='expiredAt' placeholder='-1' name='expiredAt' variant='outlined' />
                 <TextField label='description' name='description' variant='outlined' />
@@ -136,9 +136,9 @@ export default function Chats({ user }) {
                                 {/* <TableCell className={(meme.owner === localUser) ? 'localChatText' : ''}>{meme.createdAt.toLocaleString()}</TableCell> */}
                                 {/* <TableCell className={(meme.owner === localUser) ? 'localChatText' : ''}>{meme.expiredAt == '-1' ? '' : meme.expiredAt.toLocaleString()}</TableCell> */}
                                 <TableCell>
-                                    <div className={(meme.owner === localUser) ? 'chat localChat' : 'chat otherChat'}>
+                                    <div className={(meme.owner === user_id) ? 'chat localChat' : 'chat otherChat'}>
                                         {/* Username of sender */}
-                                        <b>{(localUserInfo && selectedUserInfo) ? (meme.owner === localUser) ? localUserInfo.username : selectedUserInfo.username : 'Error'}</b>
+                                        <b>{(localUserInfo && selectedUserInfo) ? (meme.owner === user_id) ? localUserInfo.username : selectedUserInfo.username : 'Error'}</b>
 
                                         {/* Creation date of meme */}
                                         &nbsp;-&nbsp;{meme.createdAt.toLocaleString()}
@@ -162,7 +162,7 @@ export default function Chats({ user }) {
                                 {/* <TableCell className={(meme.owner === localUser) ? 'localChatText' : ''}>{meme.meme_id}</TableCell> */}
                                 {/* <TableCell className={(meme.owner === localUser) ? 'localChatText' : ''}>{(localUserInfo && selectedUserInfo) ? (meme.owner === localUser) ? localUserInfo.username : selectedUserInfo.username : 'Error'}</TableCell> */}
                                 {/* <TableCell className={(meme.owner === localUser) ? 'localChatText' : ''}>{(localUserInfo && selectedUserInfo) ? (meme.receiver === localUser) ? localUserInfo.username : selectedUserInfo.username : 'Error'}</TableCell> */}
-                                <TableCell className={(meme.owner === localUser) ? 'localChatText' : ''}>{meme.likes}</TableCell>
+                                <TableCell className={(meme.owner === user_id) ? 'localChatText' : ''}>{meme.likes}</TableCell>
                                 {/* <TableCell className={(meme.owner === localUser) ? 'localChatText' : ''}>{meme.replyTo}</TableCell> */}
                             </TableRow>
                         ))}
