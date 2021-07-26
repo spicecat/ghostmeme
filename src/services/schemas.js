@@ -52,13 +52,13 @@ export const loginSchema = Yup.object({
 })
 
 export const memeSchema = Yup.object({
-    owner: Yup.string().required(),
+    // owner: Yup.string().required(),
     receiver: Yup.string(),
-    createdAt: Yup.date(),
-    expiredAt: Yup.date(),
+    // createdAt: Yup.date(),
+    // expiredAt: Yup.date(),
     description: Yup.string(),
-    likes: Yup.number(),
-    private: Yup.boolean(),
+    // likes: Yup.number(),
+    // private: Yup.boolean(),
     replyTo: Yup.string(),
     imageUrl: Yup.string()
 })
