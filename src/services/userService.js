@@ -6,7 +6,10 @@ import { serverUrl } from '../var.js'
 const baseUrl = serverUrl + '/users'
 const cookies = new Cookies()
 
-export const redirect = async user => { if (!user.username) window.location.href = '/login' }
+export const redirect = async user => {
+    // uncomment for redirect
+    // if (!user.username) window.location.href = '/login'
+}
 
 export const register = async ({ username, password, profile_picture, rememberMe, ...info }) => {
     const url = baseUrl
