@@ -20,3 +20,7 @@ div.body {
 div.header {
   text-align: center;
 }
+
+#notifications{
+  margin: 50px;
+}
