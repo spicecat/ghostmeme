@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { BrowserRouter, Switch, Route } from 'react-router-dom'
 
-import { getUser } from './services/userService'
+import { getLocalUser } from './services/userService'
 
 import './index.css'
 import Navbar from './components/Navbar'
@@ -21,7 +21,7 @@ export default function App() {
   const [user, setUser] = useState({ loading: true })
 
   useEffect(() => {
-    const updateUser = async () => { setUser(await getUser()) }
+    const updateUser = async () => { setUser(await getLocalUser()) }
     updateUser()
   }, [])
   return (

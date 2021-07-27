@@ -79,29 +79,12 @@ export const createMeme = async (json) => {
     }
 }
 
-export const getUserInfo = async (userID) => {
+export const getUserInfo = async userID => {
     const URL = `${apiUrl}/users/${userID}`
 
     try {
         const response = await superagent.get(URL).set('key', apiKey)
-
-        const userList = response.body.user
-
-        // const usersList = response.body.user.map(user => {
-        //     return {
-        //         name: user.name,
-        //         email: user.email,
-        //         phone: user.phone,
-        //         username: user.username,
-        //         imageUrl: user.imageUrl,
-        //         deleted: user.deleted,
-        //         user_id: user.user_id,
-        //         friends: user.friends,
-        //         liked: user.liked,
-        //     }
-        // })
-
-        return userList
+        return response.body.user
     } catch (err) {
         console.error(err)
     }

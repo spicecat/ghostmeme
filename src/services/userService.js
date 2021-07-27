@@ -1,10 +1,15 @@
 import superagent from 'superagent'
 import Cookies from 'universal-cookie'
 
-import { serverUrl } from '../var.js'
+import { serverUrl, apiUrl, apiKey } from '../var.js'
 
-const baseUrl = serverUrl + '/users'
+const userServerUrl = serverUrl + '/users', userApiUrl = apiUrl + '/users'
 const cookies = new Cookies()
+
+const retry = async (err, action, ...props) => new Promise(resolve => setTimeout(() => {
+    if (err.status === 555) resolve(action(...props))
+    else return []
+}, 1500))
 
 export const redirect = async user => {
     // comment below to disable redirect
@@ -12,12 +17,12 @@ export const redirect = async user => {
 }
 
 export const register = async ({ username, password, profile_picture, rememberMe, ...info }) => {
-    const url = baseUrl
+    const URL = userServerUrl
     try {
         delete info.confirm_password
         if (profile_picture) var imageBase64 = await profile_picture.text()
         const auth = Buffer.from(username + ':' + password, 'ascii').toString('base64')
-        var response = await superagent.post(url, { ...info, imageBase64 }).query({ rememberMe }).set('Authorization', 'Basic ' + auth)
+        var response = await superagent.post(URL, { ...info, imageBase64 }).query({ rememberMe }).set('Authorization', 'Basic ' + auth)
     } catch (err) { return err.status }
     const { token } = response.body
     cookies.set('token', token)
@@ -29,7 +34,7 @@ export const login = async ({ username, password, rememberMe }) => {
     if (getLoginTimeout() > 0) return 403
     const loginAttempts = getLoginAttempts()
 
-    const url = baseUrl
+    const url = userServerUrl
     try {
         const auth = Buffer.from(username + ':' + password, 'ascii').toString('base64')
         var response = await superagent.get(url).query({ rememberMe }).set('Authorization', 'Basic ' + auth)
@@ -50,22 +55,6 @@ export const login = async ({ username, password, rememberMe }) => {
     return response.statusCode
 }
 
-export const getUser = async () => {
-    const token = cookies.get('token')
-    if (!token) return { loading: false }
-
-    const url = baseUrl + '/getUser'
-    try {
-        var response = await superagent.get(url).set('Authorization', 'Bearer ' + token)
-    } catch (err) {
-        if (err.status === 401) logout()
-        return
-    }
-    const { user } = response.body
-    console.log(user)
-    return user
-}
-
 export const logout = () => {
     cookies.remove('token')
     window.location.href = '/'
@@ -78,3 +67,38 @@ export const getLoginTimeout = () => {
     return loginTimeout
 }
 export const getLoginAttempts = () => Number(cookies.get('loginAttempts')) || 0
+
+export const getLocalUser = async () => {
+    const token = cookies.get('token')
+    if (!token) return { loading: false }
+
+    const URL = userServerUrl + '/getUser'
+    try {
+        var response = await superagent.get(URL).set('Authorization', 'Bearer ' + token)
+    } catch (err) {
+        if (err.status === 401) logout()
+        return
+    }
+    const { user } = response.body
+    user.friends = await getFriends(user.user_id)
+    console.log(user)
+    return user
+}
+
+export const getUser = async user_id => {
+    const URL = `${userApiUrl}/${user_id}`
+
+    try {
+        const response = await superagent.get(URL).set('key', apiKey)
+        return response.body.user
+    } catch (err) { return retry(err, getUser, user_id) }
+}
+
+export const getFriends = async user_id => {
+    const URL = `${userApiUrl}/${user_id}/friends`
+
+    try {
+        const response = await superagent.get(URL).set('key', apiKey)
+        return response.body.users
+    } catch (err) { return retry(err, getFriends, user_id) }
+}
