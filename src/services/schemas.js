@@ -56,7 +56,7 @@ export const memeSchema = Yup.object({
     receiver: Yup.string(),
     // createdAt: Yup.date(),
     // expiredAt: Yup.date(),
-    description: Yup.string(),
+    description: Yup.string().max(500, 'Description must be between 1 and 500 characters'),
     // likes: Yup.number(),
     // private: Yup.boolean(),
     replyTo: Yup.string(),

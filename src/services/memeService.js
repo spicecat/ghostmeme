@@ -25,9 +25,9 @@ export const searchMemes = async query => {
     } catch (err) { return retry(err, searchMemes, query) }
 }
 
-export const getFriendsStoriesMemes = async ({ friends }) => {
-    return await searchMemes({ receiver: null, private: true, owner: friends.join('|') }) // keep await
-}
+export const getChatsMemes = async ({ user_id }) => searchMemes({ receiver: user_id, private: true, replyTo: null })
+
+export const getFriendsStoriesMemes = async ({ friends }) => searchMemes({ receiver: null, private: true, owner: friends.join('|') })
 
 export const getConversation = async (user1, user2) => {
     const query = encodeURIComponent(JSON.stringify({
@@ -72,10 +72,10 @@ export const createMeme = async (json) => {
             receiver: json.receiver,
             expiredAt: Number(json.expiredAt),
             description: json.description,
-            private: (json.private == 'true') ? true : false,
+            private: json.private == 'true' ? true : false,
             replyTo: json.replyTo,
             imageUrl: json.imageUrl,
-            imageBase64: json.imageBase64 ? json.imageBase64 : null,
+            imageBase64: json.imageBase64,
         })
         console.log(body)
 
