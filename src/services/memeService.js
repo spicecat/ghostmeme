@@ -2,8 +2,8 @@ import superagent from 'superagent'
 
 import { serverUrl, apiUrl, apiKey } from '../var.js'
 
-const retry = async (err, action, ...props) => new Promise(resolve => setTimeout(() => {
-    if (err.status === 555) resolve(action(...props))
+const retry = async ({ status }, action, ...props) => new Promise(resolve => setTimeout(() => {
+    if (status === 555) resolve(action(...props))
     else return []
 }, 1500))
 
@@ -17,10 +17,16 @@ export const getMemes = async () => {
 
 export const searchMemes = async query => {
     try {
-        const URL = apiUrl + '/memes/search?match=' + query
+        const URL = apiUrl + '/memes/search?match=' + encodeURIComponent(JSON.stringify(query))
+        console.log(URL)
         const response = await superagent.get(URL).set('key', apiKey)
+        // console.log(response.body.memes.slice(0, 20))
         return response.body.memes
     } catch (err) { return retry(err, searchMemes, query) }
+}
+
+export const getFriendsStoriesMemes = async ({ friends }) => {
+    return await searchMemes({ receiver: null, private: true, owner: friends.join('|') }) // keep await
 }
 
 export const getConversation = async (user1, user2) => {
