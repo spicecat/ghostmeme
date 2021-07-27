@@ -13,7 +13,8 @@ import React, { Component } from "react";
 
                 <div className="Post-user-profilepicture">
 
-                  <img src="https://www.google.com/imgres?imgurl=https%3A%2F%2Fcdn.vox-cdn.com%2Fthumbor%2FZHyzDlKiD3Ch1iOL_I9vjeN3Iy0%3D%2F0x0%3A1080x608%2F1200x800%2Ffilters%3Afocal(454x218%3A626x390)%2Fcdn.vox-cdn.com%2Fuploads%2Fchorus_image%2Fimage%2F69357208%2Fbackyardigans.0.jpg&imgrefurl=https%3A%2F%2Fwww.theverge.com%2F2021%2F5%2F28%2F22458399%2Fthe-backyardigans-viral-tiktok-castaways-music-youtube&tbnid=6RCSIQMSK6RShM&vet=12ahUKEwi4m-qHmfrxAhVSYKwKHY30CSsQMygAegUIARDWAQ..i&docid=2aWNPe5Y0phpWM&w=1200&h=800&q=backyardigans&ved=2ahUKEwi4m-qHmfrxAhVSYKwKHY30CSsQMygAegUIARDWAQ" alt="Backyardigans" />
+                  <img src="https://www.w3schools.com/images/picture.jpg" alt="Me and my Friends" />
+                  <p>I went hiking in the mountains!</p>
 
                 </div>
 
