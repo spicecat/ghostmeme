@@ -31,7 +31,7 @@ export default function App() {
         <PaperContent Component={() =>
           <>
             {user.loading === undefined && <Search user={user} />}
-            <br />
+            <br /><br />
             <Switch>
               <Route exact path='/' component={Home} />
               <Route exact path='/chats'><Chats user={user} /></Route>
