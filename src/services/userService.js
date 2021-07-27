@@ -6,8 +6,8 @@ import { serverUrl, apiUrl, apiKey } from '../var.js'
 const userServerUrl = serverUrl + '/users', userApiUrl = apiUrl + '/users'
 const cookies = new Cookies()
 
-const retry = async (err, action, ...props) => new Promise(resolve => setTimeout(() => {
-    if (err.status === 555) resolve(action(...props))
+const retry = async ({ status }, action, ...props) => new Promise(resolve => setTimeout(() => {
+    if (status === 555) resolve(action(...props))
     else return []
 }, 1500))
 
@@ -80,7 +80,7 @@ export const getLocalUser = async () => {
         return
     }
     const { user } = response.body
-    user.friends = await getFriends(user.user_id)
+    user.friends = await getFriends(user.user_id) // don't remove await
     console.log(user)
     return user
 }

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Table, TableHead, TableBody, TableFooter, TableRow, TableCell, TablePagination } from '@material-ui/core'
 
-import { searchMemes } from '../services/memeService'
+import { getFriendsStoriesMemes } from '../services/memeService'
 
 import Meme from './Meme'
 
@@ -12,14 +12,13 @@ export default function Search({ user }) {
     const [page, setPage] = useState(0)
     const [rowsPerPage, setRowsPerPage] = useState(5)
 
-    const updateMemes = async () => { setMemes(await searchMemes({})) }
+    const updateMemes = async () => { setMemes(await getFriendsStoriesMemes(user)) }
 
     const changePage = (event, newPage) => { setPage(newPage) }
     const changeRowsPerPage = event => {
         setRowsPerPage(Number(event.target.value))
         setPage(0)
     }
-
 
     return !user.loading &&
         <Table>
