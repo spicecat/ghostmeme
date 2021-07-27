@@ -18,7 +18,8 @@ import { getMemes, getConversation, createMeme, getUserInfo, getUsers } from '..
 export default function Chats({ user }) {
     useEffect(() => { redirect(user) }, [user])
 
-    const localUser = '60f72d7d680fdc0008d79ad2'
+    // const localUser = '60f72d7d680fdc0008d79ad2'
+    const localUser = user.user_id
     const [memes, setMemes] = useState([])
     const [users, setUsers] = useState([])
     const [selectedUser, setSelectedUser] = useState('')
