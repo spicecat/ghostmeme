@@ -1,22 +1,29 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 
 import { register } from '../services/userService'
 import { registerSchema } from '../services/schemas'
 
 import Form from '../components/Form'
-import PaperContent from '../components/Paper'
+import Alert from '../components/Alert'
 import captcha from '../assets/captcha.jpg'
 
 export const Register = () => {
-    const RegisterContent = update =>
-        <>
-            <Form name='Register' action={async values => update(await register(values))} schema={registerSchema} />
-            <img src={captcha} alt='CAPTCHA' />
-        </>
+    const [statusCode, setStatusCode] = useState(100)
+
+    useEffect(() => {
+        if ([201, 202].includes(statusCode)) window.location.href = '/'
+    }, [statusCode])
 
     return (
         <>
-            <PaperContent Component={RegisterContent} />
+            <Alert statusCode={statusCode} />
+            <br />
+            <Form name='Register' action={async values => {
+                setStatusCode(102)
+                setStatusCode(await register(values))
+            }
+            } schema={registerSchema} />
+            <img src={captcha} alt='CAPTCHA' />
         </>
     )
 }

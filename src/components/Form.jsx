@@ -1,7 +1,7 @@
 import React from 'react'
 import { upperFirst } from 'lodash/string'
 import { useFormik } from 'formik'
-import { Button, TextField, Typography } from '@material-ui/core'
+import { Button, TextField, Typography, FormControlLabel, Checkbox } from '@material-ui/core'
 
 import { fieldInfo, passwordStrength } from '../services/schemas'
 
@@ -35,6 +35,11 @@ export default function Form({ name, action, schema }) {
             </div>
             <br />
             <Button type='submit' variant='contained' color='primary'>{name}</Button>
+            &nbsp;&nbsp;&nbsp;
+            <FormControlLabel
+                control={<Checkbox checked={formik.rememberMe} onChange={formik.handleChange} name='rememberMe' />}
+                label='Remember Me'
+            />
         </form>
     )
 }

@@ -1,12 +1,15 @@
+import React, { useEffect } from 'react';
 
-import React, { Component } from "react";
+import { redirect } from '../services/userService'
 
-    class Stories extends Component {
+import { memeSchema } from '../services/schemas'
 
-      render() {
+import Form from '../components/Form'
 
-        return <article className="Post" ref="Post">
+export default function Stories({ user }) {
+  useEffect(() => { redirect(user) }, [user])
 
+<<<<<<< HEAD
             <header>
 
               <div className="Post-user">
@@ -51,3 +54,11 @@ import React, { Component } from "react";
     }
 
     export default Stories;
+=======
+  return user.loading === undefined &&
+    <>
+      {user.username}
+      {/* <Form name='Login' action={async values => { }} /> */}
+    </>
+}
+>>>>>>> 842fc3afbeedd44dba7667b467f6ff5fa364f901

@@ -1,9 +1,10 @@
-export const Home = () => {
+import React from 'react'
+import { Typography } from '@material-ui/core'
+
+export default function Home() {
     return (
         <>
-        Welcome to Ghostmeme! Insert more text later
+            <Typography>Welcome to Ghostmeme! </Typography>
         </>
     )
 }
-
-export default Home
