@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import {
     Button,
+    ButtonGroup,
     Table,
     TableBody,
     TableCell,
@@ -23,6 +24,11 @@ export default function Chats({ user }) {
     const [selectedUser, setSelectedUser] = useState('')
     const [localUserInfo, setLocalUserInfo] = useState([])
     const [selectedUserInfo, setSelectedUserInfo] = useState([])
+
+    const [showImageLink, setShowImageLink] = useState('')
+    const [showImageFile, setShowImageFile] = useState('')
+    const [showExpiration, setShowExpiration] = useState('')
+
     // const [selectedUser, setSelectedUser] = useState('60f5c300aa69860008702933')
 
     const getMemesRequest = async () => {
@@ -75,6 +81,20 @@ export default function Chats({ user }) {
         await getConversationRequest(selectedUser)
     }
 
+    const toggleComponent = (component) => {
+        if (component == 'imageLink') {
+            showImageLink ? setShowImageLink(false) : setShowImageLink(true)
+        }
+
+        if (component == 'imageFile') {
+            showImageFile ? setShowImageFile(false) : setShowImageFile(true)
+        }
+
+        if (component == 'expiration') {
+            showExpiration ? setShowExpiration(false) : setShowExpiration(true)
+        }
+    }
+
     const selectedUserRef = useRef(selectedUser)
     selectedUserRef.current = selectedUser
 
@@ -89,6 +109,7 @@ export default function Chats({ user }) {
     }, [])
 
     return user.loading === undefined &&
+    (
         <>
             {/* Search memes from X sender to X receiver */}
             {/* <TextField label='selectedUser' name='selectedUser' value={selectedUser} variant='outlined' />
@@ -100,14 +121,34 @@ export default function Chats({ user }) {
             <form onSubmit={createMemeRequest} autoComplete='off'>
                 <TextField type='hidden' value={localUser} name='owner' />
                 <TextField type='hidden' value={selectedUser} name='receiver' />
-                <TextField label='expiredAt' placeholder='-1' name='expiredAt' variant='outlined' />
-                <TextField label='description' name='description' variant='outlined' />
+                {/* <TextField label='expiredAt' placeholder='-1' name='expiredAt' variant='outlined' />
+                <TextField label='description' name='description' variant='outlined' /> */}
                 <TextField type='hidden' value='true' name='private' />
                 <TextField type='hidden' name='replyTo' />
-                <TextField label='imageUrl' name='imageUrl' variant='outlined' />
-                <TextField label='imageBase64' name='imageBase64' variant='outlined' />
+                {/* <TextField label='imageUrl' name='imageUrl' variant='outlined' />
+                <TextField label='imageBase64' name='imageBase64' variant='outlined' /> */}
 
-                <Button type='submit' variant='contained' color='primary'>Add new meme</Button>
+                {/* <Button type='submit' variant='contained' color='primary'>Add new meme</Button> */}
+
+                <div align='center'>
+                    <ButtonGroup variant="outlined" color="primary" aria-label="contained primary button group">
+                        <Button color={showExpiration && 'secondary'} onClick={() => toggleComponent('expiration')}>Expiration</Button>
+                        <Button color={showImageLink && 'secondary'} onClick={() => toggleComponent('imageLink')}>Image Link</Button>
+                        <Button color={showImageFile && 'secondary'} onClick={() => toggleComponent('imageFile')}>Image File</Button>
+
+                        <TextField placeholder='Chat message' name='description' variant='outlined' InputProps={{
+                            endAdornment:
+                                <Button type='submit' variant="contained" color="primary">Send</Button>
+                        }} />
+                    </ButtonGroup>
+
+                <br /><br />
+                {showExpiration ? <TextField label='Expiration' name='expiredAt' variant='outlined' /> : <TextField type='hidden' name='expiredAt' />}
+                &nbsp;
+                {showImageLink ? <TextField label='Image URL' name='imageUrl' variant='outlined' /> : <TextField type='hidden' name='imageUrl' />}
+                &nbsp;
+                {showImageFile ? <TextField label='Image Base64' name='imageBase64' variant='outlined' /> : <TextField type='hidden' name='imageBase64' />}
+                </div>
             </form>
 
             {/* Get all memes */}
@@ -239,4 +280,5 @@ export default function Chats({ user }) {
                 </Table>
             </TableContainer>
         </>
+    )
 }
