@@ -27,10 +27,11 @@ export default function App() {
   return (
     <BrowserRouter>
       <Navbar username={user.username} avatar={user.imageBase64} />
-      <div class='body'>
+      <div className='body'>
         <PaperContent Component={() =>
           <>
-            <Search user={user} />
+            {user.loading === undefined && <Search user={user} />}
+            <br />
             <Switch>
               <Route exact path='/' component={Home} />
               <Route exact path='/chats'><Chats user={user} /></Route>
