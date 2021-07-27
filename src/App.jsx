@@ -1,4 +1,9 @@
+<<<<<<< HEAD
+// eslint-disable-next-line
+import React, { useState } from 'react'
+=======
 import React, { useState, useEffect } from 'react'
+>>>>>>> 842fc3afbeedd44dba7667b467f6ff5fa364f901
 import { BrowserRouter, Switch, Route } from 'react-router-dom'
 
 import { getLocalUser } from './services/userService'
