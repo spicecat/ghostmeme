@@ -8,7 +8,7 @@ const cookies = new Cookies()
 
 const retry = async ({ status }, action, ...props) => new Promise(resolve => setTimeout(() => {
     if (status === 555) resolve(action(...props))
-    else return []
+    else resolve()
 }, 1500))
 
 export const redirect = async user => {
