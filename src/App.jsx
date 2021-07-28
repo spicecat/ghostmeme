@@ -5,10 +5,10 @@ import { getLocalUser } from './services/userService'
 
 import './index.css'
 import Navbar from './components/Navbar'
-import Search from './components/Search'
 import PaperContent from './components/Paper'
 
 import Home from './containers/Home'
+import Search from './containers/Search'
 import Login from './containers/Login'
 import Register from './containers/Register'
 import Chats from './containers/Chats'

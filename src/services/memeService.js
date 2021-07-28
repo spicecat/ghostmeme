@@ -34,20 +34,21 @@ export const getMemes = async () => {
     } catch (err) { return retry(err, getMemes) }
 }
 
-export const searchMemes = async (query, { owner, description, created_after, created_before } = {}) => {
+export const searchMemes = async (query, regex = {}) => {
     try {
-        const regex = {
+        const { owner, description, created_after, created_before } = regex
+        const regexQuery = {
             description,
             createdAt: { gt: (new Date(created_after)).getTime(), lt: (new Date(created_before)).getTime() },
         }
         const URL = `${apiUrl}'/memes/search?match='${encodeURIComponent(JSON.stringify(query))}`
-        // const URL = `${apiUrl}'/memes/search?match='${encodeURIComponent(JSON.stringify(query))}&regexMatch=${encodeURIComponent(JSON.stringify(regex))}`
+        // const URL = `${apiUrl}'/memes/search?match='${encodeURIComponent(JSON.stringify(query))}&regexMatch=${encodeURIComponent(JSON.stringify(regexQuery))}`
         console.log(URL, query, regex)
         const response = await superagent.get(URL).set('key', apiKey).set('Content-Type', 'application/json')
         console.log(response.body.memes)
         return addUsernames(response.body.memes.slice(0, 20))
     } catch (err) {
-        return retry(err, searchMemes, query)
+        return retry(err, searchMemes, query, regex)
     }
 }
 

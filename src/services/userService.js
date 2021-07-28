@@ -102,3 +102,12 @@ export const getFriends = async user_id => {
         return response.body.users
     } catch (err) { return retry(err, getFriends, user_id) }
 }
+
+export const sendFriendRequest = async (user_id, target_id) => {
+    const URL = `${userApiUrl}/${user_id}/requests/outgoing/${target_id}`
+
+    try {
+        const response = await superagent.put(URL).set('key', apiKey)
+        return response.body.success
+    } catch (err) { return retry(err, sendFriendRequest, user_id, target_id) }
+}

@@ -6,11 +6,15 @@ import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp'
 import { searchChatsMemes, searchFriendsMemes } from '../services/memeService'
 import { memeSearchSchema } from '../services/schemas'
 
-import MemesTable from './MemesTable'
-import Form from './Form'
+import MemesTable from '../components/MemesTable'
+import Form from '../components/Form'
 
 export default function Search({ user }) {
     useEffect(() => { updateMemes() }, [])
+    useEffect(() => {
+        const timer = setInterval(() => console.log(123), 10000);
+        return () => clearInterval(timer)
+    }, [])
 
     const [openChats, setOpenChats] = useState(true)
     const [openFriends, setOpenFriends] = useState(true)
