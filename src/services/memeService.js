@@ -96,7 +96,8 @@ export const createMeme = async json => {
         const body = JSON.stringify({
             owner: json.owner,
             receiver: json.receiver,
-            expiredAt: json.expiredAt ? Number(json.expiredAt) : Number('-1'),
+            // expiredAt: json.expiredAt ? Number(json.expiredAt) : Number('-1'),
+            expiredAt: json.expiredAt ? new Date(json.expiredAt).getTime() : Number('-1'),
             description: json.description,
             private: (json.private == 'true') ? true : false,
             replyTo: json.replyTo,
