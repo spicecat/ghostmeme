@@ -3,7 +3,9 @@ import * as Yup from 'yup'
 export const fieldInfo = {
     password: 'password',
     confirm_password: 'password',
-    profile_picture: 'file'
+    profile_picture: 'file',
+    created_after: 'date',
+    created_before: 'date'
 }
 
 const phoneRegExp = /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/
@@ -64,4 +66,11 @@ export const memeSchema = Yup.object({
     // private: Yup.boolean(),
     replyTo: Yup.string(),
     imageUrl: Yup.string()
+})
+
+export const memeSearchSchema = Yup.object({
+    owner: Yup.string(),
+    created_after: Yup.date(),
+    created_before: Yup.date(),
+    description: Yup.string()
 })

@@ -22,10 +22,10 @@ export const getMemes = async () => {
     } catch (err) { return retry(err, getMemes) }
 }
 
-export const searchMemes = async query => {
+export const searchMemes = async (query, regex) => {
     try {
         const URL = apiUrl + '/memes/search?match=' + encodeURIComponent(JSON.stringify(query))
-        console.log(URL)
+        console.log(URL, query, regex)
         const response = await superagent.get(URL).set('key', apiKey)
         return addUsernames(response.body.memes)
     } catch (err) {
@@ -33,9 +33,9 @@ export const searchMemes = async query => {
     }
 }
 
-export const getChatsMemes = async ({ user_id }) => searchMemes({ receiver: user_id, private: true, replyTo: null })
+export const searchChatsMemes = async ({ user_id, query }) => searchMemes({ receiver: user_id, private: true, replyTo: null }, query)
 
-export const getFriendsStoriesMemes = async ({ friends }) => searchMemes({ receiver: null, private: true, owner: friends.join('|') })
+export const searchFriendsStoriesMemes = async ({ friends, query }) => searchMemes({ receiver: null, private: true, owner: friends.join('|') }, query)
 
 export const getConversation = async (user1, user2) => {
     const query = encodeURIComponent(JSON.stringify({

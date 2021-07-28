@@ -5,7 +5,7 @@ import { Button, TextField, Typography, FormControlLabel, Checkbox } from '@mate
 
 import { fieldInfo, passwordStrength } from '../services/schemas'
 
-export default function Form({ name, action, schema }) {
+export default function Form({ name, action, schema, search = false }) {
     const fields = Object.keys(schema.fields)
     const formik = useFormik({
         initialValues: fields.reduce((o, i) => ({ ...o, [i]: '' }), {}),
@@ -16,30 +16,33 @@ export default function Form({ name, action, schema }) {
     return (
         <form onSubmit={formik.handleSubmit}>
             <Typography>{name}</Typography>
-            <div>
-                {fields.map(field =>
+            {fields.map(field =>
+                <>
                     <TextField
                         key={field}
-                        fullWidth
                         id={field}
+                        size='small'
                         name={field}
-                        label={upperFirst(field.replaceAll('_', ' '))}
+                        label={upperFirst(field.split(/(?=[A-Z\s])/).join('_').replaceAll('_', ' '))}
                         type={fieldInfo[field]}
+                        {...{ fullWidth: !search }}
+                        {...fieldInfo[field] === 'date' && { InputLabelProps: { shrink: true } }}
                         {...fieldInfo[field] === 'file' ?
                             { onChange: e => formik.setFieldValue(field, e.target.files[0]) } :
                             { onChange: formik.handleChange, value: formik.values[field] }}
                         error={Boolean(formik.touched[field] && formik.errors[field])}
                         helperText={formik.touched[field] && (formik.errors[field] || (field === 'password' && name === 'Register' && `Password strength: ${passwordStrength(formik.values.password)}`))}
                     />
-                )}
-            </div>
-            <br />
-            <Button type='submit' variant='contained' color='primary'>{name}</Button>
+                    {search && <>&nbsp;&nbsp;</>}
+                </>
+            )}
+            {!search && <><br /><br /><br /></>}
+            <Button type='submit' variant='contained' color='primary'>{search ? 'Search' : name}</Button>
             &nbsp;&nbsp;&nbsp;
-            <FormControlLabel
+            {!search && <FormControlLabel
                 control={<Checkbox checked={formik.rememberMe} onChange={formik.handleChange} name='rememberMe' />}
                 label='Remember Me'
-            />
+            />}
         </form>
     )
 }

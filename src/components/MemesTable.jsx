@@ -29,9 +29,9 @@ export default function MemesTable({ headCells = [
         setOrderBy(prop)
         sortMemes(newOrder, prop)
     }
-    const sortMemes = (newOrder, newOrderBy) => {
+    const sortMemes = (ord, ordBy) => {
         const arr = memes
-        arr.sort((a, b) => (newOrder === 'asc' ? 1 : -1) * (a[newOrderBy] < b[newOrderBy] ? 1 : -1))
+        arr.sort((a, b) => (ord === 'asc' ? 1 : -1) * (a[ordBy] < b[ordBy] ? 1 : -1))
         setOrderedMemes(arr)
     }
 
