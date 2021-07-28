@@ -83,15 +83,15 @@ export default function Chats({ user }) {
     }
 
     const toggleComponent = (component) => {
-        if (component == 'imageLink') {
+        if (component === 'imageLink') {
             showImageLink ? setShowImageLink(false) : setShowImageLink(true)
         }
 
-        if (component == 'imageFile') {
+        if (component === 'imageFile') {
             showImageFile ? setShowImageFile(false) : setShowImageFile(true)
         }
 
-        if (component == 'expiration') {
+        if (component === 'expiration') {
             showExpiration ? setShowExpiration(false) : setShowExpiration(true)
         }
     }

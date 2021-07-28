@@ -2,16 +2,23 @@ import superagent from 'superagent'
 
 import { serverUrl, apiUrl, apiKey } from '../var.js'
 
+import { getUser } from './userService'
+
 const retry = async ({ status }, action, ...props) => new Promise(resolve => setTimeout(() => {
     if (status === 555) resolve(action(...props))
-    else return []
+    else resolve([])
 }, 1500))
+
+const addUsernames = async memes => Promise.all(memes.map(async meme => {
+    const { username } = await getUser(meme.owner)
+    return { ...meme, username }
+}))
 
 export const getMemes = async () => {
     try {
         const URL = `${apiUrl}/memes`
         const response = await superagent.get(URL).set('key', apiKey)
-        return response.body.memes
+        return addUsernames(response.body.memes)
     } catch (err) { return retry(err, getMemes) }
 }
 
@@ -20,9 +27,10 @@ export const searchMemes = async query => {
         const URL = apiUrl + '/memes/search?match=' + encodeURIComponent(JSON.stringify(query))
         console.log(URL)
         const response = await superagent.get(URL).set('key', apiKey)
-        // console.log(response.body.memes.slice(0, 20))
-        return response.body.memes
-    } catch (err) { return retry(err, searchMemes, query) }
+        return addUsernames(response.body.memes)
+    } catch (err) {
+        return retry(err, searchMemes, query)
+    }
 }
 
 export const getChatsMemes = async ({ user_id }) => searchMemes({ receiver: user_id, private: true, replyTo: null })

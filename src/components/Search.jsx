@@ -26,12 +26,12 @@ export default function Search({ user }) {
                 {openChats ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
             </IconButton>
             Memes from Chats
-            {openChats && <MemesTable categories={['Owner', 'CreatedAt', 'Description', 'Image', 'Likes']} memes={chatsMemes} />}
+            {openChats && <MemesTable categories={['Owner', 'Created At', 'Description', 'Image', 'Likes']} memes={chatsMemes} />}
             <br />
             <IconButton onClick={() => setOpenFriends(!openFriends)}>
                 {openFriends ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
             </IconButton>
             Memes from Friends
-            {openFriends && <MemesTable categories={['Owner', 'CreatedAt', 'Description', 'Image', 'Likes']} memes={friendsMemes} />}
+            {openFriends && <MemesTable categories={['Owner', 'Created At', 'Description', 'Image', 'Likes']} memes={friendsMemes} />}
         </>
 }
