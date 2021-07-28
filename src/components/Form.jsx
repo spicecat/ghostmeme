@@ -15,12 +15,12 @@ export default function Form({ name, action, schema, search = false }) {
 
     return (
         <form onSubmit={formik.handleSubmit}>
-            <Typography>{name}</Typography>
+            {search || <Typography>{name}</Typography>}
             {fields.map(field =>
                 <>
                     <TextField
-                        key={field}
-                        id={field}
+                        key={name + field}
+                        id={name + field}
                         size='small'
                         name={field}
                         label={upperFirst(field.split(/(?=[A-Z\s])/).join('_').replaceAll('_', ' '))}
@@ -36,10 +36,10 @@ export default function Form({ name, action, schema, search = false }) {
                     {search && <>&nbsp;&nbsp;</>}
                 </>
             )}
-            {!search && <><br /><br /><br /></>}
+            {search || <><br /><br /><br /></>}
             <Button type='submit' variant='contained' color='primary'>{search ? 'Search' : name}</Button>
             &nbsp;&nbsp;&nbsp;
-            {!search && <FormControlLabel
+            {search || <FormControlLabel
                 control={<Checkbox checked={formik.rememberMe} onChange={formik.handleChange} name='rememberMe' />}
                 label='Remember Me'
             />}
