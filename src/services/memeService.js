@@ -80,10 +80,10 @@ export const createMeme = async (json) => {
             receiver: json.receiver,
             expiredAt: json.expiredAt ? Number(json.expiredAt) : Number('-1'),
             description: json.description,
-            private: json.private == 'true' ? true : false,
+            private: (json.private == 'true') ? true : false,
             replyTo: json.replyTo,
             imageUrl: json.imageUrl,
-            imageBase64: json.imageBase64,
+            imageBase64: json.imageBase64 ? json.imageBase64 : null,
         })
         console.log(body)
 
