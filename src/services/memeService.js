@@ -70,7 +70,7 @@ export const getConversation = async (user1, user2) => {
 }
 
 
-export const createMeme = async (json) => {
+export const createMeme = async json => {
     const URL = `${apiUrl}/memes`
 
     try {
@@ -87,12 +87,13 @@ export const createMeme = async (json) => {
         })
         console.log(body)
 
-        const response = await superagent.post(URL).set('key', apiKey).set('Content-Type', 'application/json').send(body)
+        return await superagent.post(URL).set('key', apiKey).set('Content-Type', 'application/json').send(body)
     } catch (err) {
-        console.log(err)
+        retry(err, createMeme, json)
     }
 }
 
+// move to userServices
 export const getUserInfo = async userID => {
     const URL = `${apiUrl}/users/${userID}`
 
@@ -104,27 +105,15 @@ export const getUserInfo = async userID => {
     }
 }
 
+// move to userServices
 export const getUsers = async () => {
     const URL = `${apiUrl}/users`
 
     try {
         const response = await superagent.get(URL).set('key', apiKey)
 
-        const usersList = response.body.users.map(user => {
-            return {
-                name: user.name,
-                email: user.email,
-                phone: user.phone,
-                username: user.username,
-                imageUrl: user.imageUrl,
-                deleted: user.deleted,
-                user_id: user.user_id,
-                friends: user.friends,
-                liked: user.liked,
-            }
-        })
+        return response.body.users
 
-        return usersList
     } catch (err) {
         console.error(err)
     }
