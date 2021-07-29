@@ -39,7 +39,6 @@ export const searchMemes = async (baseQuery, query = {}, friends = {}) => {
         const response = await superagent.get(URL).set('key', apiKey)
         let { memes } = response.body
         memes = await addUsernames(memes, friends)
-        console.log(URL, baseQuery, regexQuery, memes)
         return memes.filter(meme => meme.username.includes(owner))
     } catch (err) { return await retry(err, searchMemes, baseQuery, query) }
 }
