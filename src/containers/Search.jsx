@@ -1,16 +1,20 @@
 import { useState, useEffect } from 'react'
-import { IconButton, TextField } from '@material-ui/core'
+import { IconButton } from '@material-ui/core'
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown'
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp'
 
-import { searchChatsMemes, searchFriendsStoriesMemes } from '../services/memeService'
+import { searchChatsMemes, searchFriendsMemes } from '../services/memeService'
 import { memeSearchSchema } from '../services/schemas'
 
-import MemesTable from './MemesTable'
-import Form from './Form'
+import MemesTable from '../components/MemesTable'
+import Form from '../components/Form'
 
 export default function Search({ user }) {
     useEffect(() => { updateMemes() }, [])
+    useEffect(() => {
+        const timer = setInterval(() => console.log(123), 10000);
+        return () => clearInterval(timer)
+    }, [])
 
     const [openChats, setOpenChats] = useState(true)
     const [openFriends, setOpenFriends] = useState(true)
@@ -19,7 +23,7 @@ export default function Search({ user }) {
 
     const updateMemes = async () => {
         setChatsMemes(await searchChatsMemes(user))
-        setFriendsMemes(await searchFriendsStoriesMemes(user))
+        setFriendsMemes(await searchFriendsMemes(user))
     }
 
     return !user.loading &&
@@ -30,9 +34,9 @@ export default function Search({ user }) {
             Memes from Chats
             {openChats &&
                 <>
-                    <Form action={async values => {
+                    <Form name='chats' action={async values => {
                         console.log(values)
-
+                        setChatsMemes(await searchChatsMemes(user, values))
                     }} schema={memeSearchSchema} search={true} />
                     <br />
                     <MemesTable memes={chatsMemes} />
@@ -45,9 +49,9 @@ export default function Search({ user }) {
             Memes from Friends
             {openFriends &&
                 <>
-                    <Form action={async values => {
+                    <Form name='friends' action={async values => {
                         console.log(values)
-
+                        setFriendsMemes(await searchFriendsMemes(user, values))
                     }} schema={memeSearchSchema} search={true} />
                     <br />
                     <MemesTable memes={friendsMemes} />
