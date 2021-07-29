@@ -16,13 +16,14 @@ export default function Search({ user }) {
     const [friendsMemes, setFriendsMemes] = useState([])
 
     const updateMemes = async () => {
+        console.log('updating memes...')
         setChatsMemes(await searchChatsMemes(user))
         setFriendsMemes(await searchFriendsMemes(user))
     }
 
     useEffect(() => {
         updateMemes()
-        const timer = setInterval(() => console.log(123), 10000);
+        const timer = setInterval(() => console.log(123), 15000)
         return () => clearInterval(timer)
     }, [])
 
@@ -34,10 +35,7 @@ export default function Search({ user }) {
             Memes from Chats
             {openChats &&
                 <>
-                    <Form name='chats' action={async values => {
-                        console.log(values)
-                        setChatsMemes(await searchChatsMemes(user, values))
-                    }} schema={memeSearchSchema} search={true} />
+                    <Form name='chats' action={async values => { setChatsMemes(await searchChatsMemes(user, values)) }} schema={memeSearchSchema} search={true} />
                     <br />
                     <MemesTable memes={chatsMemes} />
                 </>}
@@ -49,10 +47,7 @@ export default function Search({ user }) {
             Memes from Friends
             {openFriends &&
                 <>
-                    <Form name='friends' action={async values => {
-                        console.log(values)
-                        setFriendsMemes(await searchFriendsMemes(user, values))
-                    }} schema={memeSearchSchema} search={true} />
+                    <Form name='friends' action={async values => { setFriendsMemes(await searchFriendsMemes(user, values)) }} schema={memeSearchSchema} search={true} />
                     <br />
                     <MemesTable memes={friendsMemes} />
                 </>}
