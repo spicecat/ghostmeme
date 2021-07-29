@@ -96,14 +96,32 @@ export const getLocalUser = async () => {
     return user
 }
 
+export const getUsers = async () => {
+    const URL = `${apiUrl}/users`
+
+    try {
+        const response = await superagent.get(URL).set('key', apiKey)
+        return response.body.users
+    } catch (err) { return retry(err, getUsers) || [] }
+}
+
 export const getUser = async user_id => {
     const URL = `${userApiUrl}/${user_id}`
 
     try {
         const response = await superagent.get(URL).set('key', apiKey)
         return response.body.user
-    } catch (err) { return retry(err, getUser, user_id) }
+    } catch (err) { return retry(err, getUser, user_id) || {} }
 }
+
+export const getUserInfo = async user_id => {
+    const URL = `${apiUrl}/users/${user_id}`
+    try {
+        const response = await superagent.get(URL).set('key', apiKey)
+        return response.body.user
+    } catch (err) { return retry(err, getUser, user_id) || {} }
+}
+
 
 export const getFriends = async user_id => {
     const URL = `${userApiUrl}/${user_id}/friends`

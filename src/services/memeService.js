@@ -122,29 +122,3 @@ export const vanishMeme = async (memeID) => {
         retry(err, vanishMeme, memeID)
     }
 }
-
-// move to userServices
-export const getUserInfo = async userID => {
-    const URL = `${apiUrl}/users/${userID}`
-
-    try {
-        const response = await superagent.get(URL).set('key', apiKey)
-        return response.body.user
-    } catch (err) {
-        console.error(err)
-    }
-}
-
-// move to userServices
-export const getUsers = async () => {
-    const URL = `${apiUrl}/users`
-
-    try {
-        const response = await superagent.get(URL).set('key', apiKey)
-
-        return response.body.users
-
-    } catch (err) {
-        console.error(err)
-    }
-}

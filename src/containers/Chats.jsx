@@ -15,8 +15,8 @@ import {
 import SendIcon from '@material-ui/icons/Send'
 import DeleteIcon from '@material-ui/icons/DeleteOutline'
 
-import { redirect } from '../services/userService'
-import { getMemes, getConversation, createMeme, vanishMeme, getUserInfo, getUsers } from '../services/memeService'
+import { redirect, getUsers, getUserInfo } from '../services/userService'
+import { getMemes, getConversation, createMeme, vanishMeme } from '../services/memeService'
 
 export default function Chats({ user }) {
     useEffect(() => { redirect(user) }, [user])
@@ -84,7 +84,7 @@ export default function Chats({ user }) {
 
         await getConversationRequest(selectedUser)
     }
-    
+
     const vanishMemeRequest = async (memeID) => {
         console.log(memeID)
         await vanishMeme(memeID)

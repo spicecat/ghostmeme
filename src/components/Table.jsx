@@ -9,7 +9,7 @@ export default function MemesTable({ headCells = [
     { name: 'Description', prop: 'description' },
     { name: 'Image', prop: 'image' },
     { name: 'Likes', prop: 'likes' }
-], memes }) {
+], memes, Component }) {
 
     const [orderedMemes, setOrderedMemes] = useState(memes)
     const [page, setPage] = useState(0)
@@ -60,7 +60,7 @@ export default function MemesTable({ headCells = [
             </TableHead>
             <TableBody>
                 {orderedMemes.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                    .map(meme => <Meme key={meme.meme_id} {...meme} />)}
+                    .map(meme => Component({ key: meme.meme_id, ...meme }))}
             </TableBody>
             <TableFooter>
                 <TableRow>
