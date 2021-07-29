@@ -16,14 +16,14 @@ export default function Search({ user }) {
     const [friendsMemes, setFriendsMemes] = useState([])
 
     const updateMemes = async () => {
-        console.log('updating memes...')
+        console.log('Updating memes...')
         setChatsMemes(await searchChatsMemes(user))
         setFriendsMemes(await searchFriendsMemes(user))
     }
 
     useEffect(() => {
         updateMemes()
-        const timer = setInterval(() => console.log(123), 15000)
+        const timer = setInterval(updateMemes, 13711)
         return () => clearInterval(timer)
     }, [])
 

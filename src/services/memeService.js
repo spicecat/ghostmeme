@@ -5,7 +5,7 @@ import { serverUrl, apiUrl, apiKey } from '../var.js'
 import { getUser, getUsernames } from './userService'
 
 const retry = async ({ status }, action, ...props) => {
-    if (status === 555) return new Promise(resolve => setTimeout(() => { resolve(action(...props)) }, 1500))
+    if (status === 555) return new Promise(resolve => setTimeout(() => { resolve(action(...props)) }, 1723))
     else return []
 }
 
