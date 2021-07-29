@@ -31,7 +31,8 @@ export const searchMemes = async (query, regex = {}) => {
         const URL = `${apiUrl}/memes/search?match=${encodeURIComponent(JSON.stringify(query))}&regexMatch=${encodeURIComponent(JSON.stringify(regexQuery))}`
         console.log(URL, query, regex)
         const response = await superagent.get(URL).set('key', apiKey)
-        return addUsernames(response.body.memes)
+        return response.body.memes
+        // return addUsernames(response.body.memes)
     } catch (err) {
         const a = await retry(err, searchMemes, query, regex)
         console.log(313, err, err.status, a)
@@ -101,7 +102,7 @@ export const createMeme = async (json) => {
 }
 
 export const vanishMeme = async (memeID) => {
-    const URL= `${apiUrl}/memes/${memeID}`
+    const URL = `${apiUrl}/memes/${memeID}`
 
     try {
         const body = JSON.stringify({
