@@ -2,22 +2,30 @@ import superagent from 'superagent'
 
 import { serverUrl, apiUrl, apiKey } from '../var.js'
 
-import { getUser, addUsernames } from './userService'
+import { getUser, getUsernames } from './userService'
 
 const retry = async ({ status }, action, ...props) => {
     if (status === 555) return new Promise(resolve => setTimeout(() => { resolve(action(...props)) }, 1500))
     else return []
 }
 
+const addUsernames = async (memes, friends = {}) => {
+    const user_ids = memes.map(meme => meme.owner)
+    const users = await getUsernames(user_ids, friends)
+    console.log(999, user_ids, users, friends)
+    return memes.map(meme => ({ ...meme, username: users[meme.owner] }))
+}
+
 export const getMemes = async () => {
     try {
         const URL = `${apiUrl}/memes`
         const response = await superagent.get(URL).set('key', apiKey)
-        return addUsernames(response.body.memes)
+        const { memes } = response.body
+        return addUsernames(memes)
     } catch (err) { return retry(err, getMemes) }
 }
 
-export const searchMemes = async (query, regex = {}) => {
+export const searchMemes = async (query, regex = {}, friends = {}) => {
     try {
         const { owner, description, created_after, created_before } = regex
         if (created_after || created_before)
@@ -31,18 +39,14 @@ export const searchMemes = async (query, regex = {}) => {
         const URL = `${apiUrl}/memes/search?match=${encodeURIComponent(JSON.stringify(query))}&regexMatch=${encodeURIComponent(JSON.stringify(regexQuery))}`
         console.log(URL, query, regex)
         const response = await superagent.get(URL).set('key', apiKey)
-        return response.body.memes
-        // return addUsernames(response.body.memes)
-    } catch (err) {
-        const a = await retry(err, searchMemes, query, regex)
-        console.log(313, err, err.status, a)
-        return a
-    }
+        const { memes } = response.body
+        return addUsernames(memes, friends)
+    } catch (err) { return await retry(err, searchMemes, query, regex) }
 }
 
-export const searchChatsMemes = async ({ user_id }, regex) => searchMemes({ receiver: user_id, private: true, replyTo: null }, regex)
+export const searchChatsMemes = async ({ user_id, friends }, regex) => searchMemes({ receiver: user_id, private: true, replyTo: null }, regex, friends)
 
-export const searchFriendsMemes = async ({ friends }, regex) => searchMemes({ receiver: null, private: true, owner: friends.join('|') }, regex)
+export const searchFriendsMemes = async ({ friends }, regex) => searchMemes({ receiver: null, private: true, owner: Object.keys(friends).join('|') }, regex, friends)
 
 export const getConversation = async (user1, user2) => {
     const query = encodeURIComponent(JSON.stringify({

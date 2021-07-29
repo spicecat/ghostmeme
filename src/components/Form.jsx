@@ -17,10 +17,8 @@ export default function Form({ name, action, schema, search = false }) {
         <form onSubmit={formik.handleSubmit}>
             {search || <Typography>{name}</Typography>}
             {fields.map(field =>
-                <>
+                <span key={name + field}>
                     <TextField
-                        key={name + field}
-                        id={name + field}
                         size='small'
                         name={field}
                         label={upperFirst(field.split(/(?=[A-Z\s])/).join('_').replaceAll('_', ' '))}
@@ -34,7 +32,7 @@ export default function Form({ name, action, schema, search = false }) {
                         helperText={formik.touched[field] && (formik.errors[field] || (field === 'password' && name === 'Register' && `Password strength: ${passwordStrength(formik.values.password)}`))}
                     />
                     {search && <>&nbsp;&nbsp;</>}
-                </>
+                </span>
             )}
             {search || <><br /><br /><br /></>}
             <Button type='submit' variant='contained' color='primary'>{search ? 'Search' : name}</Button>
