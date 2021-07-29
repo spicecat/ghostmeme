@@ -119,7 +119,7 @@ export default function Chats({ user }) {
 
     return user.loading === undefined && (
         <>
-            {/* Search memes from X sender to X receiver */}  display: flex;
+            {/* Search memes from X sender to X receiver */}
 
             {/* <TextField label='selectedUser' name='selectedUser' value={selectedUser} variant='outlined' />
             <Button variant='contained' color='primary' onClick={() => getConversationRequest(selectedUser)}>Search Conversations</Button> */}
@@ -221,7 +221,7 @@ export default function Chats({ user }) {
                                 <TableCell className='tableChat' width='20%' />
                                 <TableCell className='tableChat' width='40%'>
                                     {/* <div className={(meme.owner === localUser) ? 'chat localChat' : 'chat otherChat'}> */}
-                                    {(meme.owner === localUser) && <IconButton onClick={() => vanishMemeRequest(meme.meme_id)} aria-label='delete'><DeleteIcon /></IconButton>}
+                                    {meme.owner === localUser && (meme.expiredAt == Number('-1') || meme.expiredAt > Date.now()) && <IconButton onClick={() => vanishMemeRequest(meme.meme_id)} aria-label='delete'><DeleteIcon /></IconButton>}
                                     {(meme.owner === localUser) &&
                                         <div className='chat localChat'>
                                             {/* Don't show expired memes */}
