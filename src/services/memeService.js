@@ -2,25 +2,33 @@ import superagent from 'superagent'
 
 import { serverUrl, apiUrl, apiKey } from '../var.js'
 
-import { getUser } from './userService'
+import { getUser, getLocalUser } from './userService'
 
-const retry = async ({ status }, action, ...props) => new Promise(resolve => setTimeout(() => {
-    if (status === 555) resolve(action(...props))
-    else resolve([])
-}, 1500))
+const retry = async ({ status }, action, ...props) => {
+    if (status === 555) return new Promise(resolve => setTimeout(() => { resolve(action(...props)) }, 1500))
+    else return []
+}
 
 const addUsernames = async memes => {
+    const { friends } = await getLocalUser()
+    const users = friends.reduce((o, i) => ({ ...o, [i.user_id]: i.username }), {})
+    console.log(friends, users)
     let result = []
-    for (let i in memes) {
-        const delay = 600 * i
-        result.push(new Promise(async function (resolve) {
+    const getUsername = async (meme, delay) => {
+        if (meme.owner in users) return { ...meme, username: users.owner }
+        else return new Promise(async function (resolve) {
             await new Promise(res => setTimeout(res, delay));
             resolve(await new Promise(res => {
-                const { username } = getUser(memes[i].owner)
+                const { username } = getUser(meme.owner)
                 console.log(delay)
-                res({ ...memes[i], username })
+                users[meme.owner] = username
+                res({ ...meme, username })
             }))
-        }))
+        })
+    }
+    for (let i in memes) {
+        const delay = 1000 * i
+        result.push(getUsername(memes[i], delay))
 
     }
     return Promise.all(result)
@@ -37,24 +45,28 @@ export const getMemes = async () => {
 export const searchMemes = async (query, regex = {}) => {
     try {
         const { owner, description, created_after, created_before } = regex
+        if (created_after || created_before)
+            query.createdAt = {
+                ...(created_after && { $gt: (new Date(created_after)).getTime() }),
+                ...(created_before && { $lt: (new Date(created_before)).getTime() })
+            }
         const regexQuery = {
             description,
-            createdAt: { gt: (new Date(created_after)).getTime(), lt: (new Date(created_before)).getTime() },
         }
-        const URL = `${apiUrl}'/memes/search?match='${encodeURIComponent(JSON.stringify(query))}`
-        // const URL = `${apiUrl}'/memes/search?match='${encodeURIComponent(JSON.stringify(query))}&regexMatch=${encodeURIComponent(JSON.stringify(regexQuery))}`
+        const URL = `${apiUrl}/memes/search?match=${encodeURIComponent(JSON.stringify(query))}&regexMatch=${encodeURIComponent(JSON.stringify(regexQuery))}`
         console.log(URL, query, regex)
-        const response = await superagent.get(URL).set('key', apiKey).set('Content-Type', 'application/json')
-        console.log(response.body.memes)
-        return addUsernames(response.body.memes.slice(0, 20))
+        const response = await superagent.get(URL).set('key', apiKey)
+        return addUsernames(response.body.memes)
     } catch (err) {
-        return retry(err, searchMemes, query, regex)
+        const a = await retry(err, searchMemes, query, regex)
+        console.log(313, err, err.status, a)
+        return a
     }
 }
 
-export const searchChatsMemes = async ({ user_id }, query) => searchMemes({ receiver: user_id, private: true, replyTo: null }, query)
+export const searchChatsMemes = async ({ user_id }, regex) => searchMemes({ receiver: user_id, private: true, replyTo: null }, regex)
 
-export const searchFriendsMemes = async ({ friends }, query) => searchMemes({ receiver: null, private: true, owner: friends.join('|') }, query)
+export const searchFriendsMemes = async ({ friends }, regex) => searchMemes({ receiver: null, private: true, owner: friends.join('|') }, regex)
 
 export const getConversation = async (user1, user2) => {
     const query = encodeURIComponent(JSON.stringify({

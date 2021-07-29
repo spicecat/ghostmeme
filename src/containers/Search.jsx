@@ -10,12 +10,6 @@ import MemesTable from '../components/MemesTable'
 import Form from '../components/Form'
 
 export default function Search({ user }) {
-    useEffect(() => { updateMemes() }, [])
-    useEffect(() => {
-        const timer = setInterval(() => console.log(123), 10000);
-        return () => clearInterval(timer)
-    }, [])
-
     const [openChats, setOpenChats] = useState(true)
     const [openFriends, setOpenFriends] = useState(true)
     const [chatsMemes, setChatsMemes] = useState([])
@@ -25,6 +19,12 @@ export default function Search({ user }) {
         setChatsMemes(await searchChatsMemes(user))
         setFriendsMemes(await searchFriendsMemes(user))
     }
+
+    useEffect(() => {
+        updateMemes()
+        const timer = setInterval(() => console.log(123), 10000);
+        return () => clearInterval(timer)
+    }, [])
 
     return !user.loading &&
         <>

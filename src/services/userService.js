@@ -9,7 +9,7 @@ const cookies = new Cookies()
 const retry = async ({ status }, action, ...props) => new Promise(resolve => setTimeout(() => {
     if (status === 555) resolve(action(...props))
     else resolve()
-}, 1500))
+}, 5000))
 
 export const redirect = async user => {
     // comment below to disable redirect
@@ -69,6 +69,17 @@ export const getLoginTimeout = () => {
 export const getLoginAttempts = () => Number(cookies.get('loginAttempts')) || 0
 
 export const getLocalUser = async () => {
+    // return {
+    //     user_id: '5ec8adf06e38137ff2e58770',
+    //     name: "Barack Obama",
+    //     email: "o@barackobama.com",
+    //     phone: "773-555-5555",
+    //     username: "Oforce1",
+    //     friends: [{ '5ec8adf06e38137ff2e58770': "Barack Obama" }, { '5ec8adf06e38137ff2e58771': "Barack Obama1" }],
+    //     liked: 0,
+    //     deleted: false,
+    //     imageUrl: null
+    // }
     const token = cookies.get('token')
     if (!token) return { loading: false }
 
@@ -80,7 +91,7 @@ export const getLocalUser = async () => {
         return
     }
     const { user } = response.body
-    user.friends = await getFriends(user.user_id) // don't remove await
+    user.friends = await getFriends(user.user_id)
     console.log(user)
     return user
 }
@@ -90,7 +101,7 @@ export const getUser = async user_id => {
 
     try {
         const response = await superagent.get(URL).set('key', apiKey)
-        return response.body.user
+        return response.body
     } catch (err) { return retry(err, getUser, user_id) }
 }
 
@@ -99,8 +110,30 @@ export const getFriends = async user_id => {
 
     try {
         const response = await superagent.get(URL).set('key', apiKey)
-        return response.body.users
+        return addUsernames(response.body.users)
     } catch (err) { return retry(err, getFriends, user_id) }
+}
+
+export const addUsernames = async user_ids => {
+    let users = [], result = []
+    const getUsername = async (user, delay) => {
+        const { user_id } = user
+        if (user_id in users) return { ...user, username: users.username }
+        else return new Promise(async function (resolve) {
+            await new Promise(res => setTimeout(res, delay));
+            resolve(await new Promise(res => {
+                const { username } = getUser(user_id)
+                console.log(delay)
+                users[user_id] = username
+                res({ ...user, username })
+            }))
+        })
+    }
+    for (let i in user_ids) {
+        const delay = 1000 * i
+        result.push(getUsername({ user_id: user_ids[i] }, delay))
+    }
+    return Promise.all(result)
 }
 
 export const sendFriendRequest = async (user_id, target_id) => {
