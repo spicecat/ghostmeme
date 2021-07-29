@@ -272,12 +272,12 @@ export default function Chats({ user }) {
                     <TableHead>
                         <TableRow>
                             <TableCell>name</TableCell>
-                            <TableCell>email</TableCell>
-                            <TableCell>phone</TableCell>
+                            {/* <TableCell>email</TableCell>
+                            <TableCell>phone</TableCell> */}
                             <TableCell>username</TableCell>
-                            <TableCell>imageUrl</TableCell>
+                            {/* <TableCell>imageUrl</TableCell> */}
                             {/* <TableCell>deleted</TableCell> */}
-                            <TableCell>user_id</TableCell>
+                            {/* <TableCell>user_id</TableCell> */}
                             <TableCell>friends</TableCell>
                             <TableCell>liked</TableCell>
                             <TableCell>Select User?</TableCell>
@@ -287,12 +287,12 @@ export default function Chats({ user }) {
                         {users && users.map(user => (
                             <TableRow key={user.user_id}>
                                 <TableCell>{user.name}</TableCell>
-                                <TableCell>{user.email}</TableCell>
-                                <TableCell>{user.phone}</TableCell>
+                                {/* <TableCell>{user.email}</TableCell>
+                                <TableCell>{user.phone}</TableCell> */}
                                 <TableCell>{user.username}</TableCell>
-                                <TableCell>{user.imageUrl}</TableCell>
+                                {/* <TableCell>{user.imageUrl}</TableCell> */}
                                 {/* <TableCell>{user.deleted}</TableCell> */}
-                                <TableCell>{user.user_id}</TableCell>
+                                {/* <TableCell>{user.user_id}</TableCell> */}
                                 <TableCell>{user.friends}</TableCell>
                                 <TableCell>{user.liked}</TableCell>
                                 <TableCell><Button variant='contained' color='primary' onClick={() => selectUserRequest(user.user_id)}>Select User</Button></TableCell>
