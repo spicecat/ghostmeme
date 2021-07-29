@@ -83,10 +83,6 @@ export const getConversation = async (user1, user2) => {
 export const createMeme = async (json) => {
     const URL = `${apiUrl}/memes`
 
-    if (json.expiredAt) {
-        json.expiredAt = json.expiredAt.replaceAll('-', '/')
-    }
-
     try {
         console.log(json)
         const body = JSON.stringify({
