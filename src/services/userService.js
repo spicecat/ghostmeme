@@ -69,17 +69,17 @@ export const getLoginTimeout = () => {
 export const getLoginAttempts = () => Number(cookies.get('loginAttempts')) || 0
 
 export const getLocalUser = async () => {
-    // return {
-    //     user_id: '5ec8adf06e38137ff2e58770',
-    //     name: "Barack Obama",
-    //     email: "o@barackobama.com",
-    //     phone: "773-555-5555",
-    //     username: "Oforce1",
-    //     friends: [{ '5ec8adf06e38137ff2e58770': "Barack Obama" }, { '5ec8adf06e38137ff2e58771': "Barack Obama1" }],
-    //     liked: 0,
-    //     deleted: false,
-    //     imageUrl: null
-    // }
+    return {
+        user_id: '5ec8adf06e38137ff2e58770',
+        name: "Barack Obama",
+        email: "o@barackobama.com",
+        phone: "773-555-5555",
+        username: "Oforce1",
+        friends: [{ '5ec8adf06e38137ff2e58770': "Barack Obama" }, { '5ec8adf06e38137ff2e58771': "Barack Obama1" }],
+        liked: 0,
+        deleted: false,
+        imageUrl: null
+    }
     const token = cookies.get('token')
     if (!token) return { loading: false }
 

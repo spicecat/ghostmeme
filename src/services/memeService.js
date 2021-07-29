@@ -2,36 +2,11 @@ import superagent from 'superagent'
 
 import { serverUrl, apiUrl, apiKey } from '../var.js'
 
-import { getUser, getLocalUser } from './userService'
+import { getUser, addUsernames } from './userService'
 
 const retry = async ({ status }, action, ...props) => {
     if (status === 555) return new Promise(resolve => setTimeout(() => { resolve(action(...props)) }, 1500))
     else return []
-}
-
-const addUsernames = async memes => {
-    const { friends } = await getLocalUser()
-    const users = friends.reduce((o, i) => ({ ...o, [i.user_id]: i.username }), {})
-    console.log(friends, users)
-    let result = []
-    const getUsername = async (meme, delay) => {
-        if (meme.owner in users) return { ...meme, username: users.owner }
-        else return new Promise(async function (resolve) {
-            await new Promise(res => setTimeout(res, delay));
-            resolve(await new Promise(res => {
-                const { username } = getUser(meme.owner)
-                console.log(delay)
-                users[meme.owner] = username
-                res({ ...meme, username })
-            }))
-        })
-    }
-    for (let i in memes) {
-        const delay = 1000 * i
-        result.push(getUsername(memes[i], delay))
-
-    }
-    return Promise.all(result)
 }
 
 export const getMemes = async () => {
