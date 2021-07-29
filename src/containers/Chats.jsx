@@ -12,10 +12,11 @@ import {
     Paper,
     TextField
 } from '@material-ui/core'
-import SendIcon from '@material-ui/icons/Send';
+import SendIcon from '@material-ui/icons/Send'
+import DeleteIcon from '@material-ui/icons/DeleteOutline'
 
 import { redirect } from '../services/userService'
-import { getMemes, getConversation, createMeme, getUserInfo, getUsers } from '../services/memeService'
+import { getMemes, getConversation, createMeme, vanishMeme, getUserInfo, getUsers } from '../services/memeService'
 
 export default function Chats({ user }) {
     useEffect(() => { redirect(user) }, [user])
@@ -83,6 +84,11 @@ export default function Chats({ user }) {
 
         await getConversationRequest(selectedUser)
     }
+    
+    const vanishMemeRequest = async (memeID) => {
+        console.log(memeID)
+        await vanishMeme(memeID)
+    }
 
     const toggleComponent = (component) => {
         if (component === 'imageLink') {
@@ -113,7 +119,8 @@ export default function Chats({ user }) {
 
     return user.loading === undefined && (
         <>
-            {/* Search memes from X sender to X receiver */}
+            {/* Search memes from X sender to X receiver */}  display: flex;
+
             {/* <TextField label='selectedUser' name='selectedUser' value={selectedUser} variant='outlined' />
             <Button variant='contained' color='primary' onClick={() => getConversationRequest(selectedUser)}>Search Conversations</Button> */}
             {/* <Button variant='contained' color='primary' onClick={() => getUserInfoRequest(localUser, 'local')}>Selected User Info</Button>
@@ -214,6 +221,7 @@ export default function Chats({ user }) {
                                 <TableCell className='tableChat' width='20%' />
                                 <TableCell className='tableChat' width='40%'>
                                     {/* <div className={(meme.owner === localUser) ? 'chat localChat' : 'chat otherChat'}> */}
+                                    {(meme.owner === localUser) && <IconButton onClick={() => vanishMemeRequest(meme.meme_id)} aria-label='delete'><DeleteIcon /></IconButton>}
                                     {(meme.owner === localUser) &&
                                         <div className='chat localChat'>
                                             {/* Don't show expired memes */}
