@@ -27,6 +27,7 @@ export default function App() {
   return (
     <BrowserRouter>
       <Navbar username={user.username} avatar={user.imageBase64} />
+
       <div className='body'>
         <PaperContent Component={() =>
           <>

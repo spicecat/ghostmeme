@@ -76,7 +76,7 @@ export const getConversation = async (user1, user2) => {
 }
 
 
-export const createMeme = async json => {
+export const createMeme = async (json) => {
     const URL = `${apiUrl}/memes`
 
     try {
@@ -97,6 +97,21 @@ export const createMeme = async json => {
         return await superagent.post(URL).set('key', apiKey).set('Content-Type', 'application/json').send(body)
     } catch (err) {
         retry(err, createMeme, json)
+    }
+}
+
+export const vanishMeme = async (memeID) => {
+    const URL= `${apiUrl}/memes/${memeID}`
+
+    try {
+        const body = JSON.stringify({
+            expiredAt: 0
+        })
+
+        return await superagent.put(URL).set('key', apiKey).set('Content-Type', 'application/json').send(body)
+
+    } catch (err) {
+        retry(err, vanishMeme, memeID)
     }
 }
 
