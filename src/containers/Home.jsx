@@ -4,7 +4,7 @@ import { Typography } from '@material-ui/core'
 export default function Home() {
     return (
         <>
-            <h1>Welcome678 to Ghostmeme! </h1>
+            <Typography variant='h4'>Welcome to Ghostmeme! </Typography>
             <Typography>Ghostmeme is not a copy of facebook</Typography>
         </>
     )

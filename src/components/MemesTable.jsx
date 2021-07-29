@@ -35,7 +35,7 @@ export default function MemesTable({ headCells = [
         setOrderedMemes(arr)
     }
 
-    useEffect(() => { if (memes.length) sortMemes() }, [memes])
+    useEffect(() => { sortMemes() }, [memes])
     // onRequestSort={changeOrder}
     return (
         <Table size='small'>

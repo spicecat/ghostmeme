@@ -16,13 +16,16 @@ export default function Search({ user }) {
     const [friendsMemes, setFriendsMemes] = useState([])
 
     const updateMemes = async () => {
-        setChatsMemes(await searchChatsMemes(user))
-        setFriendsMemes(await searchFriendsMemes(user))
+        console.log('Updating memes...')
+        if (openChats)
+            setChatsMemes(await searchChatsMemes(user))
+        if (openFriends)
+            setFriendsMemes(await searchFriendsMemes(user))
     }
 
     useEffect(() => {
         updateMemes()
-        const timer = setInterval(() => console.log(123), 10000);
+        const timer = setInterval(updateMemes, 12711 + 1642 * (chatsMemes.length + friendsMemes.length))
         return () => clearInterval(timer)
     }, [])
 
@@ -34,10 +37,7 @@ export default function Search({ user }) {
             Memes from Chats
             {openChats &&
                 <>
-                    <Form name='chats' action={async values => {
-                        console.log(values)
-                        setChatsMemes(await searchChatsMemes(user, values))
-                    }} schema={memeSearchSchema} search={true} />
+                    <Form name='chats' action={async values => { setChatsMemes(await searchChatsMemes(user, values)) }} schema={memeSearchSchema} search={true} />
                     <br />
                     <MemesTable memes={chatsMemes} />
                 </>}
@@ -49,10 +49,7 @@ export default function Search({ user }) {
             Memes from Friends
             {openFriends &&
                 <>
-                    <Form name='friends' action={async values => {
-                        console.log(values)
-                        setFriendsMemes(await searchFriendsMemes(user, values))
-                    }} schema={memeSearchSchema} search={true} />
+                    <Form name='friends' action={async values => { setFriendsMemes(await searchFriendsMemes(user, values)) }} schema={memeSearchSchema} search={true} />
                     <br />
                     <MemesTable memes={friendsMemes} />
                 </>}
