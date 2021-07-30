@@ -64,13 +64,13 @@ export default function Chats({ user }) {
         setUsers(await getUsers())
     }
 
-    const getConversationRequest = async (selectedUserID, requestType) => {
+    const getConversationRequest = async (selectedUserID, localUserID=localUser, requestType) => {
         // const selectedUser = '60f5c300aa69860008702933'
         if (requestType === 'refresh') {
-            setMemes(await getConversation(localUser, selectedUserID))
+            setMemes(await getConversation(localUserID, selectedUserID))
         } else {
             // GRACEFULLY HANDLE API
-            const response = await getConversation(localUser, selectedUserID)
+            const response = await getConversation(localUserID, selectedUserID)
             response ? setMemes(response) : console.log('Error')
         }
     }
@@ -79,7 +79,7 @@ export default function Chats({ user }) {
         setSelectedUser(userID)
         getUserInfoRequest(localUser, 'local')
         getUserInfoRequest(userID, 'selected')
-        await getConversationRequest(userID, 'refresh')
+        await getConversationRequest(userID, localUser, 'refresh')
     }
 
     const createMemeRequest = async (event) => {
@@ -110,23 +110,21 @@ export default function Chats({ user }) {
         }
     }
 
-    const test = () => {
-
-    }
-
     const selectedUserRef = useRef(selectedUser)
     selectedUserRef.current = selectedUser
+    
+    const localUserRef = useRef(localUser)
+    localUserRef.current = localUser
 
     useEffect(() => {
         let timer = setInterval(() => {
             console.log('Updating conversations...')
             // selectedUserRef.current ? console.log(selectedUserRef.current) : console.log('No user selected')
-            selectedUserRef.current ? getConversationRequest(selectedUserRef.current) : console.log('No user selected')
+            // console.log(`Local user: ${localUserRef.current}`)
+            selectedUserRef.current ? getConversationRequest(selectedUserRef.current, localUserRef.current) : console.log('No user selected')
         }, 5000)
         return () => { clearTimeout(timer) }
     }, [])
-
-    console.log(new Date().toLocaleDateString())
 
     return user.loading === undefined && (
         <>
