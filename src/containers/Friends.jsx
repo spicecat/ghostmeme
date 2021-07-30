@@ -11,11 +11,15 @@ export default function Friends({ user }) {
     useEffect(() => { redirect(user) }, [user])
 
     const [users, setUsers] = useState([])
-    const [friendRequests, setFriendRequests] = useState([])
+    const [outgoingFriendRequests, setOutgoingFriendRequests] = useState([])
+    const [incomingFriendRequests, setIncomingFriendRequests] = useState([])
 
     const updateUsers = async () => {
         setUsers(await getUsers())
-        if (user.loading === undefined) setFriendRequests(await getFriendRequests(user.user_id))
+        if (user.loading === undefined) {
+            setOutgoingFriendRequests(await getFriendRequests(user.user_id, 'outgoing'))
+            setIncomingFriendRequests(await getFriendRequests(user.user_id, 'incoming'))
+        }
     }
 
     useEffect(() => {
@@ -34,6 +38,6 @@ export default function Friends({ user }) {
                     { name: 'Likes', prop: 'liked' },
                     { name: 'Profile Picture', prop: 'imageUrl' }]}
                 data={users}
-                Component={User} localUser={{ ...user, friendRequests }} />
+                Component={User} localUser={{ ...user, outgoingFriendRequests, incomingFriendRequests }} />
         </>
 }
