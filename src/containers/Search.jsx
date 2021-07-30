@@ -28,7 +28,7 @@ export default function Search({ user }) {
         // return () => clearInterval(timer)
     }, [])
 
-    return !user.loading &&
+    return user.loading === undefined &&
         <>
             <IconButton onClick={() => { setOpenChats(!openChats) }}>
                 {openChats ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}

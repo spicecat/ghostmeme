@@ -15,12 +15,12 @@ export default function Friends({ user }) {
 
     const updateUsers = async () => {
         setUsers(await getUsers())
-        setFriendRequests(await getFriendRequests(user.user_id))
+        if (user.loading === undefined) setFriendRequests(await getFriendRequests(user.user_id))
     }
 
     useEffect(() => {
         updateUsers()
-    }, [])
+    }, [user])
 
     return user.loading === undefined &&
         <>

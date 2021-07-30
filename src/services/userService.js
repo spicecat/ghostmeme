@@ -161,6 +161,14 @@ export const getUsernames = async user_ids => { // returns object {user_id:usern
     return usernames
 }
 
+export const getFriendRequests = async user_id => {
+    const URL = `${userApiUrl}/${user_id}/requests/outgoing`
+    try {
+        const response = await superagent.get(URL).set('key', apiKey)
+        return response.body.users
+    } catch (err) { return retry(err, getFriendRequests, user_id) || [] }
+}
+
 export const sendFriendRequest = async (user_id, target_id, reqType = 'outgoing') => {
     const URL = `${userApiUrl}/${user_id}/requests/${reqType}/${target_id}`
     try {
@@ -170,10 +178,30 @@ export const sendFriendRequest = async (user_id, target_id, reqType = 'outgoing'
     } catch (err) { return retry(err, sendFriendRequest, user_id, target_id) }
 }
 
-export const getFriendRequests = async user_id => {
-    const URL = `${userApiUrl}/${user_id}/requests/outgoing`
+export const removeFriendRequest = async (user_id, target_id, reqType = 'outgoing') => {
+    const URL = `${userApiUrl}/${user_id}/requests/${reqType}/${target_id}`
     try {
-        const response = await superagent.get(URL).set('key', apiKey)
-        return response.body.users
-    } catch (err) { return retry(err, getFriendRequests, user_id) || [] }
+        const response = await superagent.delete(URL).set('key', apiKey)
+        if (reqType === 'outgoing') return removeFriendRequest(target_id, user_id, 'incoming')
+        else return response.body.success
+    } catch (err) { return retry(err, sendFriendRequest, user_id, target_id) }
 }
+
+export const addFriend = async (user_id, target_id, reqType = 'outgoing') => {
+    const URL = `${userApiUrl}/${user_id}/requests/${target_id}`
+    try {
+        const response = await superagent.put(URL).set('key', apiKey)
+        if (reqType === 'outgoing') return addFriend(target_id, user_id, 'incoming')
+        else return response.body.success
+    } catch (err) { return retry(err, sendFriendRequest, user_id, target_id) }
+}
+
+export const removeFriend = async (user_id, target_id, reqType = 'outgoing') => {
+    const URL = `${userApiUrl}/${user_id}/friends/${target_id}`
+    try {
+        const response = await superagent.delete(URL).set('key', apiKey)
+        if (reqType === 'outgoing') return removeFriend(target_id, user_id, 'incoming')
+        else return response.body.success
+    } catch (err) { return retry(err, sendFriendRequest, user_id, target_id) }
+}
+

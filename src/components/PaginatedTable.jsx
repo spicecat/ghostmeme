@@ -59,7 +59,7 @@ export default function PaginatedTable({ name, headCells = [
             </TableHead>
             <TableBody>
                 {orderedMemes.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                    .map(meme => <Component key={meme.meme_id} {...meme} localUser={localUser} />)}
+                    .map(item => <Component key={item.meme_id || item.user_id} {...item} localUser={localUser} />)}
             </TableBody>
             <TableFooter>
                 <TableRow>
