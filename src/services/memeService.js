@@ -7,9 +7,9 @@ import { getUser, getUsernames } from './userService'
 
 superagentCache(superagent)
 
-const retry = async ({ status }, action, ...props) => {
-    if (status === 555) return new Promise(resolve => setTimeout(() => { resolve(action(...props)) }, 1723))
-    else return []
+const retry = async ({ status }, action) => {
+    if (status === 555) return new Promise(resolve => setTimeout(() => { resolve(action) }, 5000))
+    else return
 }
 
 const addUsernames = async (memes, friends = {}) => {
@@ -24,7 +24,7 @@ export const getMemes = async () => {
         const response = await superagent.get(URL).set('key', apiKey)
         const { memes } = response.body
         return addUsernames(memes)
-    } catch (err) { return retry(err, getMemes) }
+    } catch (err) { return retry(err, getMemes()) || [] }
 }
 
 export const searchMemes = async (baseQuery, query = {}, friends = {}) => {
@@ -43,7 +43,7 @@ export const searchMemes = async (baseQuery, query = {}, friends = {}) => {
         let { memes } = response.body
         memes = await addUsernames(memes, friends)
         return memes.filter(meme => meme.username.includes(owner))
-    } catch (err) { return await retry(err, searchMemes, baseQuery, query) }
+    } catch (err) { return retry(err, searchMemes(baseQuery, query)) || [] }
 }
 
 export const searchChatsMemes = async ({ user_id, friends }, query) => searchMemes({ receiver: user_id, private: true, replyTo: null }, query, friends)
@@ -77,9 +77,7 @@ export const getConversation = async (user1, user2) => {
 
         // console.log(memesList)
         return memesList
-    } catch (err) {
-        console.error(err)
-    }
+    } catch (err) { return retry(err, getConversation(user1, user2) || []) }
 }
 
 
@@ -102,13 +100,11 @@ export const createMeme = async (json) => {
         console.log(body)
 
         return await superagent.post(URL).set('key', apiKey).set('Content-Type', 'application/json').send(body)
-    } catch (err) {
-        retry(err, createMeme, json)
-    }
+    } catch (err) { return retry(err, createMeme(json) || {}) }
 }
 
-export const vanishMeme = async (memeID) => {
-    const URL = `${apiUrl}/memes/${memeID}`
+export const vanishMeme = async meme_id => {
+    const URL = `${apiUrl}/memes/${meme_id}`
 
     try {
         const body = JSON.stringify({
@@ -117,7 +113,5 @@ export const vanishMeme = async (memeID) => {
 
         return await superagent.put(URL).set('key', apiKey).set('Content-Type', 'application/json').send(body)
 
-    } catch (err) {
-        retry(err, vanishMeme, memeID)
-    }
+    } catch (err) { return retry(err, vanishMeme(meme_id) || {}) }
 }
