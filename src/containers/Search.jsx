@@ -6,7 +6,8 @@ import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp'
 import { searchChatsMemes, searchFriendsMemes } from '../services/memeService'
 import { memeSearchSchema } from '../services/schemas'
 
-import MemesTable from '../components/MemesTable'
+import PaginatedTable from '../components/PaginatedTable'
+import Meme from '../components/Meme'
 import Form from '../components/Form'
 
 export default function Search({ user }) {
@@ -23,13 +24,13 @@ export default function Search({ user }) {
 
     useEffect(() => {
         updateMemes()
-        const timer = setInterval(updateMemes, 13711)
+        const timer = setInterval(updateMemes, 12711 + 3284 * (chatsMemes.length + friendsMemes.length))
         return () => clearInterval(timer)
     }, [])
 
     return !user.loading &&
         <>
-            <IconButton onClick={() => setOpenChats(!openChats)}>
+            <IconButton onClick={() => { setOpenChats(!openChats) }}>
                 {openChats ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
             </IconButton>
             Memes from Chats
@@ -37,11 +38,11 @@ export default function Search({ user }) {
                 <>
                     <Form name='chats' action={async values => { setChatsMemes(await searchChatsMemes(user, values)) }} schema={memeSearchSchema} search={true} />
                     <br />
-                    <MemesTable memes={chatsMemes} />
+                    <PaginatedTable name='chats' data={chatsMemes} Component={Meme} />
                 </>}
             <br />
 
-            <IconButton onClick={() => setOpenFriends(!openFriends)}>
+            <IconButton onClick={() => { setOpenFriends(!openFriends) }}>
                 {openFriends ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
             </IconButton>
             Memes from Friends
@@ -49,7 +50,7 @@ export default function Search({ user }) {
                 <>
                     <Form name='friends' action={async values => { setFriendsMemes(await searchFriendsMemes(user, values)) }} schema={memeSearchSchema} search={true} />
                     <br />
-                    <MemesTable memes={friendsMemes} />
+                    <PaginatedTable name='friends' data={friendsMemes} Component={Meme} />
                 </>}
         </>
 }

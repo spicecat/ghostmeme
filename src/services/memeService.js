@@ -1,8 +1,11 @@
 import superagent from 'superagent'
+import superagentCache from 'superagent-cache'
 
 import { serverUrl, apiUrl, apiKey } from '../var.js'
 
 import { getUser, getUsernames } from './userService'
+
+superagentCache(superagent)
 
 const retry = async ({ status }, action, ...props) => {
     if (status === 555) return new Promise(resolve => setTimeout(() => { resolve(action(...props)) }, 1723))
@@ -39,7 +42,6 @@ export const searchMemes = async (baseQuery, query = {}, friends = {}) => {
         const response = await superagent.get(URL).set('key', apiKey)
         let { memes } = response.body
         memes = await addUsernames(memes, friends)
-        console.log(URL, baseQuery, regexQuery, memes)
         return memes.filter(meme => meme.username.includes(owner))
     } catch (err) { return await retry(err, searchMemes, baseQuery, query) }
 }
@@ -84,10 +86,6 @@ export const getConversation = async (user1, user2) => {
 export const createMeme = async (json) => {
     const URL = `${apiUrl}/memes`
 
-    if (json.expiredAt) {
-        json.expiredAt = json.expiredAt.replaceAll('-', '/')
-    }
-
     try {
         console.log(json)
         const body = JSON.stringify({
@@ -121,31 +119,5 @@ export const vanishMeme = async (memeID) => {
 
     } catch (err) {
         retry(err, vanishMeme, memeID)
-    }
-}
-
-// move to userServices
-export const getUserInfo = async userID => {
-    const URL = `${apiUrl}/users/${userID}`
-
-    try {
-        const response = await superagent.get(URL).set('key', apiKey)
-        return response.body.user
-    } catch (err) {
-        console.error(err)
-    }
-}
-
-// move to userServices
-export const getUsers = async () => {
-    const URL = `${apiUrl}/users`
-
-    try {
-        const response = await superagent.get(URL).set('key', apiKey)
-
-        return response.body.users
-
-    } catch (err) {
-        console.error(err)
     }
 }

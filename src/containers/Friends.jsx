@@ -1,69 +1,37 @@
-import { useState, useEffect, useRef } from 'react'
-import { Typography } from '@material-ui/core'
+import { useState, useEffect } from 'react'
 
-import Search from './Search'
+import { redirect, getUsers } from '../services/userService'
 
-import {
-    Button,
-    Table,
-    TableBody,
-    TableCell,
-    TableContainer,
-    TableHead,
-    TableRow,
-    Paper,
-    TextField
-} from '@material-ui/core'
+// import UsersTable from '../components/UsersTable'
+import PaginatedTable from '../components/PaginatedTable'
+import User from '../components/User'
 
-import { redirect } from '../services/userService'
-import { getUserInfo, getUsers } from '../services/memeService'
 
 export default function Friends({ user }) {
     useEffect(() => { redirect(user) }, [user])
 
     const [users, setUsers] = useState([])
 
-    const getUsersRequest = async () => {
+    const updateUsers = async () => {
         setUsers(await getUsers())
     }
 
+    useEffect(() => {
+        updateUsers()
+    }, [])
+
     return user.loading === undefined &&
         <>
-            <Button variant='contained' color='primary' onClick={getUsersRequest}>Get All Users</Button>
-            <br /><br />
-            <TableContainer component={Paper}>
-                <Table>
-                    <TableHead>
-                        <TableRow>
-                            <TableCell>name</TableCell>
-                            <TableCell>email</TableCell>
-                            <TableCell>phone</TableCell>
-                            <TableCell>username</TableCell>
-                            <TableCell>imageUrl</TableCell>
-                            {/* <TableCell>deleted</TableCell> */}
-                            <TableCell>user_id</TableCell>
-                            <TableCell>friends</TableCell>
-                            <TableCell>liked</TableCell>
-                            <TableCell>Select User?</TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {users && users.map(user => (
-                            <TableRow key={user.user_id}>
-                                <TableCell>{user.name}</TableCell>
-                                <TableCell>{user.email}</TableCell>
-                                <TableCell>{user.phone}</TableCell>
-                                <TableCell>{user.username}</TableCell>
-                                <TableCell>{user.imageUrl}</TableCell>
-                                {/* <TableCell>{user.deleted}</TableCell> */}
-                                <TableCell>{user.user_id}</TableCell>
-                                <TableCell>{user.friends}</TableCell>
-                                <TableCell>{user.liked}</TableCell>
-                                <TableCell><Button variant='contained' color='primary'>Does nothing</Button></TableCell>
-                            </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
-            </TableContainer>
+            <PaginatedTable
+                name='friends'
+                headCells={[
+                    { name: 'Username', prop: 'username' },
+                    { name: 'Email', prop: 'email' },
+                    { name: 'Phone', prop: 'phone' },
+                    { name: 'Friends', prop: 'friends' },
+                    { name: 'Likes', prop: 'liked' },
+                    { name: 'Profile Picture', prop: 'imageUrl' }]}
+                data={users}
+                Component={User} localUser={user} />
         </>
 }

@@ -12,11 +12,14 @@ import {
     Paper,
     TextField
 } from '@material-ui/core'
+import { KeyboardDatePicker } from "@material-ui/pickers";
+
 import SendIcon from '@material-ui/icons/Send'
 import DeleteIcon from '@material-ui/icons/DeleteOutline'
+// import FileBase64 from 'react-file-base64';
 
-import { redirect } from '../services/userService'
-import { getMemes, getConversation, createMeme, vanishMeme, getUserInfo, getUsers } from '../services/memeService'
+import { redirect, getUsers, getUser } from '../services/userService'
+import { getMemes, getConversation, createMeme, vanishMeme } from '../services/memeService'
 
 export default function Chats({ user }) {
     useEffect(() => { redirect(user) }, [user])
@@ -29,6 +32,9 @@ export default function Chats({ user }) {
     const [localUserInfo, setLocalUserInfo] = useState([])
     const [selectedUserInfo, setSelectedUserInfo] = useState([])
 
+    const [imgBase64, setimgBase64] = useState('')
+    const [selectedDate, handleDateChange] = useState(new Date());
+
     const [showImageLink, setShowImageLink] = useState('')
     const [showImageFile, setShowImageFile] = useState('')
     const [showExpiration, setShowExpiration] = useState('')
@@ -40,13 +46,14 @@ export default function Chats({ user }) {
     }
 
     const getUserInfoRequest = async (userID, user) => {
-        if (user === 'local') {
-            setLocalUserInfo(await getUserInfo(userID))
-            // console.log(localUserInfo)
-        }
+        // if (user === 'local') {
+        //     setLocalUserInfo(await getUser(userID))
+        //     // console.log(localUserInfo)
+        // }
+        setLocalUserInfo(user)
 
         if (user === 'selected') {
-            setSelectedUserInfo(await getUserInfo(userID))
+            setSelectedUserInfo(await getUser(userID))
             // console.log(selectedUserInfo)
         }
         // const response = await getUserInfo(userID)
@@ -84,7 +91,7 @@ export default function Chats({ user }) {
 
         await getConversationRequest(selectedUser)
     }
-    
+
     const vanishMemeRequest = async (memeID) => {
         console.log(memeID)
         await vanishMeme(memeID)
@@ -104,9 +111,12 @@ export default function Chats({ user }) {
         }
     }
 
+    const test = () => {
+
+    }
+
     const selectedUserRef = useRef(selectedUser)
     selectedUserRef.current = selectedUser
-
 
     useEffect(() => {
         let timer = setInterval(() => {
@@ -116,6 +126,8 @@ export default function Chats({ user }) {
         }, 5000)
         return () => { clearTimeout(timer) }
     }, [])
+
+    console.log(new Date().toLocaleDateString())
 
     return user.loading === undefined && (
         <>
@@ -154,11 +166,23 @@ export default function Chats({ user }) {
                     </ButtonGroup>
 
                     <br /><br />
-                    {showExpiration ? <TextField label='Expiration' name='expiredAt' variant='outlined' type='date' defaultValue="2021-07-28" /> : <TextField type='hidden' name='expiredAt' />}
+                    {/* {showExpiration ? <TextField label='Expiration' name='expiredAt' variant='outlined' type='date' defaultValue="2021-07-28" /> : <TextField type='hidden' name='expiredAt' />} */}
+                    {showExpiration ? <KeyboardDatePicker
+                        name='expiredAt'
+                        clearable
+                        value={selectedDate}
+                        placeholder="10/10/2018"
+                        onChange={date => handleDateChange(date)}
+                        minDate={new Date()}
+                        format="MM/dd/yyyy"
+                    /> : <TextField type='hidden' name='expiredAt' />}
                     &nbsp;
                     {showImageLink ? <TextField label='Image URL' name='imageUrl' variant='outlined' /> : <TextField type='hidden' name='imageUrl' />}
                     &nbsp;
                     {showImageFile ? <TextField label='Image Base64' name='imageBase64' variant='outlined' /> : <TextField type='hidden' name='imageBase64' />}
+                    {/* {showImageFile ? <input name='imageBase64' accept="image/*" id="icon-button-file" type="file" /> : <TextField type='hidden' name='imageBase64' />} */}
+                    {/* <Button onClick={test} /> */}
+
                 </div>
             </form>
 
@@ -279,7 +303,7 @@ export default function Chats({ user }) {
                             {/* <TableCell>deleted</TableCell> */}
                             {/* <TableCell>user_id</TableCell> */}
                             <TableCell>friends</TableCell>
-                            <TableCell>liked</TableCell>
+                            {/* <TableCell>liked</TableCell> */}
                             <TableCell>Select User?</TableCell>
                         </TableRow>
                     </TableHead>
@@ -294,7 +318,7 @@ export default function Chats({ user }) {
                                 {/* <TableCell>{user.deleted}</TableCell> */}
                                 {/* <TableCell>{user.user_id}</TableCell> */}
                                 <TableCell>{user.friends}</TableCell>
-                                <TableCell>{user.liked}</TableCell>
+                                {/* <TableCell>{user.liked}</TableCell> */}
                                 <TableCell><Button variant='contained' color='primary' onClick={() => selectUserRequest(user.user_id)}>Select User</Button></TableCell>
                             </TableRow>
                         ))}

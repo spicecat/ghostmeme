@@ -1,27 +1,26 @@
 import { useState, useEffect } from 'react'
 import { Table, TableHead, TableBody, TableFooter, TableRow, TableSortLabel, TableCell, TablePagination } from '@material-ui/core'
 
-import Meme from './Meme'
-
-export default function MemesTable({ headCells = [
+export default function PaginatedTable({ name, headCells = [
     { name: 'Owner', prop: 'owner' },
     { name: 'Created At', prop: 'createdAt' },
     { name: 'Description', prop: 'description' },
     { name: 'Image', prop: 'image' },
     { name: 'Likes', prop: 'likes' }
-], memes }) {
+], data, Component, localUser }) {
 
-    const [orderedMemes, setOrderedMemes] = useState(memes)
+    const [orderedMemes, setOrderedMemes] = useState(data)
     const [page, setPage] = useState(0)
     const [rowsPerPage, setRowsPerPage] = useState(5)
+
+    const [order, setOrder] = useState('asc')
+    const [orderBy, setOrderBy] = useState(headCells[1].prop)
+
     const changePage = (event, newPage) => { setPage(newPage) }
     const changeRowsPerPage = event => {
         setRowsPerPage(Number(event.target.value))
         setPage(0)
     }
-
-    const [order, setOrder] = useState('asc')
-    const [orderBy, setOrderBy] = useState(headCells[1].prop)
 
     const changeOrder = (event, prop) => {
         const newOrder = orderBy === prop && order === 'desc' ? 'asc' : 'desc'
@@ -30,12 +29,12 @@ export default function MemesTable({ headCells = [
         sortMemes(newOrder, prop)
     }
     const sortMemes = (ord, ordBy) => {
-        const arr = memes
+        const arr = data
         arr.sort((a, b) => (ord === 'asc' ? 1 : -1) * (a[ordBy] < b[ordBy] ? 1 : -1))
         setOrderedMemes(arr)
     }
 
-    useEffect(() => { sortMemes() }, [memes])
+    useEffect(() => { sortMemes() }, [data])
     // onRequestSort={changeOrder}
     return (
         <Table size='small'>
@@ -43,7 +42,7 @@ export default function MemesTable({ headCells = [
                 <TableRow>
                     {headCells.map(headCell => (
                         <TableCell
-                            key={headCell.prop}
+                            key={name + headCell.prop}
                             padding='none'
                             sortDirection={orderBy === headCell.prop && order}
                         >
@@ -60,13 +59,13 @@ export default function MemesTable({ headCells = [
             </TableHead>
             <TableBody>
                 {orderedMemes.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                    .map(meme => <Meme key={meme.meme_id} {...meme} />)}
+                    .map(meme => <Component key={meme.meme_id} {...meme} localUser={localUser} />)}
             </TableBody>
             <TableFooter>
                 <TableRow>
                     <TablePagination
                         rowsPerPageOptions={[5, 10, 25]}
-                        count={memes.length}
+                        count={data.length}
                         rowsPerPage={rowsPerPage}
                         page={page}
                         SelectProps={{ native: true }}
