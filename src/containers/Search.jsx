@@ -24,7 +24,7 @@ export default function Search({ user }) {
 
     useEffect(() => {
         updateMemes()
-        const timer = setInterval(updateMemes, 12711 + 3284 * (chatsMemes.length + friendsMemes.length))
+        const timer = setInterval(updateMemes, 17711)
         return () => clearInterval(timer)
     }, [])
 
