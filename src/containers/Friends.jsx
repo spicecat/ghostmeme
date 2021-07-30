@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 
-import { redirect, getUsers } from '../services/userService'
+import { redirect, getUsers, getFriendRequests } from '../services/userService'
 
 // import UsersTable from '../components/UsersTable'
 import PaginatedTable from '../components/PaginatedTable'
@@ -11,9 +11,11 @@ export default function Friends({ user }) {
     useEffect(() => { redirect(user) }, [user])
 
     const [users, setUsers] = useState([])
+    const [friendRequests, setFriendRequests] = useState([])
 
     const updateUsers = async () => {
         setUsers(await getUsers())
+        setFriendRequests(await getFriendRequests(user.user_id))
     }
 
     useEffect(() => {
@@ -32,6 +34,6 @@ export default function Friends({ user }) {
                     { name: 'Likes', prop: 'liked' },
                     { name: 'Profile Picture', prop: 'imageUrl' }]}
                 data={users}
-                Component={User} localUser={user} />
+                Component={User} localUser={{ ...user, friendRequests }} />
         </>
 }

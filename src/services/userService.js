@@ -1,13 +1,16 @@
 import superagent from 'superagent'
-// import superagentCache from 'superagent-cache'
+import superagentCache from 'superagent-cache'
 import Cookies from 'universal-cookie'
 
 import { serverUrl, apiUrl, apiKey } from '../var.js'
 
 const userServerUrl = serverUrl + '/users', userApiUrl = apiUrl + '/users'
-// superagentCache(superagent)
+superagentCache(superagent)
 const cookies = new Cookies()
 
+// const delay = async (action, delay = 500) => new Promise(resolve => setTimeout(() => {
+//     resolve(action)
+// }, delay))
 
 const retry = async ({ status }, action, ...props) => new Promise(resolve => setTimeout(() => {
     if (status === 555) resolve(action(...props))
@@ -100,12 +103,19 @@ export const getLocalUser = async () => {
     return user
 }
 
-export const getUsers = async () => {
-    const URL = `${apiUrl}/users`
+export const getUsers = async (after = '') => {
+    const URL = `${apiUrl}/users?after=${after}`
 
     try {
         const response = await superagent.get(URL).set('key', apiKey)
-        return response.body.users
+        const { users } = response.body
+        return users
+        // if (users.length) {
+        //     const last_id = users[users.length - 1].user_id
+        //     console.log(313, users, after, last_id, Date.now())
+        //     return await delay(users.concat(await getUsers(after = last_id)))
+        // }
+        // else return []
     } catch (err) { return retry(err, getUsers) || [] }
 }
 
@@ -123,11 +133,19 @@ export const getFriends = async user_id => {
 
     try {
         const response = await superagent.get(URL).set('key', apiKey)
-        return getUsernames(response.body.users)
+        return addUsernames(response.body.users)
     } catch (err) { return retry(err, getFriends, user_id) || {} }
 }
 
-export const getUsernames = async (user_ids, usernames = {}) => { // returns object {user_id:username...}
+const addUsernames = async user_ids => {
+    const usernames = await getUsernames(user_ids)
+    return user_ids.map(user_id => ({ username: usernames[user_id] }))
+}
+
+export const getUsernames = async user_ids => { // returns object {user_id:username...}
+    const usernames = {}, users = await getUsers()
+    for (const user of users) usernames[user.user_id] = user.username
+
     for (let i in user_ids) {
         const delay = 1000 * i
         const user_id = user_ids[i]
@@ -155,7 +173,7 @@ export const sendFriendRequest = async (user_id, target_id, reqType = 'outgoing'
 export const getFriendRequests = async user_id => {
     const URL = `${userApiUrl}/${user_id}/requests/outgoing`
     try {
-        const response = await superagent.put(URL).set('key', apiKey)
+        const response = await superagent.get(URL).set('key', apiKey)
         return response.body.users
     } catch (err) { return retry(err, getFriendRequests, user_id) || [] }
 }

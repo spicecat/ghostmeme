@@ -1,18 +1,16 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { TableRow, TableCell, Button } from '@material-ui/core'
 
-import { sendFriendRequest, getFriendRequests } from '../services/userService'
+import { sendFriendRequest } from '../services/userService'
 
 export default function User({ user_id, username, email, phone, friends, liked, imageUrl, localUser }) {
     const [status, setStatus] = useState('Add Friend')
     const updateStatus = async () => {
         console.log(await sendFriendRequest(localUser.user_id, user_id))
         // setStatus('Pending')
+        console.log(localUser.friendRequests)
     }
 
-    // useEffect(() => {
-    //     updateStatus()
-    // }, [user_id])
     return (
         <TableRow>
             <TableCell>{username}</TableCell>
