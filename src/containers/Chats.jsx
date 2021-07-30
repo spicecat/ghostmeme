@@ -29,7 +29,6 @@ export default function Chats({ user }) {
     const [memes, setMemes] = useState([])
     const [users, setUsers] = useState([])
     const [selectedUser, setSelectedUser] = useState('')
-    const [localUserInfo, setLocalUserInfo] = useState([])
     const [selectedUserInfo, setSelectedUserInfo] = useState([])
 
     const [imgBase64, setimgBase64] = useState('')
@@ -48,9 +47,9 @@ export default function Chats({ user }) {
     const getUserInfoRequest = async (userID, user) => {
         // if (user === 'local') {
         //     setLocalUserInfo(await getUser(userID))
-        //     // console.log(localUserInfo)
+        //     // console.log(user)
         // }
-        setLocalUserInfo(user)
+        // setLocalUserInfo(user)
 
         if (user === 'selected') {
             setSelectedUserInfo(await getUser(userID))
@@ -219,7 +218,7 @@ export default function Chats({ user }) {
                                             {(meme.expiredAt != Number('-1') && meme.expiredAt < Date.now()) ? <i>Message expired</i> :
                                                 <div>
                                                     {/* Username of sender */}
-                                                    <b>{(localUserInfo && selectedUserInfo) ? (meme.owner === localUser) ? localUserInfo.username : selectedUserInfo.username : 'Error'}</b>
+                                                    <b>{(user && selectedUserInfo) ? (meme.owner === localUser) ? user.username : selectedUserInfo.username : 'Error'}</b>
 
                                                     {/* Creation date of meme and number of likes */}
                                                     &nbsp;-&nbsp;{meme.createdAt.toLocaleString()}
@@ -252,7 +251,7 @@ export default function Chats({ user }) {
                                             {(meme.expiredAt != Number('-1') && meme.expiredAt < Date.now()) ? <i>Message expired</i> :
                                                 <div>
                                                     {/* Username of sender */}
-                                                    <b>{(localUserInfo && selectedUserInfo) ? (meme.owner === localUser) ? localUserInfo.username : selectedUserInfo.username : 'Error'}</b>
+                                                    <b>{(user && selectedUserInfo) ? (meme.owner === localUser) ? user.username : selectedUserInfo.username : 'Error'}</b>
 
                                                     {/* Creation date of meme and number of likes */}
                                                     &nbsp;-&nbsp;{meme.createdAt.toLocaleString()}
@@ -278,8 +277,8 @@ export default function Chats({ user }) {
                                 {/* <TableCell className={(meme.owner === localUser) ? 'localChatText' : ''}>{meme.privates}</TableCell> */}
                                 {/* <TableCell className={(meme.owner === localUser) ? 'localChatText' : ''}><img className='chat-img' src={meme.imageUrl} /></TableCell> */}
                                 {/* <TableCell className={(meme.owner === localUser) ? 'localChatText' : ''}>{meme.meme_id}</TableCell> */}
-                                {/* <TableCell className={(meme.owner === localUser) ? 'localChatText' : ''}>{(localUserInfo && selectedUserInfo) ? (meme.owner === localUser) ? localUserInfo.username : selectedUserInfo.username : 'Error'}</TableCell> */}
-                                {/* <TableCell className={(meme.owner === localUser) ? 'localChatText' : ''}>{(localUserInfo && selectedUserInfo) ? (meme.receiver === localUser) ? localUserInfo.username : selectedUserInfo.username : 'Error'}</TableCell> */}
+                                {/* <TableCell className={(meme.owner === localUser) ? 'localChatText' : ''}>{(user && selectedUserInfo) ? (meme.owner === localUser) ? user.username : selectedUserInfo.username : 'Error'}</TableCell> */}
+                                {/* <TableCell className={(meme.owner === localUser) ? 'localChatText' : ''}>{(user && selectedUserInfo) ? (meme.receiver === localUser) ? user.username : selectedUserInfo.username : 'Error'}</TableCell> */}
                                 {/* <TableCell className={(meme.owner === localUser) ? 'localChatText' : ''}>{meme.likes}</TableCell> */}
                                 {/* <TableCell className={(meme.owner === localUser) ? 'localChatText' : ''}>{meme.replyTo}</TableCell> */}
                             </TableRow>
