@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react'
 import { redirect, getUsers } from '../services/userService'
 
 // import UsersTable from '../components/UsersTable'
-import MemesTable from '../components/Table'
+import PaginatedTable from '../components/PaginatedTable'
 import User from '../components/User'
 
 
@@ -22,7 +22,8 @@ export default function Friends({ user }) {
 
     return user.loading === undefined &&
         <>
-            <MemesTable
+            <PaginatedTable
+                name='friends'
                 headCells={[
                     { name: 'Username', prop: 'username' },
                     { name: 'Email', prop: 'email' },
@@ -30,7 +31,7 @@ export default function Friends({ user }) {
                     { name: 'Friends', prop: 'friends' },
                     { name: 'Likes', prop: 'liked' },
                     { name: 'Profile Picture', prop: 'imageUrl' }]}
-                memes={users}
-                Component={User} />
+                data={users}
+                Component={User} localUser={user} />
         </>
 }

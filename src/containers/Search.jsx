@@ -6,7 +6,7 @@ import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp'
 import { searchChatsMemes, searchFriendsMemes } from '../services/memeService'
 import { memeSearchSchema } from '../services/schemas'
 
-import MemesTable from '../components/Table'
+import PaginatedTable from '../components/PaginatedTable'
 import Meme from '../components/Meme'
 import Form from '../components/Form'
 
@@ -24,7 +24,7 @@ export default function Search({ user }) {
 
     useEffect(() => {
         updateMemes()
-        const timer = setInterval(updateMemes, 12711 + 1642 * (chatsMemes.length + friendsMemes.length))
+        const timer = setInterval(() => updateMemes(), 9711 + 3284 * (chatsMemes.length + friendsMemes.length))
         return () => clearInterval(timer)
     }, [])
 
@@ -38,7 +38,7 @@ export default function Search({ user }) {
                 <>
                     <Form name='chats' action={async values => { setChatsMemes(await searchChatsMemes(user, values)) }} schema={memeSearchSchema} search={true} />
                     <br />
-                    <MemesTable memes={chatsMemes} Component={Meme}/>
+                    <PaginatedTable name='chats' data={chatsMemes} Component={Meme} />
                 </>}
             <br />
 
@@ -50,7 +50,7 @@ export default function Search({ user }) {
                 <>
                     <Form name='friends' action={async values => { setFriendsMemes(await searchFriendsMemes(user, values)) }} schema={memeSearchSchema} search={true} />
                     <br />
-                    <MemesTable memes={friendsMemes} Component={Meme}/>
+                    <PaginatedTable name='friends' data={friendsMemes} Component={Meme} />
                 </>}
         </>
 }

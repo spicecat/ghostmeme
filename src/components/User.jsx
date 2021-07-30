@@ -1,8 +1,18 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { TableRow, TableCell, Button } from '@material-ui/core'
 
-export default function User({ user_id, username, email, phone, friends, liked, imageUrl }) {
+import { sendFriendRequest, getFriendRequests } from '../services/userService'
 
+export default function User({ user_id, username, email, phone, friends, liked, imageUrl, localUser }) {
+    const [status, setStatus] = useState('Send Friend Request')
+    const updateStatus = async () => {
+        console.log(await sendFriendRequest(localUser.user_id, user_id))
+        // setStatus('Pending')
+    }
+
+    // useEffect(() => {
+    //     updateStatus()
+    // }, [user_id])
     return (
         <TableRow>
             <TableCell>{username}</TableCell>
@@ -11,7 +21,7 @@ export default function User({ user_id, username, email, phone, friends, liked, 
             <TableCell>{friends}</TableCell>
             <TableCell>{liked}</TableCell>
             <TableCell>{imageUrl && <img src={imageUrl} alt={user_id} height="100" />}</TableCell>
-            <TableCell><Button variant='contained' color='primary'>Does nothing</Button></TableCell>
-        </TableRow>
+            <TableCell><Button variant='contained' color='primary' size='small' onClick={updateStatus}>{status}</Button></TableCell>
+        </TableRow >
     )
 }

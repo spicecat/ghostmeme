@@ -148,11 +148,19 @@ export const getUsernames = async (user_ids, usernames = {}) => { // returns obj
     return usernames
 }
 
-export const sendFriendRequest = async (user_id, target_id) => {
-    const URL = `${userApiUrl}/${user_id}/requests/outgoing/${target_id}`
-
+export const sendFriendRequest = async (user_id, target_id, reqType = 'outgoing') => {
+    const URL = `${userApiUrl}/${user_id}/requests/${reqType}/${target_id}`
     try {
         const response = await superagent.put(URL).set('key', apiKey)
-        return response.body.success
+        if (reqType === 'outgoing') return sendFriendRequest(target_id, user_id, 'incoming')
+        else return response.body.success
     } catch (err) { return retry(err, sendFriendRequest, user_id, target_id) }
+}
+
+export const getFriendRequests = async user_id => {
+    const URL = `${userApiUrl}/${user_id}/requests/outgoing`
+    try {
+        const response = await superagent.put(URL).set('key', apiKey)
+        return response.body.users
+    } catch (err) { return retry(err, getFriendRequests, user_id) || [] }
 }
