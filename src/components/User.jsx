@@ -13,13 +13,8 @@ export default function User({ user_id, username, email, phone, friends, liked, 
         console.log(user_id, username)
     }
 
-    // useEffect(() => {
-    //     updateStatus()
-    // }, [user_id])
-
-    useEffect(() => {
-        updateStatus()
-    }, [])
+    useEffect(() => { updateStatus() }, [user_id])
+    useEffect(() => { updateStatus() }, [])
 
     const handleFriendRequest = async () => {
         if (status === 'Add Friend' && await sendFriendRequest(localUser.user_id, user_id)) setStatus('Pending')

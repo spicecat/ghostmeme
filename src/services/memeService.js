@@ -39,7 +39,7 @@ export const searchMemes = async (baseQuery, query = {}, friends = {}) => {
             ...description && { description }
         }
         const URL = `${apiUrl}/memes/search?match=${encodeURIComponent(JSON.stringify(baseQuery))}&regexMatch=${encodeURIComponent(JSON.stringify(regexQuery))}`
-        const response = await superagent.get(URL).set('key', apiKey)
+        const response = await superagent.get(URL).set('key', apiKey).forceUpdate(true)
         let { memes } = response.body
         memes = await addUsernames(memes, friends)
         return memes.filter(meme => meme.username.includes(owner))
@@ -60,7 +60,7 @@ export const getConversation = async (user1, user2) => {
     // console.log(URL)
 
     try {
-        const response = await superagent.get(URL).set('key', apiKey)
+        const response = await superagent.get(URL).set('key', apiKey).forceUpdate(true)
 
         const memesList = response.body.memes.map(meme => ({
             createdAt: new Date(meme.createdAt),
