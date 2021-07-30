@@ -1,6 +1,7 @@
 import superagent from 'superagent'
 import superagentCache from 'superagent-cache'
 import Cookies from 'universal-cookie'
+import { pick } from 'lodash'
 
 import { serverUrl, apiUrl, apiKey } from '../var.js'
 
@@ -139,7 +140,7 @@ export const getFriends = async user_id => {
 
 const addUsernames = async user_ids => {
     const usernames = await getUsernames(user_ids)
-    return user_ids.map(user_id => ({ username: usernames[user_id] }))
+    return pick(usernames, user_ids)
 }
 
 export const getUsernames = async user_ids => { // returns object {user_id:username...}
