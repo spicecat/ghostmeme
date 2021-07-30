@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 
 import { login } from '../services/userService'
 import { loginSchema } from '../services/schemas'
+import ResetPassword from "./containers/ResetPassword";
 
 import Form from '../components/Form'
 import Alert from '../components/Alert'
@@ -24,6 +25,7 @@ export const Login = () => {
             } schema={loginSchema} />
         </>
     )
-}
+
+        }
 
 export default Login
