@@ -188,21 +188,6 @@ export default function Chats({ user }) {
             <br /><br /> */}
             <TableContainer >
                 <Table>
-                    <TableHead>
-                        <TableRow>
-                            {/* <TableCell>createdAt</TableCell> */}
-                            {/* <TableCell>expiredAt</TableCell> */}
-                            {/* <TableCell>localUser</TableCell>
-                            <TableCell>otherUser</TableCell> */}
-                            {/* <TableCell>private</TableCell> */}
-                            {/* <TableCell>imageUrl</TableCell> */}
-                            {/* <TableCell>meme_id</TableCell> */}
-                            {/* <TableCell>owner</TableCell> */}
-                            {/* <TableCell>receiver</TableCell> */}
-                            {/* <TableCell>likes</TableCell> */}
-                            {/* <TableCell>replyTo</TableCell> */}
-                        </TableRow>
-                    </TableHead>
                     <TableBody>
                         {memes && memes.map(meme => (
                             // <TableRow className={(meme.owner === localUser) ? 'localChat' : 'otherChat'} key={meme.meme_id}>
@@ -239,7 +224,7 @@ export default function Chats({ user }) {
                                         </div>
                                     }
                                 </TableCell>
-                                <TableCell className='tableChat' width='20%' />
+                                <TableCell className='tableChat' width='20%' />getUserInfoRequest
                                 <TableCell className='tableChat' width='40%'>
                                     {/* <div className={(meme.owner === localUser) ? 'chat localChat' : 'chat otherChat'}> */}
                                     {meme.owner === localUser && (meme.expiredAt == Number('-1') || meme.expiredAt > Date.now()) && <IconButton onClick={() => vanishMemeRequest(meme.meme_id)} aria-label='delete'><DeleteIcon /></IconButton>}
@@ -272,13 +257,6 @@ export default function Chats({ user }) {
                                         </div>
                                     }
                                 </TableCell>
-                                {/* <TableCell className={(meme.owner === localUser) ? 'localChatText' : ''}>{meme.privates}</TableCell> */}
-                                {/* <TableCell className={(meme.owner === localUser) ? 'localChatText' : ''}><img className='chat-img' src={meme.imageUrl} /></TableCell> */}
-                                {/* <TableCell className={(meme.owner === localUser) ? 'localChatText' : ''}>{meme.meme_id}</TableCell> */}
-                                {/* <TableCell className={(meme.owner === localUser) ? 'localChatText' : ''}>{(user && selectedUserInfo) ? (meme.owner === localUser) ? user.username : selectedUserInfo.username : 'Error'}</TableCell> */}
-                                {/* <TableCell className={(meme.owner === localUser) ? 'localChatText' : ''}>{(user && selectedUserInfo) ? (meme.receiver === localUser) ? user.username : selectedUserInfo.username : 'Error'}</TableCell> */}
-                                {/* <TableCell className={(meme.owner === localUser) ? 'localChatText' : ''}>{meme.likes}</TableCell> */}
-                                {/* <TableCell className={(meme.owner === localUser) ? 'localChatText' : ''}>{meme.replyTo}</TableCell> */}
                             </TableRow>
                         ))}
                     </TableBody>
