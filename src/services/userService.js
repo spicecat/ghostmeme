@@ -15,7 +15,7 @@ const cookies = new Cookies()
 
 const retry = async ({ status }, action, ...props) => {
     if (status === 555) return new Promise(resolve => setTimeout(() => { resolve(action(...props)) }, 5000))
-    else return []
+    else return
 }
 
 export const redirect = async user => {
@@ -87,6 +87,7 @@ export const getLocalUser = async () => {
         return
     }
     const { user_id } = response.body
+
     const user = await getUser(user_id)
     // const user = {
     //     user_id: '5ec8adf06e38137ff2e58770',
@@ -99,9 +100,18 @@ export const getLocalUser = async () => {
     //     deleted: false,
     //     imageUrl: null
     // }
+    if (!user) return { loading: false }
     user.friends = await getFriends(user.user_id)
     console.log(user)
     return user
+}
+
+export const getUser = async user_id => {
+    const URL = `${userApiUrl}/${user_id}`
+    try {
+        const response = await superagent.get(URL).set('key', apiKey)
+        return response.body.user
+    } catch (err) { return retry(err, getUser, user_id) }
 }
 
 export const getUsers = async (after = '') => {
@@ -118,15 +128,6 @@ export const getUsers = async (after = '') => {
         // }
         // else return []
     } catch (err) { return retry(err, getUsers) || [] }
-}
-
-export const getUser = async user_id => {
-    const URL = `${userApiUrl}/${user_id}`
-
-    try {
-        const response = await superagent.get(URL).set('key', apiKey)
-        return response.body.user
-    } catch (err) { return retry(err, getUser, user_id) || {} }
 }
 
 export const getFriends = async user_id => {

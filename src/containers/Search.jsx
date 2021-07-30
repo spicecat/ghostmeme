@@ -28,7 +28,7 @@ export default function Search({ user }) {
         return () => clearInterval(timer)
     }, [])
 
-    return user.loading === undefined &&
+    return (
         <>
             <IconButton onClick={() => { setOpenChats(!openChats) }}>
                 {openChats ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
@@ -53,4 +53,5 @@ export default function Search({ user }) {
                     <PaginatedTable name='friends' data={friendsMemes} Component={Meme} />
                 </>}
         </>
+    )
 }
