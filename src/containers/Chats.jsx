@@ -18,7 +18,7 @@ import SendIcon from '@material-ui/icons/Send'
 import DeleteIcon from '@material-ui/icons/DeleteOutline'
 // import FileBase64 from 'react-file-base64';
 
-import { redirect, getUsers, getUserInfo } from '../services/userService'
+import { redirect, getUsers, getUser } from '../services/userService'
 import { getMemes, getConversation, createMeme, vanishMeme } from '../services/memeService'
 
 export default function Chats({ user }) {
@@ -46,13 +46,14 @@ export default function Chats({ user }) {
     }
 
     const getUserInfoRequest = async (userID, user) => {
-        if (user === 'local') {
-            setLocalUserInfo(await getUserInfo(userID))
-            // console.log(localUserInfo)
-        }
+        // if (user === 'local') {
+        //     setLocalUserInfo(await getUser(userID))
+        //     // console.log(localUserInfo)
+        // }
+        setLocalUserInfo(user)
 
         if (user === 'selected') {
-            setSelectedUserInfo(await getUserInfo(userID))
+            setSelectedUserInfo(await getUser(userID))
             // console.log(selectedUserInfo)
         }
         // const response = await getUserInfo(userID)

@@ -17,20 +17,20 @@ export default function Search({ user }) {
     const [friendsMemes, setFriendsMemes] = useState([])
 
     const updateMemes = async () => {
-        console.log('Updating memes...', openChats, openFriends)
-        if (openChats) setChatsMemes(await searchChatsMemes(user))
-        if (openFriends) setFriendsMemes(await searchFriendsMemes(user))
+        console.log('Updating memes...')
+        setChatsMemes(await searchChatsMemes(user))
+        setFriendsMemes(await searchFriendsMemes(user))
     }
 
     useEffect(() => {
         updateMemes()
-        const timer = setInterval(() => updateMemes(), 9711 + 3284 * (chatsMemes.length + friendsMemes.length))
+        const timer = setInterval(updateMemes, 12711 + 3284 * (chatsMemes.length + friendsMemes.length))
         return () => clearInterval(timer)
     }, [])
 
     return !user.loading &&
         <>
-            <IconButton onClick={() => setOpenChats(!openChats)}>
+            <IconButton onClick={() => { setOpenChats(!openChats) }}>
                 {openChats ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
             </IconButton>
             Memes from Chats
@@ -42,7 +42,7 @@ export default function Search({ user }) {
                 </>}
             <br />
 
-            <IconButton onClick={() => setOpenFriends(!openFriends)}>
+            <IconButton onClick={() => { setOpenFriends(!openFriends) }}>
                 {openFriends ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
             </IconButton>
             Memes from Friends

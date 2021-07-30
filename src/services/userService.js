@@ -1,10 +1,13 @@
 import superagent from 'superagent'
+// import superagentCache from 'superagent-cache'
 import Cookies from 'universal-cookie'
 
 import { serverUrl, apiUrl, apiKey } from '../var.js'
 
 const userServerUrl = serverUrl + '/users', userApiUrl = apiUrl + '/users'
+// superagentCache(superagent)
 const cookies = new Cookies()
+
 
 const retry = async ({ status }, action, ...props) => new Promise(resolve => setTimeout(() => {
     if (status === 555) resolve(action(...props))
@@ -79,7 +82,8 @@ export const getLocalUser = async () => {
         if (err.status === 401) logout()
         return
     }
-    const { user } = response.body
+    const { user_id } = response.body
+    const user = await getUser(user_id)
     // const user = {
     //     user_id: '5ec8adf06e38137ff2e58770',
     //     name: "Barack Obama",
@@ -114,22 +118,13 @@ export const getUser = async user_id => {
     } catch (err) { return retry(err, getUser, user_id) || {} }
 }
 
-export const getUserInfo = async user_id => {
-    const URL = `${apiUrl}/users/${user_id}`
-    try {
-        const response = await superagent.get(URL).set('key', apiKey)
-        return response.body.user
-    } catch (err) { return retry(err, getUser, user_id) || {} }
-}
-
-
 export const getFriends = async user_id => {
     const URL = `${userApiUrl}/${user_id}/friends`
 
     try {
         const response = await superagent.get(URL).set('key', apiKey)
         return getUsernames(response.body.users)
-    } catch (err) { return retry(err, getFriends, user_id) }
+    } catch (err) { return retry(err, getFriends, user_id) || {} }
 }
 
 export const getUsernames = async (user_ids, usernames = {}) => { // returns object {user_id:username...}

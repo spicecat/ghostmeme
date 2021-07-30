@@ -21,7 +21,7 @@ export default function Form({ name, action, schema, search = false }) {
                     <TextField
                         size='small'
                         name={field}
-                        label={upperFirst(field.split(/(?=[A-Z\s])/).join('_').replaceAll('_', ' '))}
+                        label={name === 'Login' && field === 'username' ? 'Username or Email' : upperFirst(field.split(/(?=[A-Z\s])/).join('_').replaceAll('_', ' '))}
                         type={fieldInfo[field]}
                         {...{ fullWidth: !search }}
                         {...fieldInfo[field] === 'date' && { InputLabelProps: { shrink: true } }}

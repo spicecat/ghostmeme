@@ -1,8 +1,11 @@
 import superagent from 'superagent'
+import superagentCache from 'superagent-cache'
 
 import { serverUrl, apiUrl, apiKey } from '../var.js'
 
 import { getUser, getUsernames } from './userService'
+
+superagentCache(superagent)
 
 const retry = async ({ status }, action, ...props) => {
     if (status === 555) return new Promise(resolve => setTimeout(() => { resolve(action(...props)) }, 1723))
