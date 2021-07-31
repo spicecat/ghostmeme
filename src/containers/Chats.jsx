@@ -122,7 +122,7 @@ export default function Chats({ user }) {
             // selectedUserRef.current ? console.log(selectedUserRef.current) : console.log('No user selected')
             // console.log(`Local user: ${localUserRef.current}`)
             selectedUserRef.current ? getConversationRequest(selectedUserRef.current, localUserRef.current) : console.log('No user selected')
-        }, 3000)
+        }, 5000)
         return () => { clearTimeout(timer) }
     }, [])
 
