@@ -3,9 +3,13 @@ import { upperFirst } from 'lodash/string'
 import { useFormik } from 'formik'
 import { Button, TextField, Typography, FormControlLabel, Checkbox } from '@material-ui/core'
 
+import captchaSrc from '../assets/captcha.jpg'
+
 import { fieldInfo, passwordStrength } from '../services/schemas'
 
-export default function Form({ name, action, schema, search = false }) {
+
+export default function Form({ name, action, schema, rememberMe = true, search = false }) {
+    const captcha = 'captcha' in schema.fields
     const fields = Object.keys(schema.fields)
     const formik = useFormik({
         initialValues: fields.reduce((o, i) => ({ ...o, [i]: '' }), {}),
@@ -34,10 +38,15 @@ export default function Form({ name, action, schema, search = false }) {
                     {search && <>&nbsp;&nbsp;</>}
                 </span>
             )}
-            {search || <><br /><br /><br /></>}
+            {search || <><br /><br /></>}
+            {captcha &&
+                <div>
+                    <img src={captchaSrc} alt='CAPTCHA' />
+                    <br /><br />
+                </div>}
             <Button type='submit' variant='contained' color='primary'>{search ? 'Search' : name}</Button>
             &nbsp;&nbsp;&nbsp;
-            {search || <FormControlLabel
+            {(rememberMe && !search) && <FormControlLabel
                 control={<Checkbox checked={formik.rememberMe} onChange={formik.handleChange} name='rememberMe' />}
                 label='Remember Me'
             />}

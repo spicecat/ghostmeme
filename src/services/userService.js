@@ -61,6 +61,11 @@ export const login = async ({ username, password, rememberMe }) => {
     return response.statusCode
 }
 
+export const resetPassword = ({ email }) => {
+    console.log(email)
+    return 501
+}
+
 export const logout = () => {
     cookies.remove('token')
     window.location.href = '/'

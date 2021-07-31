@@ -5,9 +5,8 @@ import { registerSchema } from '../services/schemas'
 
 import Form from '../components/Form'
 import Alert from '../components/Alert'
-import captcha from '../assets/captcha.jpg'
 
-export const Register = () => {
+export default function Register() {
     const [statusCode, setStatusCode] = useState(100)
 
     useEffect(() => {
@@ -23,9 +22,6 @@ export const Register = () => {
                 setStatusCode(await register(values))
             }
             } schema={registerSchema} />
-            <img src={captcha} alt='CAPTCHA' />
         </>
     )
 }
-
-export default Register

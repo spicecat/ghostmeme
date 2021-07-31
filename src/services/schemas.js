@@ -34,7 +34,7 @@ export const registerSchema = Yup.object({
         .min(11, 'Password strength: weak')
         .required('Password is required'),
     confirm_password: Yup.string()
-        .oneOf([Yup.ref('password'), null], 'Passwords must match')
+        .oneOf([Yup.ref('password')], 'Passwords must match')
         .required('Confirm password is required'),
     profile_picture: Yup.mixed()
         .nullable()
@@ -42,7 +42,16 @@ export const registerSchema = Yup.object({
         .test('fileSize', 'File must be ≤ 130 KB', validateFileSize),
     captcha: Yup.string()
         .required('CAPTCHA is required')
-        .matches('4', 'Invalid CAPTCHA')
+        .oneOf(['4'], 'Invalid CAPTCHA')
+})
+
+export const resetPasswordSchema = Yup.object({
+    email: Yup.string()
+        .required('Email is required')
+        .email('Invalid email'),
+    captcha: Yup.string()
+        .required('CAPTCHA is required')
+        .oneOf(['4'], 'Invalid CAPTCHA')
 })
 
 export const passwordStrength = ({ length }) =>

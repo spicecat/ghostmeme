@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react'
+import { Link } from 'react-router-dom'
 
 import { login } from '../services/userService'
 import { loginSchema } from '../services/schemas'
-import ResetPassword from './ResetPassword'
 
 import Form from '../components/Form'
 import Alert from '../components/Alert'
 
-export const Login = () => {
+export default function Login() {
     const [statusCode, setStatusCode] = useState(100)
 
     useEffect(() => {
@@ -23,9 +23,9 @@ export const Login = () => {
                 setStatusCode(await login(values))
             }
             } schema={loginSchema} />
+            <br />
+            <Link to='/reset_password'>Forgot Password</Link>
         </>
     )
 
 }
-
-export default Login
