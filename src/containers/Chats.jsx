@@ -127,13 +127,6 @@ export default function Chats({ user }) {
 
     return user.loading === undefined && (
         <>
-            {/* Search memes from X sender to X receiver */}
-
-            {/* <TextField label='selectedUser' name='selectedUser' value={selectedUser} variant='outlined' />
-            <Button variant='contained' color='primary' onClick={() => getConversationRequest(selectedUser)}>Search Conversations</Button> */}
-            {/* <Button variant='contained' color='primary' onClick={() => getUserInfoRequest(localUser, 'local')}>Selected User Info</Button>
-            <Button variant='contained' color='primary' onClick={() => getUserInfoRequest(selectedUser, 'selected')}>Selected User Info</Button> */}
-
             {/* Add new meme */}
             <form onSubmit={createMemeRequest} autoComplete='off'>
                 <TextField type='hidden' value={localUser} name='owner' />
@@ -182,9 +175,6 @@ export default function Chats({ user }) {
                 </div>
             </form>
 
-            {/* Get all memes */}
-            {/* <Button variant='contained' color='primary' onClick={getMemesRequest}>Get All Memes</Button>
-            <br /><br /> */}
             <TableContainer >
                 <Table>
                     <TableBody>
