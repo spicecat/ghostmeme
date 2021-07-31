@@ -13,6 +13,7 @@ import {
     TextField
 } from '@material-ui/core'
 import { KeyboardDatePicker } from "@material-ui/pickers";
+import Typography from '@material-ui/core/Typography';
 
 import SendIcon from '@material-ui/icons/Send'
 import DeleteIcon from '@material-ui/icons/DeleteOutline'
@@ -176,7 +177,7 @@ export default function Chats({ user }) {
 
             <br />
             <Paper elevation={3}>
-                <div align='center'><p>{selectedUser ? <b>Conversation with {selectedUserInfo.username}</b> : <b>No conversation selected</b>}</p></div>
+                <div align='center' className='chat-header'>{selectedUser ? <Typography variant='h4'>Conversation with {selectedUserInfo.username}</Typography> : <Typography variant='h4'>No conversation selected</Typography>}</div>
                 <TableContainer >
                     <Table>
                         <TableBody>

@@ -31,6 +31,10 @@ img.chat-img {
   border-radius: 20px;
 }
 
+.chat-header {
+  padding: 15px;
+}
+
 .localChat {
   background: #1A73E8 !important;
   color: white !important;
