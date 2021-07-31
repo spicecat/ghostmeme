@@ -47,7 +47,7 @@ export const Stories = () => {
 export default Stories
 
 
-    // import React, { Component } from "react";
+// import React, { Component } from "react";
 
 //     class Stories extends Component {
 

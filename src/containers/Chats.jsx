@@ -20,13 +20,10 @@ import DeleteIcon from '@material-ui/icons/DeleteOutline'
 // import FileBase64 from 'react-file-base64';
 
 import { redirect, getUsers, getUser } from '../services/userService'
-import { getMemes, getConversation, createMeme, vanishMeme } from '../services/memeService'
+import { getConversation, createMeme, vanishMeme } from '../services/memeService'
 
 export default function Chats({ user }) {
     useEffect(() => { redirect(user) }, [user])
-
-    // const localUser = '60f72d7d680fdc0008d79ad2'
-    // const [selectedUser, setSelectedUser] = useState('60f5c300aa69860008702933')
 
     const localUser = user.user_id
     const [memes, setMemes] = useState([])
@@ -41,29 +38,7 @@ export default function Chats({ user }) {
     const [showImageFile, setShowImageFile] = useState('')
     const [showExpiration, setShowExpiration] = useState('')
 
-    const getMemesRequest = async () => {
-        setMemes(await getMemes())
-    }
-
-    const getUserInfoRequest = async (userID, user) => {
-        // if (user === 'local') {
-        //     setLocalUserInfo(await getUser(userID))
-        //     // console.log(user)
-        // }
-        // setLocalUserInfo(user)
-
-        if (user === 'selected') {
-            setSelectedUserInfo(await getUser(userID))
-            // console.log(selectedUserInfo)
-        }
-        // const response = await getUserInfo(userID)
-        // console.log(response.username)
-        // return response.username
-    }
-
-    const getUsersRequest = async () => {
-        setUsers(await getUsers())
-    }
+    const updateUsers = async () => { setUsers(await getUsers()) }
 
     const getConversationRequest = async (selectedUserID, localUserID = localUser, requestType) => {
         if (requestType === 'refresh') {
@@ -75,10 +50,9 @@ export default function Chats({ user }) {
         }
     }
 
-    const selectUserRequest = async (userID) => {
+    const selectUserRequest = async userID => {
         setSelectedUser(userID)
-        getUserInfoRequest(localUser, 'local')
-        getUserInfoRequest(userID, 'selected')
+        setSelectedUserInfo(await getUser(userID))
         await getConversationRequest(userID, localUser, 'refresh')
     }
 
@@ -100,12 +74,10 @@ export default function Chats({ user }) {
         if (component === 'imageLink') {
             showImageLink ? setShowImageLink(false) : setShowImageLink(true)
         }
-
-        if (component === 'imageFile') {
+        else if (component === 'imageFile') {
             showImageFile ? setShowImageFile(false) : setShowImageFile(true)
         }
-
-        if (component === 'expiration') {
+        else if (component === 'expiration') {
             showExpiration ? setShowExpiration(false) : setShowExpiration(true)
         }
     }
@@ -117,6 +89,7 @@ export default function Chats({ user }) {
     localUserRef.current = localUser
 
     useEffect(() => {
+        updateUsers()
         let timer = setInterval(() => {
             console.log('Updating conversations...')
             // selectedUserRef.current ? console.log(selectedUserRef.current) : console.log('No user selected')
@@ -258,7 +231,7 @@ export default function Chats({ user }) {
             <br /><br />
 
             {/* Get all users */}
-            <Button variant='contained' color='primary' onClick={getUsersRequest}>Get All Users</Button>
+            <Button variant='contained' color='primary' onClick={updateUsers}>Get All Users</Button>
             <br /><br />
             <TableContainer component={Paper}>
                 <Table>
