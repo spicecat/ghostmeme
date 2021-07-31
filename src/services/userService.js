@@ -9,10 +9,6 @@ const userServerUrl = serverUrl + '/users', userApiUrl = apiUrl + '/users'
 superagentCache(superagent)
 const cookies = new Cookies()
 
-// const delay = async (action, delay = 500) => new Promise(resolve => setTimeout(() => {
-//     resolve(action)
-// }, delay))
-
 const retry = async ({ status }, action, ...props) => {
     if (status === 555) return new Promise(resolve => setTimeout(() => { resolve(action(...props)) }, 4000))
     else return
@@ -80,6 +76,20 @@ export const getLoginTimeout = () => {
 export const getLoginAttempts = () => Number(cookies.get('loginAttempts')) || 0
 
 export const getLocalUser = async () => {
+    // return {
+    //     user_id: '5ec8adf06e38137ff2e58770',
+    //     name: "Barack Obama",
+    //     email: "o@barackobama.com",
+    //     phone: "773-555-5555",
+    //     username: "Oforce1",
+    //     friends: [{ '5ec8adf06e38137ff2e58770': "Barack Obama" }, { '5ec8adf06e38137ff2e58771': "Barack Obama1" }],
+    //     incomingFriendRequests: [],
+    //     outgoingFriendRequests: [],
+    //     liked: 0,
+    //     deleted: false,
+    //     imageUrl: null
+    // }
+
     const token = cookies.get('token')
     if (!token) return { loading: false }
 
@@ -93,17 +103,7 @@ export const getLocalUser = async () => {
     const { user_id } = response.body
 
     const user = await getUser(user_id)
-    // const user = {
-    //     user_id: '5ec8adf06e38137ff2e58770',
-    //     name: "Barack Obama",
-    //     email: "o@barackobama.com",
-    //     phone: "773-555-5555",
-    //     username: "Oforce1",
-    //     friends: [{ '5ec8adf06e38137ff2e58770': "Barack Obama" }, { '5ec8adf06e38137ff2e58771': "Barack Obama1" }],
-    //     liked: 0,
-    //     deleted: false,
-    //     imageUrl: null
-    // }
+
     if (!user) return { loading: false }
     user.friends = await getFriends(user_id)
     user.outgoingFriendRequests = await getFriendRequests(user_id, 'outgoing')

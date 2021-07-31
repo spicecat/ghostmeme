@@ -2,9 +2,8 @@ import React, { useState, useEffect } from 'react'
 import { BrowserRouter, Switch, Route } from 'react-router-dom'
 import { getLocalUser } from '../services/userService'
 import { searchMemes } from '../services/memeService'
-const axios = require('axios')
 
-export const Stories1 = () => {
+export const Stories = () => {
   const [user, setUser] = useState({ loading: true })
   const [UsersMemesArray, setUserMemesArray] = useState([])
   const [valid, setValid] = useState(false)
@@ -14,43 +13,38 @@ export const Stories1 = () => {
     updateUser()
   }, [])
 
-
-
-// 
-const GetsUsersMemes = async () => { 
-  try { 
-  setUserMemesArray(await searchMemes({owner:user.user_id}))
-   setValid(true)
-   console.log('got it!')
- }
-  catch{
-    console.log('error!')
+  // 
+  const GetsUsersMemes = async () => {
+    try {
+      setUserMemesArray(await searchMemes({ owner: user.user_id }))
+      setValid(true)
+      console.log('got it!')
+    }
+    catch {
+      console.log('error!')
+    }
   }
- }
-const mapper = (ix) => { 
-  return (
-    <li>
-      <p>dsc: {ix.description} </p> 
-    </li>
-  )
+  const mapper = (ix) => {
+    return (
+      <li>
+        <p>dsc: {ix.description} </p>
+      </li>
+    )
 
+  }
+
+  const TitleItems = UsersMemesArray.map(mapper)
+
+  return (
+    <>
+      <h1>{user.username}'s Stories!</h1> <br />
+      <button onClick={GetsUsersMemes} > Get up to date on your posts!</button>
+      {valid && <ul> {TitleItems}</ul>}
+    </>
+  )
 }
 
-const TitleItems = UsersMemesArray.map(mapper)
-
-  return (
-      <>
-          <h1>{user.username}'s Stories!</h1> <br />
-          <button onClick={GetsUsersMemes} > Get up to date on your posts!</button>
-          {valid && <ul> {TitleItems}</ul> }
-      </>
-  )
-}
-
-    export default Stories1
-
-
-
+export default Stories
 
 
     // import React, { Component } from "react";
@@ -79,7 +73,7 @@ const TitleItems = UsersMemesArray.map(mapper)
 //             <div className="Post-caption">
 //               <strong>John D. Veloper </strong> Loving Educative!
 //             </div>
-            
+
 //           </article>
 //         }
 //     }

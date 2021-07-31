@@ -201,7 +201,7 @@ export default function Chats({ user }) {
                                                         <br />
 
                                                         {/* Image, if any */}
-                                                        <img className='chat-img' src={meme.imageUrl} />
+                                                        <img className='chat-img' src={meme.imageUrl} alt={meme.imageUrl} />
                                                         {meme.imageUrl && <br />}
 
                                                         {/* Meme description */}
@@ -234,7 +234,7 @@ export default function Chats({ user }) {
                                                         <br />
 
                                                         {/* Image, if any */}
-                                                        <img className='chat-img' src={meme.imageUrl} />
+                                                        <img className='chat-img' src={meme.imageUrl} alt={meme.imageUrl} />
                                                         {meme.imageUrl && <br />}
 
                                                         {/* Meme description */}

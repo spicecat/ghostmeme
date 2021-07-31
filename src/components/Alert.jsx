@@ -24,7 +24,8 @@ export default function Alert({ msg = 'Error', type = 'error', statusCode }) {
                 401: `Incorrect username or password. ${3 - getLoginAttempts()} attempts remaining`,
                 403: `0 login attempts remain. Try again in ${formatTime(getLoginTimeout())}`,
                 409: 'Username or email taken',
-                501: 'Not Implemented'
+                501: 'Not Implemented',
+                600: 'Email sent'
             }[statusCode] || 'Error')
             setOpen(true)
         }
