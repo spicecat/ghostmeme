@@ -42,7 +42,12 @@ export const searchMemes = async (baseQuery, query = {}, friends = {}) => {
         const response = await superagent.get(URL).set('key', apiKey).forceUpdate(true)
         let { memes } = response.body
         memes = await addUsernames(memes, friends)
-        return memes.filter(meme => meme.username.includes(owner))
+        memes = memes.filter(meme => meme.username.includes(owner))
+        for (const meme of memes) {
+            meme.createdAt = new Date(meme.createdAt)
+            meme.expiredAt = meme.expiredAt === -1 ? -1 : new Date(meme.expiredAt)
+        }
+        return memes
     } catch (err) { return await retry(err, searchMemes, baseQuery, query) }
 }
 
@@ -50,38 +55,7 @@ export const searchChatsMemes = async ({ user_id, friends }, query) => searchMem
 
 export const searchFriendsMemes = async ({ friends }, query) => searchMemes({ receiver: null, private: true, owner: Object.keys(friends).join('|') }, query, friends)
 
-export const getConversation = async (user1, user2) => {
-    const query = encodeURIComponent(JSON.stringify({
-        "owner": `${user1}|${user2}`,
-        "receiver": `${user1}|${user2}`,
-    }))
-
-    const URL = `${apiUrl}/memes/search?match=${query}`
-    // console.log(URL)
-
-    try {
-        const response = await superagent.get(URL).set('key', apiKey).forceUpdate(true)
-
-        const memesList = response.body.memes.map(meme => ({
-            createdAt: new Date(meme.createdAt),
-            expiredAt: meme.expiredAt === -1 ? meme.expiredAt : new Date(meme.expiredAt),
-            description: meme.description,
-            private: meme.private,
-            imageUrl: meme.imageUrl,
-            meme_id: meme.meme_id,
-            owner: meme.owner,
-            receiver: meme.receiver,
-            likes: meme.likes,
-            replyTo: meme.replyTo
-        }))
-
-        // console.log(memesList)
-        return memesList
-    } catch (err) {
-        console.error(err)
-    }
-}
-
+export const getConversation = async (user1, user2) => searchMemes({ receiver: `${user1}|${user2}`, owner: `${user1}|${user2}` })
 
 export const createMeme = async (json) => {
     const URL = `${apiUrl}/memes`
@@ -94,7 +68,7 @@ export const createMeme = async (json) => {
             // expiredAt: json.expiredAt ? Number(json.expiredAt) : Number('-1'),
             expiredAt: json.expiredAt ? new Date(json.expiredAt).getTime() : Number('-1'),
             description: json.description,
-            private: (json.private == 'true') ? true : false,
+            private: json.private,
             replyTo: json.replyTo,
             imageUrl: json.imageUrl,
             imageBase64: json.imageBase64 ? json.imageBase64 : null,

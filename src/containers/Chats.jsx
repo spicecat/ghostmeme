@@ -132,7 +132,7 @@ export default function Chats({ user }) {
             <form onSubmit={createMemeRequest} autoComplete='off'>
                 <TextField type='hidden' value={localUser} name='owner' />
                 <TextField type='hidden' value={selectedUser} name='receiver' />
-                {/* <TextField label='expiredAt' placeholder='-1' name='expiredAt' variant='outlined' />
+                {/* <TextField label='expiredAt' placeholder=-1 name='expiredAt' variant='outlined' />
                 <TextField label='description' name='description' variant='outlined' /> */}
                 <TextField type='hidden' value='true' name='private' />
                 <TextField type='hidden' name='replyTo' />
@@ -185,12 +185,12 @@ export default function Chats({ user }) {
                                 // <TableRow className={(meme.owner === localUser) ? 'localChat' : 'otherChat'} key={meme.meme_id}>
                                 <TableRow key={meme.meme_id}>
                                     {/* <TableCell className={(meme.owner === localUser) ? 'localChatText' : ''}>{meme.createdAt.toLocaleString()}</TableCell> */}
-                                    {/* <TableCell className={(meme.owner === localUser) ? 'localChatText' : ''}>{meme.expiredAt == '-1' ? '' : meme.expiredAt.toLocaleString()}</TableCell> */}
+                                    {/* <TableCell className={(meme.owner === localUser) ? 'localChatText' : ''}>{meme.expiredAt===-1 ? '' : meme.expiredAt.toLocaleString()}</TableCell> */}
                                     <TableCell className='tableChat' width='40%'>
                                         {(meme.owner === selectedUser) &&
                                             <div className='chat otherChat'>
                                                 {/* Don't show expired memes */}
-                                                {(meme.expiredAt != Number('-1') && meme.expiredAt < Date.now()) ? <i>Message expired</i> :
+                                                {(meme.expiredAt !== -1 && meme.expiredAt < Date.now()) ? <i>Message expired</i> :
                                                     <div>
                                                         {/* Username of sender */}
                                                         <b>{(user && selectedUserInfo) ? (meme.owner === localUser) ? user.username : selectedUserInfo.username : 'Error'}</b>
@@ -208,9 +208,9 @@ export default function Chats({ user }) {
                                                         {meme.description}
 
                                                         {/* Expired At date, if any */}
-                                                        {meme.expiredAt == '-1' ? '' : <br />}
-                                                        {meme.expiredAt == '-1' ? '' : <br />}
-                                                        <i>{meme.expiredAt == '-1' ? '' : `Expires at ${meme.expiredAt.toLocaleString()}`}</i>
+                                                        {meme.expiredAt === -1 ? '' : <br />}
+                                                        {meme.expiredAt === -1 ? '' : <br />}
+                                                        <i>{meme.expiredAt === -1 ? '' : `Expires at ${meme.expiredAt.toLocaleString()}`}</i>
                                                     </div>
                                                 }
                                             </div>
@@ -219,11 +219,11 @@ export default function Chats({ user }) {
                                     <TableCell className='tableChat' width='20%' />
                                     <TableCell className='tableChat' width='40%'>
                                         {/* <div className={(meme.owner === localUser) ? 'chat localChat' : 'chat otherChat'}> */}
-                                        {meme.owner === localUser && (meme.expiredAt == Number('-1') || meme.expiredAt > Date.now()) && <IconButton onClick={() => vanishMemeRequest(meme.meme_id)} aria-label='delete'><DeleteIcon /></IconButton>}
+                                        {meme.owner === localUser && (meme.expiredAt === -1 || meme.expiredAt > Date.now()) && <IconButton onClick={() => vanishMemeRequest(meme.meme_id)} aria-label='delete'><DeleteIcon /></IconButton>}
                                         {(meme.owner === localUser) &&
                                             <div className='chat localChat'>
                                                 {/* Don't show expired memes */}
-                                                {(meme.expiredAt != Number('-1') && meme.expiredAt < Date.now()) ? <i>Message expired</i> :
+                                                {(meme.expiredAt !== -1 && meme.expiredAt < Date.now()) ? <i>Message expired</i> :
                                                     <div>
                                                         {/* Username of sender */}
                                                         <b>{(user && selectedUserInfo) ? (meme.owner === localUser) ? user.username : selectedUserInfo.username : 'Error'}</b>
@@ -241,9 +241,9 @@ export default function Chats({ user }) {
                                                         {meme.description}
 
                                                         {/* Expired At date, if any */}
-                                                        {meme.expiredAt == '-1' ? '' : <br />}
-                                                        {meme.expiredAt == '-1' ? '' : <br />}
-                                                        <i>{meme.expiredAt == '-1' ? '' : `Expires at ${meme.expiredAt.toLocaleString()}`}</i>
+                                                        {meme.expiredAt === -1 ? '' : <br />}
+                                                        {meme.expiredAt === -1 ? '' : <br />}
+                                                        <i>{meme.expiredAt === -1 ? '' : `Expires at ${meme.expiredAt.toLocaleString()}`}</i>
                                                     </div>
                                                 }
                                             </div>
