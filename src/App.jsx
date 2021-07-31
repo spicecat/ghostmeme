@@ -20,13 +20,12 @@ import NotFound from './containers/NotFound'
 export default function App() {
   const [user, setUser] = useState({ loading: true })
 
-  useEffect(() => {
-    const updateUser = async () => { setUser(await getLocalUser()) }
-    updateUser()
-  }, [])
+  const updateUser = async () => { setUser(await getLocalUser()) }
+
+  useEffect(() => { updateUser() }, [])
   return (
     <BrowserRouter>
-      <Navbar username={user.username} avatar={user.imageBase64} />
+      <Navbar user={user} />
 
       <div className='body'>
         <PaperContent Component={() =>
@@ -40,7 +39,7 @@ export default function App() {
               <Route exact path='/notifications' >< Notifications user={user} /></Route>
               <Route exact path='/login' component={Login} />
               <Route exact path='/register' component={Register} />
-              <Route exact path='/friends' >< Friends user={user} /></Route>
+              <Route exact path='/friends' ><Friends user={user} updateUser={updateUser} /></Route>
               <Route path='*' component={NotFound} />
             </Switch>
           </>

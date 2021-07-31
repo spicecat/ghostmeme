@@ -14,12 +14,11 @@ const cookies = new Cookies()
 // }, delay))
 
 const retry = async ({ status }, action, ...props) => {
-    if (status === 555) return new Promise(resolve => setTimeout(() => { resolve(action(...props)) }, 5000))
+    if (status === 555) return new Promise(resolve => setTimeout(() => { resolve(action(...props)) }, 4000))
     else return
 }
 
 export const redirect = async user => {
-    // comment below to disable redirect
     if (!user.username && user.loading === false) window.location.href = '/login'
 }
 
@@ -44,7 +43,7 @@ export const login = async ({ username, password, rememberMe }) => {
     const url = userServerUrl
     try {
         const auth = Buffer.from(username + ':' + password, 'ascii').toString('base64')
-        var response = await superagent.get(url).query({ rememberMe }).set('Authorization', 'Basic ' + auth)
+        var response = await superagent.get(url).query({ rememberMe }).set('Authorization', 'Basic ' + auth).forceUpdate(true)
     } catch (err) {
         if (err.status === 401) {
             if (loginAttempts >= 2) {
@@ -81,7 +80,7 @@ export const getLocalUser = async () => {
 
     const URL = userServerUrl + '/getUser'
     try {
-        var response = await superagent.get(URL).set('Authorization', 'Bearer ' + token)
+        var response = await superagent.get(URL).set('Authorization', 'Bearer ' + token).forceUpdate(true)
     } catch (err) {
         if (err.status === 401) logout()
         return
@@ -101,7 +100,9 @@ export const getLocalUser = async () => {
     //     imageUrl: null
     // }
     if (!user) return { loading: false }
-    user.friends = await getFriends(user.user_id)
+    user.friends = await getFriends(user_id)
+    user.outgoingFriendRequests = await getFriendRequests(user_id, 'outgoing')
+    user.incomingFriendRequests = await getFriendRequests(user_id, 'incoming')
     console.log(user)
     return user
 }
@@ -134,7 +135,7 @@ export const getFriends = async user_id => {
     const URL = `${userApiUrl}/${user_id}/friends`
 
     try {
-        const response = await superagent.get(URL).set('key', apiKey)
+        const response = await superagent.get(URL).set('key', apiKey).forceUpdate(true)
         return addUsernames(response.body.users)
     } catch (err) { return retry(err, getFriends, user_id) || {} }
 }
@@ -165,10 +166,11 @@ export const getUsernames = async user_ids => { // returns object {user_id:usern
 
 export const getFriendRequests = async (user_id, reqType = 'outgoing') => {
     const URL = `${userApiUrl}/${user_id}/requests/${reqType}`
+    console.log(URL)
     try {
-        const response = await superagent.get(URL).set('key', apiKey)
+        const response = await superagent.get(URL).set('key', apiKey).forceUpdate(true)
         return response.body.users
-    } catch (err) { return retry(err, getFriendRequests, user_id) || [] }
+    } catch (err) { return retry(err, getFriendRequests, user_id, reqType) || [] }
 }
 
 export const sendFriendRequest = async (user_id, target_id, reqType = 'outgoing') => {
@@ -177,7 +179,7 @@ export const sendFriendRequest = async (user_id, target_id, reqType = 'outgoing'
         const response = await superagent.put(URL).set('key', apiKey)
         if (reqType === 'outgoing') return sendFriendRequest(target_id, user_id, 'incoming')
         else return response.body.success
-    } catch (err) { return retry(err, sendFriendRequest, user_id, target_id) || false }
+    } catch (err) { return retry(err, sendFriendRequest, user_id, target_id, reqType) || false }
 }
 
 export const removeFriendRequest = async (user_id, target_id, reqType = 'outgoing') => {
@@ -186,26 +188,36 @@ export const removeFriendRequest = async (user_id, target_id, reqType = 'outgoin
         const response = await superagent.delete(URL).set('key', apiKey)
         if (reqType === 'outgoing') return removeFriendRequest(target_id, user_id, 'incoming')
         else return response.body.success
-    } catch (err) { return retry(err, sendFriendRequest, user_id, target_id) || false }
+    } catch (err) {
+        if (err.status === 404 && reqType === 'outgoing') return removeFriendRequest(target_id, user_id, 'incoming')
+        return retry(err, removeFriendRequest, user_id, target_id, reqType) || false
+    }
 }
 
 export const addFriend = async (user_id, target_id, reqType = 'outgoing') => {
-    await removeFriendRequest(user_id, target_id)
-    const URL = `${userApiUrl}/${user_id}/requests/${target_id}`
+    const URL = `${userApiUrl}/${user_id}/friends/${target_id}`
     try {
         const response = await superagent.put(URL).set('key', apiKey)
-        if (reqType === 'outgoing') return addFriend(target_id, user_id, 'incoming')
+        if (reqType === 'outgoing') {
+            await removeFriendRequest(user_id, target_id)
+            return addFriend(target_id, user_id, 'incoming')
+        }
         else return response.body.success
-    } catch (err) { return retry(err, sendFriendRequest, user_id, target_id) || false }
+    } catch (err) { return retry(err, addFriend, user_id, target_id, reqType) || false }
 }
 
 export const removeFriend = async (user_id, target_id, reqType = 'outgoing') => {
-    await removeFriendRequest(user_id, target_id)
     const URL = `${userApiUrl}/${user_id}/friends/${target_id}`
     try {
         const response = await superagent.delete(URL).set('key', apiKey)
-        if (reqType === 'outgoing') return removeFriend(target_id, user_id, 'incoming')
+        if (reqType === 'outgoing') {
+            await removeFriendRequest(user_id, target_id)
+            return removeFriend(target_id, user_id, 'incoming')
+        }
         else return response.body.success
-    } catch (err) { return retry(err, sendFriendRequest, user_id, target_id) || false }
+    } catch (err) {
+        if (err.status === 404 && reqType === 'outgoing') return removeFriend(target_id, user_id, 'incoming')
+        return retry(err, removeFriend, user_id, target_id, reqType) || false
+    }
 }
 

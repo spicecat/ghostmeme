@@ -8,7 +8,7 @@ import { getUser, getUsernames } from './userService'
 superagentCache(superagent)
 
 const retry = async ({ status }, action, ...props) => {
-    if (status === 555) return new Promise(resolve => setTimeout(() => { resolve(action(...props)) }, 5000))
+    if (status === 555) return new Promise(resolve => setTimeout(() => { resolve(action(...props)) }, 4000))
     else return []
 }
 

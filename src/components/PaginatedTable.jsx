@@ -7,7 +7,7 @@ export default function PaginatedTable({ name, headCells = [
     { name: 'Description', prop: 'description' },
     { name: 'Image', prop: 'image' },
     { name: 'Likes', prop: 'likes' }
-], data, Component, localUser }) {
+], data, Component, localUser, update }) {
 
     const [orderedMemes, setOrderedMemes] = useState(data)
     const [page, setPage] = useState(0)
@@ -59,7 +59,7 @@ export default function PaginatedTable({ name, headCells = [
             </TableHead>
             <TableBody>
                 {orderedMemes.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                    .map(item => <Component key={item.meme_id || item.user_id} {...item} localUser={localUser} />)}
+                    .map(item => <Component key={item.meme_id || item.user_id} {...item} {...{ localUser, update }} />)}
             </TableBody>
             <TableFooter>
                 <TableRow>

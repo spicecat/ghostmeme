@@ -15,12 +15,16 @@ export default function Search({ user }) {
     const [openFriends, setOpenFriends] = useState(true)
     const [chatsMemes, setChatsMemes] = useState([])
     const [friendsMemes, setFriendsMemes] = useState([])
+    const [chatsSearch, setChatsSearch] = useState()
+    const [friendsSearch, setFriendsSearch] = useState()
 
     const updateMemes = async () => {
         console.log('Updating memes...')
-        setChatsMemes(await searchChatsMemes(user))
-        setFriendsMemes(await searchFriendsMemes(user))
+        setChatsMemes(await searchChatsMemes(user, chatsSearch))
+        setFriendsMemes(await searchFriendsMemes(user, friendsSearch))
     }
+
+    useEffect(() => { updateMemes() }, [chatsSearch, friendsSearch])
 
     useEffect(() => {
         updateMemes()
@@ -36,7 +40,7 @@ export default function Search({ user }) {
             Memes from Chats
             {openChats &&
                 <>
-                    <Form name='chats' action={async values => { setChatsMemes(await searchChatsMemes(user, values)) }} schema={memeSearchSchema} search={true} />
+                    <Form name='chats' action={values => { setChatsSearch(values) }} schema={memeSearchSchema} search={true} />
                     <br />
                     <PaginatedTable name='chats' data={chatsMemes} Component={Meme} />
                 </>}

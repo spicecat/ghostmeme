@@ -1,14 +1,8 @@
 import React, { useEffect } from 'react'
 
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import Divider from '@material-ui/core/Divider';
-import ListItemText from '@material-ui/core/ListItemText';
-import ListItemAvatar from '@material-ui/core/ListItemAvatar';
-import Avatar from '@material-ui/core/Avatar';
-import Typography from '@material-ui/core/Typography';
-import Alert from '@material-ui/lab/Alert';
-import { makeStyles } from '@material-ui/core/styles';
+import { List, ListItem, Divider, ListItemText, ListItemAvatar, Avatar, Typography } from '@material-ui/core'
+import Alert from '@material-ui/lab/Alert'
+import { makeStyles } from '@material-ui/core/styles'
 
 import { redirect } from '../services/userService'
 
@@ -33,64 +27,64 @@ export default function Notifications({ user }) {
                 <h2>Just Now</h2>
                 <div className={classes.root}>
                     <List className={classes.root}>
-                        <Alert severity="success"><ListItem alignItems="flex-start">
+                        <Alert severity='success'><ListItem alignItems='flex-start'>
                             <ListItemAvatar>
-                                <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" />
+                                <Avatar alt='Remy Sharp' src='/static/images/avatar/1.jpg' />
                             </ListItemAvatar>
                             <ListItemText
-                                primary="Brunch this weekend?"
+                                primary='Brunch this weekend?'
                                 secondary={
                                     <React.Fragment>
                                         <Typography
-                                            component="span"
-                                            variant="body2"
+                                            component='span'
+                                            variant='body2'
                                             className={classes.inline}
-                                            color="textPrimary"
+                                            color='textPrimary'
                                         >
                                             Ali Connors
                                         </Typography>
-                                        {" — I'll be in your neighborhood doing errands this…"}
+                                        — I'll be in your neighborhood doing errands this...
                                     </React.Fragment>
                                 }
                             />
                         </ListItem></Alert>
-                        <Divider variant="inset" component="li" />
-                        <Alert severity="success">
-                            <ListItem alignItems="flex-start">
+                        <Divider variant='inset' component='li' />
+                        <Alert severity='success'>
+                            <ListItem alignItems='flex-start'>
                                 <ListItemAvatar>
-                                    <Avatar alt="Travis Howard" src="/static/images/avatar/2.jpg" />
+                                    <Avatar alt='Travis Howard' src='/static/images/avatar/2.jpg' />
                                 </ListItemAvatar>
                                 <ListItemText
-                                    primary="Summer BBQ"
+                                    primary='Summer BBQ'
                                     secondary={
                                         <React.Fragment>
                                             <Typography
-                                                component="span"
-                                                variant="body2"
+                                                component='span'
+                                                variant='body2'
                                                 className={classes.inline}
-                                                color="textPrimary"
+                                                color='textPrimary'
                                             >
                                                 to Scott, Alex, Jennifer
                                             </Typography>
-                                            {" — Wish I could come, but I'm out of town this…"}
+                                            — Wish I could come, but I'm out of town this...
                                         </React.Fragment>
                                     }
                                 />
                             </ListItem></Alert>
-                        <Divider variant="inset" component="li" />
-                        <Alert severity="success"><ListItem alignItems="flex-start">
+                        <Divider variant='inset' component='li' />
+                        <Alert severity='success'><ListItem alignItems='flex-start'>
                             <ListItemAvatar>
-                                <Avatar alt="Cindy Baker" src="/static/images/avatar/3.jpg" />
+                                <Avatar alt='Cindy Baker' src='/static/images/avatar/3.jpg' />
                             </ListItemAvatar>
                             <ListItemText
-                                primary="Oui Oui"
+                                primary='Oui Oui'
                                 secondary={
                                     <React.Fragment>
                                         <Typography
-                                            component="span"
-                                            variant="body2"
+                                            component='span'
+                                            variant='body2'
                                             className={classes.inline}
-                                            color="textPrimary"
+                                            color='textPrimary'
                                         >
                                             Sandra Adams
                                         </Typography>
@@ -99,20 +93,20 @@ export default function Notifications({ user }) {
                                 }
                             />
                         </ListItem></Alert>
-                        <Divider variant="inset" component="li" />
-                        <Alert severity="success"><ListItem alignItems="flex-start">
+                        <Divider variant='inset' component='li' />
+                        <Alert severity='success'><ListItem alignItems='flex-start'>
                             <ListItemAvatar>
-                                <Avatar alt="Cindy Baker" src="/static/images/avatar/3.jpg" />
+                                <Avatar alt='Cindy Baker' src='/static/images/avatar/3.jpg' />
                             </ListItemAvatar>
                             <ListItemText
-                                primary="Oui Oui"
+                                primary='Oui Oui'
                                 secondary={
                                     <React.Fragment>
                                         <Typography
-                                            component="span"
-                                            variant="body2"
+                                            component='span'
+                                            variant='body2'
                                             className={classes.inline}
-                                            color="textPrimary"
+                                            color='textPrimary'
                                         >
                                             Travis Scott
                                         </Typography> —
@@ -127,64 +121,64 @@ export default function Notifications({ user }) {
                 <h2>5 Minutes Ago</h2>
                 <div className={classes.root}>
                     <List className={classes.root}>
-                        <Alert severity="info"><ListItem alignItems="flex-start">
+                        <Alert severity='info'><ListItem alignItems='flex-start'>
                             <ListItemAvatar>
-                                <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" />
+                                <Avatar alt='Remy Sharp' src='/static/images/avatar/1.jpg' />
                             </ListItemAvatar>
                             <ListItemText
-                                primary="Brunch this weekend?"
+                                primary='Brunch this weekend?'
                                 secondary={
                                     <React.Fragment>
                                         <Typography
-                                            component="span"
-                                            variant="body2"
+                                            component='span'
+                                            variant='body2'
                                             className={classes.inline}
-                                            color="textPrimary"
+                                            color='textPrimary'
                                         >
                                             Ali Connors
                                         </Typography>
-                                        {" — I'll be in your neighborhood doing errands this…"}
+                                        — I'll be in your neighborhood doing errands this...
                                     </React.Fragment>
                                 }
                             />
                         </ListItem></Alert>
-                        <Divider variant="inset" component="li" />
-                        <Alert severity="info">
-                            <ListItem alignItems="flex-start">
+                        <Divider variant='inset' component='li' />
+                        <Alert severity='info'>
+                            <ListItem alignItems='flex-start'>
                                 <ListItemAvatar>
-                                    <Avatar alt="Travis Howard" src="/static/images/avatar/2.jpg" />
+                                    <Avatar alt='Travis Howard' src='/static/images/avatar/2.jpg' />
                                 </ListItemAvatar>
                                 <ListItemText
-                                    primary="Summer BBQ"
+                                    primary='Summer BBQ'
                                     secondary={
                                         <React.Fragment>
                                             <Typography
-                                                component="span"
-                                                variant="body2"
+                                                component='span'
+                                                variant='body2'
                                                 className={classes.inline}
-                                                color="textPrimary"
+                                                color='textPrimary'
                                             >
                                                 to Scott, Alex, Jennifer
                                             </Typography>
-                                            {" — Wish I could come, but I'm out of town this…"}
+                                            — Wish I could come, but I'm out of town this...
                                         </React.Fragment>
                                     }
                                 />
                             </ListItem></Alert>
-                        <Divider variant="inset" component="li" />
-                        <Alert severity="info"><ListItem alignItems="flex-start">
+                        <Divider variant='inset' component='li' />
+                        <Alert severity='info'><ListItem alignItems='flex-start'>
                             <ListItemAvatar>
-                                <Avatar alt="Cindy Baker" src="/static/images/avatar/3.jpg" />
+                                <Avatar alt='Cindy Baker' src='/static/images/avatar/3.jpg' />
                             </ListItemAvatar>
                             <ListItemText
-                                primary="Oui Oui"
+                                primary='Oui Oui'
                                 secondary={
                                     <React.Fragment>
                                         <Typography
-                                            component="span"
-                                            variant="body2"
+                                            component='span'
+                                            variant='body2'
                                             className={classes.inline}
-                                            color="textPrimary"
+                                            color='textPrimary'
                                         >
                                             Sandra Adams
                                         </Typography>
@@ -193,20 +187,20 @@ export default function Notifications({ user }) {
                                 }
                             />
                         </ListItem></Alert>
-                        <Divider variant="inset" component="li" />
-                        <Alert severity="info"><ListItem alignItems="flex-start">
+                        <Divider variant='inset' component='li' />
+                        <Alert severity='info'><ListItem alignItems='flex-start'>
                             <ListItemAvatar>
-                                <Avatar alt="Cindy Baker" src="/static/images/avatar/3.jpg" />
+                                <Avatar alt='Cindy Baker' src='/static/images/avatar/3.jpg' />
                             </ListItemAvatar>
                             <ListItemText
-                                primary="Oui Oui"
+                                primary='Oui Oui'
                                 secondary={
                                     <React.Fragment>
                                         <Typography
-                                            component="span"
-                                            variant="body2"
+                                            component='span'
+                                            variant='body2'
                                             className={classes.inline}
-                                            color="textPrimary"
+                                            color='textPrimary'
                                         >
                                             Travis Scott
                                         </Typography> —
@@ -222,64 +216,64 @@ export default function Notifications({ user }) {
                 <h2>1 Hour Ago</h2>
                 <div className={classes.root}>
                     <List className={classes.root}>
-                        <Alert severity="warning"><ListItem alignItems="flex-start">
+                        <Alert severity='warning'><ListItem alignItems='flex-start'>
                             <ListItemAvatar>
-                                <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" />
+                                <Avatar alt='Remy Sharp' src='/static/images/avatar/1.jpg' />
                             </ListItemAvatar>
                             <ListItemText
-                                primary="Brunch this weekend?"
+                                primary='Brunch this weekend?'
                                 secondary={
                                     <React.Fragment>
                                         <Typography
-                                            component="span"
-                                            variant="body2"
+                                            component='span'
+                                            variant='body2'
                                             className={classes.inline}
-                                            color="textPrimary"
+                                            color='textPrimary'
                                         >
                                             Ali Connors
                                         </Typography>
-                                        {" — I'll be in your neighborhood doing errands this…"}
+                                        — I'll be in your neighborhood doing errands this...
                                     </React.Fragment>
                                 }
                             />
                         </ListItem></Alert>
-                        <Divider variant="inset" component="li" />
-                        <Alert severity="warning">
-                            <ListItem alignItems="flex-start">
+                        <Divider variant='inset' component='li' />
+                        <Alert severity='warning'>
+                            <ListItem alignItems='flex-start'>
                                 <ListItemAvatar>
-                                    <Avatar alt="Travis Howard" src="/static/images/avatar/2.jpg" />
+                                    <Avatar alt='Travis Howard' src='/static/images/avatar/2.jpg' />
                                 </ListItemAvatar>
                                 <ListItemText
-                                    primary="Summer BBQ"
+                                    primary='Summer BBQ'
                                     secondary={
                                         <React.Fragment>
                                             <Typography
-                                                component="span"
-                                                variant="body2"
+                                                component='span'
+                                                variant='body2'
                                                 className={classes.inline}
-                                                color="textPrimary"
+                                                color='textPrimary'
                                             >
                                                 to Scott, Alex, Jennifer
                                             </Typography>
-                                            {" — Wish I could come, but I'm out of town this…"}
+                                            — Wish I could come, but I'm out of town this...
                                         </React.Fragment>
                                     }
                                 />
                             </ListItem></Alert>
-                        <Divider variant="inset" component="li" />
-                        <Alert severity="warning"><ListItem alignItems="flex-start">
+                        <Divider variant='inset' component='li' />
+                        <Alert severity='warning'><ListItem alignItems='flex-start'>
                             <ListItemAvatar>
-                                <Avatar alt="Cindy Baker" src="/static/images/avatar/3.jpg" />
+                                <Avatar alt='Cindy Baker' src='/static/images/avatar/3.jpg' />
                             </ListItemAvatar>
                             <ListItemText
-                                primary="Oui Oui"
+                                primary='Oui Oui'
                                 secondary={
                                     <React.Fragment>
                                         <Typography
-                                            component="span"
-                                            variant="body2"
+                                            component='span'
+                                            variant='body2'
                                             className={classes.inline}
-                                            color="textPrimary"
+                                            color='textPrimary'
                                         >
                                             Sandra Adams
                                         </Typography>
@@ -288,20 +282,20 @@ export default function Notifications({ user }) {
                                 }
                             />
                         </ListItem></Alert>
-                        <Divider variant="inset" component="li" />
-                        <Alert severity="warning"><ListItem alignItems="flex-start">
+                        <Divider variant='inset' component='li' />
+                        <Alert severity='warning'><ListItem alignItems='flex-start'>
                             <ListItemAvatar>
-                                <Avatar alt="Cindy Baker" src="/static/images/avatar/3.jpg" />
+                                <Avatar alt='Cindy Baker' src='/static/images/avatar/3.jpg' />
                             </ListItemAvatar>
                             <ListItemText
-                                primary="Oui Oui"
+                                primary='Oui Oui'
                                 secondary={
                                     <React.Fragment>
                                         <Typography
-                                            component="span"
-                                            variant="body2"
+                                            component='span'
+                                            variant='body2'
                                             className={classes.inline}
-                                            color="textPrimary"
+                                            color='textPrimary'
                                         >
                                             Travis Scott
                                         </Typography> —
@@ -317,64 +311,64 @@ export default function Notifications({ user }) {
                 <h2>Over 1 Day Ago</h2>
                 <div className={classes.root}>
                     <List className={classes.root}>
-                        <Alert severity="error"><ListItem alignItems="flex-start">
+                        <Alert severity='error'><ListItem alignItems='flex-start'>
                             <ListItemAvatar>
-                                <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" />
+                                <Avatar alt='Remy Sharp' src='/static/images/avatar/1.jpg' />
                             </ListItemAvatar>
                             <ListItemText
-                                primary="Brunch this weekend?"
+                                primary='Brunch this weekend?'
                                 secondary={
                                     <React.Fragment>
                                         <Typography
-                                            component="span"
-                                            variant="body2"
+                                            component='span'
+                                            variant='body2'
                                             className={classes.inline}
-                                            color="textPrimary"
+                                            color='textPrimary'
                                         >
                                             Ali Connors
                                         </Typography>
-                                        {" — I'll be in your neighborhood doing errands this…"}
+                                        — I'll be in your neighborhood doing errands this... 
                                     </React.Fragment>
                                 }
                             />
                         </ListItem></Alert>
-                        <Divider variant="inset" component="li" />
-                        <Alert severity="error">
-                            <ListItem alignItems="flex-start">
+                        <Divider variant='inset' component='li' />
+                        <Alert severity='error'>
+                            <ListItem alignItems='flex-start'>
                                 <ListItemAvatar>
-                                    <Avatar alt="Travis Howard" src="/static/images/avatar/2.jpg" />
+                                    <Avatar alt='Travis Howard' src='/static/images/avatar/2.jpg' />
                                 </ListItemAvatar>
                                 <ListItemText
-                                    primary="Summer BBQ"
+                                    primary='Summer BBQ'
                                     secondary={
                                         <React.Fragment>
                                             <Typography
-                                                component="span"
-                                                variant="body2"
+                                                component='span'
+                                                variant='body2'
                                                 className={classes.inline}
-                                                color="textPrimary"
+                                                color='textPrimary'
                                             >
                                                 to Scott, Alex, Jennifer
                                             </Typography>
-                                            {" — Wish I could come, but I'm out of town this…"}
+                                            — Wish I could come, but I'm out of town this... 
                                         </React.Fragment>
                                     }
                                 />
                             </ListItem></Alert>
-                        <Divider variant="inset" component="li" />
-                        <Alert severity="error"><ListItem alignItems="flex-start">
+                        <Divider variant='inset' component='li' />
+                        <Alert severity='error'><ListItem alignItems='flex-start'>
                             <ListItemAvatar>
-                                <Avatar alt="Cindy Baker" src="/static/images/avatar/3.jpg" />
+                                <Avatar alt='Cindy Baker' src='/static/images/avatar/3.jpg' />
                             </ListItemAvatar>
                             <ListItemText
-                                primary="Oui Oui"
+                                primary='Oui Oui'
                                 secondary={
                                     <React.Fragment>
                                         <Typography
-                                            component="span"
-                                            variant="body2"
+                                            component='span'
+                                            variant='body2'
                                             className={classes.inline}
-                                            color="textPrimary"
+                                            color='textPrimary'
                                         >
                                             Sandra Adams
                                         </Typography>
@@ -383,20 +377,20 @@ export default function Notifications({ user }) {
                                 }
                             />
                         </ListItem></Alert>
-                        <Divider variant="inset" component="li" />
-                        <Alert severity="error"><ListItem alignItems="flex-start">
+                        <Divider variant='inset' component='li' />
+                        <Alert severity='error'><ListItem alignItems='flex-start'>
                             <ListItemAvatar>
-                                <Avatar alt="Cindy Baker" src="/static/images/avatar/3.jpg" />
+                                <Avatar alt='Cindy Baker' src='/static/images/avatar/3.jpg' />
                             </ListItemAvatar>
                             <ListItemText
-                                primary="Oui Oui"
+                                primary='Oui Oui'
                                 secondary={
                                     <React.Fragment>
                                         <Typography
-                                            component="span"
-                                            variant="body2"
+                                            component='span'
+                                            variant='body2'
                                             className={classes.inline}
-                                            color="textPrimary"
+                                            color='textPrimary'
                                         >
                                             Travis Scott
                                         </Typography> —

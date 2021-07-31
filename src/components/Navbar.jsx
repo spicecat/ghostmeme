@@ -11,8 +11,9 @@ const useStyles = makeStyles(theme => ({
     userControl: { marginLeft: 'auto' }
 }))
 
-export default function Navbar({ page, username, avatar }) {
+export default function Navbar({ page, user }) {
     const classes = useStyles()
+    const { username, loading } = user
 
     return (
         <AppBar position='static'>
@@ -29,7 +30,7 @@ export default function Navbar({ page, username, avatar }) {
                     <Button color='inherit' variant='outlined' size='small' to='/friends' component={Link}>Friends</Button>&nbsp;
                 </>
                 <span className={classes.userControl} />
-                {username ?
+                {loading || username ?
                     <>
                         <Typography>Logged in as: {username}</Typography>
                         &nbsp;&nbsp;&nbsp;
