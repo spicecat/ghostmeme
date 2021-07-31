@@ -20,8 +20,6 @@ export default function Stories({ user }) {
   }
   const mapper = (ix) => {
     return (
-
-
       <article className="Post" >
         <header>
           <div className="Post-user">

@@ -28,7 +28,7 @@ export default function Search({ user }) {
 
     useEffect(() => {
         updateMemes()
-        const timer = setInterval(updateMemes, 17711)
+        const timer = setInterval(updateMemes, 27711)
         return () => clearInterval(timer)
     }, [])
 
@@ -52,7 +52,7 @@ export default function Search({ user }) {
             Memes from Friends
             {openFriends &&
                 <>
-                    <Form name='friends' action={async values => { setFriendsMemes(await searchFriendsMemes(user, values)) }} schema={memeSearchSchema} search={true} />
+                    <Form name='friends' action={async values => { setFriendsSearch(values) }} schema={memeSearchSchema} search={true} />
                     <br />
                     <PaginatedTable name='friends' data={friendsMemes} Component={Meme} />
                 </>}
