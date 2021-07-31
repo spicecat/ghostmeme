@@ -4,7 +4,6 @@ import { getLocalUser } from '../services/userService'
 import { searchMemes } from '../services/memeService'
 import { redirect } from '../services/userService'
 
-const axios = require('axios')
 
 
 export const Stories1 = ({user}) => {
