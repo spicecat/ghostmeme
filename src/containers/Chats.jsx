@@ -13,6 +13,7 @@ import {
     TextField
 } from '@material-ui/core'
 import { KeyboardDatePicker } from "@material-ui/pickers";
+import Typography from '@material-ui/core/Typography';
 
 import SendIcon from '@material-ui/icons/Send'
 import DeleteIcon from '@material-ui/icons/DeleteOutline'
@@ -25,6 +26,8 @@ export default function Chats({ user }) {
     useEffect(() => { redirect(user) }, [user])
 
     // const localUser = '60f72d7d680fdc0008d79ad2'
+    // const [selectedUser, setSelectedUser] = useState('60f5c300aa69860008702933')
+
     const localUser = user.user_id
     const [memes, setMemes] = useState([])
     const [users, setUsers] = useState([])
@@ -37,8 +40,6 @@ export default function Chats({ user }) {
     const [showImageLink, setShowImageLink] = useState('')
     const [showImageFile, setShowImageFile] = useState('')
     const [showExpiration, setShowExpiration] = useState('')
-
-    // const [selectedUser, setSelectedUser] = useState('60f5c300aa69860008702933')
 
     const getMemesRequest = async () => {
         setMemes(await getMemes())
@@ -64,8 +65,7 @@ export default function Chats({ user }) {
         setUsers(await getUsers())
     }
 
-    const getConversationRequest = async (selectedUserID, localUserID=localUser, requestType) => {
-        // const selectedUser = '60f5c300aa69860008702933'
+    const getConversationRequest = async (selectedUserID, localUserID = localUser, requestType) => {
         if (requestType === 'refresh') {
             setMemes(await getConversation(localUserID, selectedUserID))
         } else {
@@ -112,7 +112,7 @@ export default function Chats({ user }) {
 
     const selectedUserRef = useRef(selectedUser)
     selectedUserRef.current = selectedUser
-    
+
     const localUserRef = useRef(localUser)
     localUserRef.current = localUser
 
@@ -122,19 +122,12 @@ export default function Chats({ user }) {
             // selectedUserRef.current ? console.log(selectedUserRef.current) : console.log('No user selected')
             // console.log(`Local user: ${localUserRef.current}`)
             selectedUserRef.current ? getConversationRequest(selectedUserRef.current, localUserRef.current) : console.log('No user selected')
-        }, 5000)
+        }, 3000)
         return () => { clearTimeout(timer) }
     }, [])
 
     return user.loading === undefined && (
         <>
-            {/* Search memes from X sender to X receiver */}
-
-            {/* <TextField label='selectedUser' name='selectedUser' value={selectedUser} variant='outlined' />
-            <Button variant='contained' color='primary' onClick={() => getConversationRequest(selectedUser)}>Search Conversations</Button> */}
-            {/* <Button variant='contained' color='primary' onClick={() => getUserInfoRequest(localUser, 'local')}>Selected User Info</Button>
-            <Button variant='contained' color='primary' onClick={() => getUserInfoRequest(selectedUser, 'selected')}>Selected User Info</Button> */}
-
             {/* Add new meme */}
             <form onSubmit={createMemeRequest} autoComplete='off'>
                 <TextField type='hidden' value={localUser} name='owner' />
@@ -178,90 +171,91 @@ export default function Chats({ user }) {
                     &nbsp;
                     {showImageFile ? <TextField label='Image Base64' name='imageBase64' variant='outlined' /> : <TextField type='hidden' name='imageBase64' />}
                     {/* {showImageFile ? <input name='imageBase64' accept="image/*" id="icon-button-file" type="file" /> : <TextField type='hidden' name='imageBase64' />} */}
-                    {/* <Button onClick={test} /> */}
 
                 </div>
             </form>
 
-            {/* Get all memes */}
-            {/* <Button variant='contained' color='primary' onClick={getMemesRequest}>Get All Memes</Button>
-            <br /><br /> */}
-            <TableContainer >
-                <Table>
-                    <TableBody>
-                        {memes && memes.map(meme => (
-                            // <TableRow className={(meme.owner === localUser) ? 'localChat' : 'otherChat'} key={meme.meme_id}>
-                            <TableRow key={meme.meme_id}>
-                                {/* <TableCell className={(meme.owner === localUser) ? 'localChatText' : ''}>{meme.createdAt.toLocaleString()}</TableCell> */}
-                                {/* <TableCell className={(meme.owner === localUser) ? 'localChatText' : ''}>{meme.expiredAt == '-1' ? '' : meme.expiredAt.toLocaleString()}</TableCell> */}
-                                <TableCell className='tableChat' width='40%'>
-                                    {(meme.owner === selectedUser) &&
-                                        <div className='chat otherChat'>
-                                            {/* Don't show expired memes */}
-                                            {(meme.expiredAt != Number('-1') && meme.expiredAt < Date.now()) ? <i>Message expired</i> :
-                                                <div>
-                                                    {/* Username of sender */}
-                                                    <b>{(user && selectedUserInfo) ? (meme.owner === localUser) ? user.username : selectedUserInfo.username : 'Error'}</b>
+            <br />
+            <Paper elevation={3}>
+                <div align='center' className='chat-header'>{selectedUser ? <Typography variant='h4'>Conversation with {selectedUserInfo.username}</Typography> : <Typography variant='h4'>No conversation selected</Typography>}</div>
+                <TableContainer >
+                    <Table>
+                        <TableBody>
+                            {memes && memes.map(meme => (
+                                // <TableRow className={(meme.owner === localUser) ? 'localChat' : 'otherChat'} key={meme.meme_id}>
+                                <TableRow key={meme.meme_id}>
+                                    {/* <TableCell className={(meme.owner === localUser) ? 'localChatText' : ''}>{meme.createdAt.toLocaleString()}</TableCell> */}
+                                    {/* <TableCell className={(meme.owner === localUser) ? 'localChatText' : ''}>{meme.expiredAt == '-1' ? '' : meme.expiredAt.toLocaleString()}</TableCell> */}
+                                    <TableCell className='tableChat' width='40%'>
+                                        {(meme.owner === selectedUser) &&
+                                            <div className='chat otherChat'>
+                                                {/* Don't show expired memes */}
+                                                {(meme.expiredAt != Number('-1') && meme.expiredAt < Date.now()) ? <i>Message expired</i> :
+                                                    <div>
+                                                        {/* Username of sender */}
+                                                        <b>{(user && selectedUserInfo) ? (meme.owner === localUser) ? user.username : selectedUserInfo.username : 'Error'}</b>
 
-                                                    {/* Creation date of meme and number of likes */}
-                                                    &nbsp;-&nbsp;{meme.createdAt.toLocaleString()}
-                                                    &nbsp;-&nbsp;{meme.likes} likes
-                                                    <br />
+                                                        {/* Creation date of meme and number of likes */}
+                                                        &nbsp;-&nbsp;{meme.createdAt.toLocaleString()}
+                                                        &nbsp;-&nbsp;{meme.likes} likes
+                                                        <br />
 
-                                                    {/* Image, if any */}
-                                                    <img className='chat-img' src={meme.imageUrl} />
-                                                    {meme.imageUrl && <br />}
+                                                        {/* Image, if any */}
+                                                        <img className='chat-img' src={meme.imageUrl} />
+                                                        {meme.imageUrl && <br />}
 
-                                                    {/* Meme description */}
-                                                    {meme.description}
+                                                        {/* Meme description */}
+                                                        {meme.description}
 
-                                                    {/* Expired At date, if any */}
-                                                    {meme.expiredAt == '-1' ? '' : <br />}
-                                                    {meme.expiredAt == '-1' ? '' : <br />}
-                                                    <i>{meme.expiredAt == '-1' ? '' : `Expires at ${meme.expiredAt.toLocaleString()}`}</i>
-                                                </div>
-                                            }
-                                        </div>
-                                    }
-                                </TableCell>
-                                <TableCell className='tableChat' width='20%' />getUserInfoRequest
-                                <TableCell className='tableChat' width='40%'>
-                                    {/* <div className={(meme.owner === localUser) ? 'chat localChat' : 'chat otherChat'}> */}
-                                    {meme.owner === localUser && (meme.expiredAt == Number('-1') || meme.expiredAt > Date.now()) && <IconButton onClick={() => vanishMemeRequest(meme.meme_id)} aria-label='delete'><DeleteIcon /></IconButton>}
-                                    {(meme.owner === localUser) &&
-                                        <div className='chat localChat'>
-                                            {/* Don't show expired memes */}
-                                            {(meme.expiredAt != Number('-1') && meme.expiredAt < Date.now()) ? <i>Message expired</i> :
-                                                <div>
-                                                    {/* Username of sender */}
-                                                    <b>{(user && selectedUserInfo) ? (meme.owner === localUser) ? user.username : selectedUserInfo.username : 'Error'}</b>
+                                                        {/* Expired At date, if any */}
+                                                        {meme.expiredAt == '-1' ? '' : <br />}
+                                                        {meme.expiredAt == '-1' ? '' : <br />}
+                                                        <i>{meme.expiredAt == '-1' ? '' : `Expires at ${meme.expiredAt.toLocaleString()}`}</i>
+                                                    </div>
+                                                }
+                                            </div>
+                                        }
+                                    </TableCell>
+                                    <TableCell className='tableChat' width='20%' />
+                                    <TableCell className='tableChat' width='40%'>
+                                        {/* <div className={(meme.owner === localUser) ? 'chat localChat' : 'chat otherChat'}> */}
+                                        {meme.owner === localUser && (meme.expiredAt == Number('-1') || meme.expiredAt > Date.now()) && <IconButton onClick={() => vanishMemeRequest(meme.meme_id)} aria-label='delete'><DeleteIcon /></IconButton>}
+                                        {(meme.owner === localUser) &&
+                                            <div className='chat localChat'>
+                                                {/* Don't show expired memes */}
+                                                {(meme.expiredAt != Number('-1') && meme.expiredAt < Date.now()) ? <i>Message expired</i> :
+                                                    <div>
+                                                        {/* Username of sender */}
+                                                        <b>{(user && selectedUserInfo) ? (meme.owner === localUser) ? user.username : selectedUserInfo.username : 'Error'}</b>
 
-                                                    {/* Creation date of meme and number of likes */}
-                                                    &nbsp;-&nbsp;{meme.createdAt.toLocaleString()}
-                                                    &nbsp;-&nbsp;{meme.likes} likes
-                                                    <br />
+                                                        {/* Creation date of meme and number of likes */}
+                                                        &nbsp;-&nbsp;{meme.createdAt.toLocaleString()}
+                                                        &nbsp;-&nbsp;{meme.likes} likes
+                                                        <br />
 
-                                                    {/* Image, if any */}
-                                                    <img className='chat-img' src={meme.imageUrl} />
-                                                    {meme.imageUrl && <br />}
+                                                        {/* Image, if any */}
+                                                        <img className='chat-img' src={meme.imageUrl} />
+                                                        {meme.imageUrl && <br />}
 
-                                                    {/* Meme description */}
-                                                    {meme.description}
+                                                        {/* Meme description */}
+                                                        {meme.description}
 
-                                                    {/* Expired At date, if any */}
-                                                    {meme.expiredAt == '-1' ? '' : <br />}
-                                                    {meme.expiredAt == '-1' ? '' : <br />}
-                                                    <i>{meme.expiredAt == '-1' ? '' : `Expires at ${meme.expiredAt.toLocaleString()}`}</i>
-                                                </div>
-                                            }
-                                        </div>
-                                    }
-                                </TableCell>
-                            </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
-            </TableContainer>
+                                                        {/* Expired At date, if any */}
+                                                        {meme.expiredAt == '-1' ? '' : <br />}
+                                                        {meme.expiredAt == '-1' ? '' : <br />}
+                                                        <i>{meme.expiredAt == '-1' ? '' : `Expires at ${meme.expiredAt.toLocaleString()}`}</i>
+                                                    </div>
+                                                }
+                                            </div>
+                                        }
+                                    </TableCell>
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+                </TableContainer>
+            </Paper>
+            <br /><br />
 
             {/* Get all users */}
             <Button variant='contained' color='primary' onClick={getUsersRequest}>Get All Users</Button>
