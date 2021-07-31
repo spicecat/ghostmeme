@@ -25,6 +25,8 @@ export default function Chats({ user }) {
     useEffect(() => { redirect(user) }, [user])
 
     // const localUser = '60f72d7d680fdc0008d79ad2'
+    // const [selectedUser, setSelectedUser] = useState('60f5c300aa69860008702933')
+
     const localUser = user.user_id
     const [memes, setMemes] = useState([])
     const [users, setUsers] = useState([])
@@ -37,8 +39,6 @@ export default function Chats({ user }) {
     const [showImageLink, setShowImageLink] = useState('')
     const [showImageFile, setShowImageFile] = useState('')
     const [showExpiration, setShowExpiration] = useState('')
-
-    // const [selectedUser, setSelectedUser] = useState('60f5c300aa69860008702933')
 
     const getMemesRequest = async () => {
         setMemes(await getMemes())
@@ -65,7 +65,6 @@ export default function Chats({ user }) {
     }
 
     const getConversationRequest = async (selectedUserID, localUserID=localUser, requestType) => {
-        // const selectedUser = '60f5c300aa69860008702933'
         if (requestType === 'refresh') {
             setMemes(await getConversation(localUserID, selectedUserID))
         } else {
@@ -122,7 +121,7 @@ export default function Chats({ user }) {
             // selectedUserRef.current ? console.log(selectedUserRef.current) : console.log('No user selected')
             // console.log(`Local user: ${localUserRef.current}`)
             selectedUserRef.current ? getConversationRequest(selectedUserRef.current, localUserRef.current) : console.log('No user selected')
-        }, 5000)
+        }, 3000)
         return () => { clearTimeout(timer) }
     }, [])
 
@@ -224,7 +223,7 @@ export default function Chats({ user }) {
                                         </div>
                                     }
                                 </TableCell>
-                                <TableCell className='tableChat' width='20%' />getUserInfoRequest
+                                <TableCell className='tableChat' width='20%' />
                                 <TableCell className='tableChat' width='40%'>
                                     {/* <div className={(meme.owner === localUser) ? 'chat localChat' : 'chat otherChat'}> */}
                                     {meme.owner === localUser && (meme.expiredAt == Number('-1') || meme.expiredAt > Date.now()) && <IconButton onClick={() => vanishMemeRequest(meme.meme_id)} aria-label='delete'><DeleteIcon /></IconButton>}
