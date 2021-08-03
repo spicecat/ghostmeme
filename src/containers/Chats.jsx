@@ -163,7 +163,7 @@ export default function Chats({ user }) {
                                         {(meme.owner === selectedUser) &&
                                             <div className='chat otherChat'>
                                                 {/* Don't show expired memes */}
-                                                {(meme.expiredAt !== -1 && meme.expiredAt < Date.now()) ? <i>Message expired</i> :
+                                                {(meme.expiredAt !== -1 && meme.expiredAt < Date.now()) ? <i>Message vanished</i> :
                                                     <div>
                                                         {/* Username of sender */}
                                                         <b>{(user && selectedUserInfo) ? (meme.owner === localUser) ? user.username : selectedUserInfo.username : 'Error'}</b>
@@ -196,7 +196,7 @@ export default function Chats({ user }) {
                                         {(meme.owner === localUser) &&
                                             <div className='chat localChat'>
                                                 {/* Don't show expired memes */}
-                                                {(meme.expiredAt !== -1 && meme.expiredAt < Date.now()) ? <i>Message expired</i> :
+                                                {(meme.expiredAt !== -1 && meme.expiredAt < Date.now()) ? <i>Message vanished</i> :
                                                     <div>
                                                         {/* Username of sender */}
                                                         <b>{(user && selectedUserInfo) ? (meme.owner === localUser) ? user.username : selectedUserInfo.username : 'Error'}</b>
