@@ -21,7 +21,7 @@ import NotFound from './containers/NotFound'
 export default function App() {
   const [user, setUser] = useState({ loading: true })
 
-  const updateUser = async () => { setUser(await getLocalUser()) }
+  const updateUser = async user => { setUser(user || await getLocalUser()) }
 
   useEffect(() => { updateUser() }, [])
   return (

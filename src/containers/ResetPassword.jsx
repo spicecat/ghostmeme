@@ -22,7 +22,7 @@ export default function ResetPassword() {
                 setStatusCode(102)
                 setStatusCode(await resetPassword(values))
             }
-            } schema={resetPasswordSchema} rememberMe={false} />
+            } schema={resetPasswordSchema} />
         </>
     )
 }

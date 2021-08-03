@@ -17,11 +17,15 @@ export default function Register() {
         <>
             <Alert statusCode={statusCode} />
             <br />
-            <Form name='Register' action={async values => {
-                setStatusCode(102)
-                setStatusCode(await register(values))
-            }
-            } schema={registerSchema} />
+            <Form
+                name='Register'
+                action={async values => {
+                    setStatusCode(102)
+                    setStatusCode(await register(values))
+                }}
+                schema={registerSchema}
+                rememberMe={true}
+            />
         </>
     )
 }

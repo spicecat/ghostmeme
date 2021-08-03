@@ -169,9 +169,8 @@ export const getUsernames = async user_ids => { // returns object {user_id:usern
     return usernames
 }
 
-export const getFriendRequests = async (user_id, reqType = 'outgoing') => {
+export const getFriendRequests = async (user_id, reqType) => {
     const URL = `${userApiUrl}/${user_id}/requests/${reqType}`
-    console.log(URL)
     try {
         const response = await superagent.get(URL).set('key', apiKey).forceUpdate(true)
         return response.body.users
@@ -190,9 +189,9 @@ export const sendFriendRequest = async (user_id, target_id, reqType = 'outgoing'
 export const removeFriendRequest = async (user_id, target_id, reqType = 'outgoing') => {
     const URL = `${userApiUrl}/${user_id}/requests/${reqType}/${target_id}`
     try {
-        const response = await superagent.delete(URL).set('key', apiKey)
+        await superagent.delete(URL).set('key', apiKey)
         if (reqType === 'outgoing') return removeFriendRequest(target_id, user_id, 'incoming')
-        else return response.body.success
+        else return true
     } catch (err) {
         if (err.status === 404 && reqType === 'outgoing') return removeFriendRequest(target_id, user_id, 'incoming')
         return retry(err, removeFriendRequest, user_id, target_id, reqType) || false

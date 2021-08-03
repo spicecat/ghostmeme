@@ -7,13 +7,13 @@ export default function PaginatedTable({ name, headCells = [
     { name: 'Description', prop: 'description' },
     { name: 'Image', prop: 'image' },
     { name: 'Likes', prop: 'likes' }
-], data, Component, localUser, update }) {
+], data, Component, update }) {
 
     const [orderedMemes, setOrderedMemes] = useState(data)
     const [page, setPage] = useState(0)
     const [rowsPerPage, setRowsPerPage] = useState(5)
 
-    const [order, setOrder] = useState('asc')
+    const [order, setOrder] = useState('desc')
     const [orderBy, setOrderBy] = useState(headCells[1].prop)
 
     const changePage = (event, newPage) => { setPage(newPage) }
@@ -28,13 +28,15 @@ export default function PaginatedTable({ name, headCells = [
         setOrderBy(prop)
         sortMemes(newOrder, prop)
     }
-    const sortMemes = (ord, ordBy) => {
-        const arr = data
-        arr.sort((a, b) => (ord === 'asc' ? 1 : -1) * (a[ordBy] < b[ordBy] ? 1 : -1))
+    const sortMemes = (ord = order, ordBy = orderBy) => {
+        const arr = data, type = typeof (data[0][ordBy])
+        const compare = (a, b) => a > b ? 1 : -1
+        arr.sort((a, b) => type === 'string' ? compare(a[ordBy].toUpperCase(), b[ordBy].toUpperCase()) : compare(a[ordBy], b[ordBy]))
+        if (ord === 'desc') arr.reverse()
         setOrderedMemes(arr)
     }
 
-    useEffect(() => { sortMemes() }, [data])
+    useEffect(() => { if (data.length) sortMemes() }, [data])
     // onRequestSort={changeOrder}
     return (
         <Table size='small'>
@@ -59,7 +61,7 @@ export default function PaginatedTable({ name, headCells = [
             </TableHead>
             <TableBody>
                 {orderedMemes.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                    .map(item => <Component key={item.meme_id || item.user_id} {...item} {...{ localUser, update }} />)}
+                    .map(item => <Component key={item.meme_id || item.user_id} {...item} {...{ update }} />)}
             </TableBody>
             <TableFooter>
                 <TableRow>
