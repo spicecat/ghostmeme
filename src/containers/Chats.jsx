@@ -10,7 +10,8 @@ import {
     TableHead,
     TableRow,
     Paper,
-    TextField
+    TextField,
+    Tooltip
 } from '@material-ui/core'
 import { KeyboardDatePicker } from "@material-ui/pickers";
 import Typography from '@material-ui/core/Typography';
@@ -192,7 +193,7 @@ export default function Chats({ user }) {
                                     <TableCell className='tableChat' width='20%' />
                                     <TableCell className='tableChat' width='40%'>
                                         {/* <div className={(meme.owner === localUser) ? 'chat localChat' : 'chat otherChat'}> */}
-                                        {meme.owner === localUser && (meme.expiredAt === -1 || meme.expiredAt > Date.now()) && <IconButton onClick={() => vanishMemeRequest(meme.meme_id)} aria-label='delete'><DeleteIcon /></IconButton>}
+                                        {meme.owner === localUser && (meme.expiredAt === -1 || meme.expiredAt > Date.now()) && <Tooltip title='Vanish Meme' placement='right'><IconButton onClick={() => vanishMemeRequest(meme.meme_id)} aria-label='delete'><DeleteIcon /></IconButton></Tooltip>}
                                         {(meme.owner === localUser) &&
                                             <div className='chat localChat'>
                                                 {/* Don't show expired memes */}
