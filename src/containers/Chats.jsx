@@ -200,8 +200,8 @@ export default function Chats({ user }) {
                                     <TableCell className='tableChat' width='20%' />
                                     <TableCell className='tableChat' width='40%'>
                                         {/* <div className={(meme.owner === localUser) ? 'chat localChat' : 'chat otherChat'}> */}
-                                        {meme.owner === local_id && (meme.expiredAt === -1 || meme.expiredAt > Date.now()) && <Tooltip title='Vanish Meme' placement='right'><IconButton onClick={() => vanishMemeRequest(meme.meme_id)} aria-label='delete'><DeleteIcon /></IconButton></Tooltip>}
-                                        {(meme.owner === local_id) &&
+                                        {meme.owner === localUser && (meme.expiredAt === -1 || meme.expiredAt > Date.now()) && <Tooltip title='Vanish Meme' placement='right'><IconButton onClick={() => vanishMemeRequest(meme.meme_id)} aria-label='delete'><DeleteIcon /></IconButton></Tooltip>}
+                                        {(meme.owner === localUser) &&
                                             <div className='chat localChat'>
                                                 {/* Don't show expired memes */}
                                                 {(meme.expiredAt !== -1 && meme.expiredAt < Date.now()) ? <i>Message vanished</i> :
