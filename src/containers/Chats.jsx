@@ -1,6 +1,21 @@
 import { useState, useEffect, useRef } from 'react'
-import { Button, ButtonGroup, IconButton, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, TextField, Typography } from '@material-ui/core'
-import { KeyboardDatePicker } from "@material-ui/pickers"
+import {
+    Button,
+    ButtonGroup,
+    IconButton,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow,
+    Paper,
+    TextField,
+    Tooltip
+} from '@material-ui/core'
+import { KeyboardDatePicker } from "@material-ui/pickers";
+import Typography from '@material-ui/core/Typography';
+
 import SendIcon from '@material-ui/icons/Send'
 import DeleteIcon from '@material-ui/icons/DeleteOutline'
 // import FileBase64 from 'react-file-base64'
@@ -112,7 +127,8 @@ export default function Chats({ user }) {
                     <ButtonGroup variant="outlined" color="primary" aria-label="contained primary button group">
                         <Button color={showExpiration && 'secondary'} onClick={() => toggleComponent('expiration')}>Expiration</Button>
                         <Button color={showImageLink && 'secondary'} onClick={() => toggleComponent('imageLink')}>Image Link</Button>
-                        <Button color={showImageFile && 'secondary'} onClick={() => toggleComponent('imageFile')}>Image File</Button>
+                        {/* <Button color={showImageFile && 'secondary'} onClick={() => toggleComponent('imageFile')}>Image File</Button> */}
+
                         <TextField placeholder='Chat message' name='description' variant='outlined' InputProps={{
                             endAdornment:
                                 // <Button type='submit' variant="contained" color="primary" endIcon={<SendIcon />}> </Button>
@@ -133,8 +149,8 @@ export default function Chats({ user }) {
                     /> : <TextField type='hidden' name='expiredAt' />}
                     &nbsp;
                     {showImageLink ? <TextField label='Image URL' name='imageUrl' variant='outlined' /> : <TextField type='hidden' name='imageUrl' />}
-                    &nbsp;
-                    {showImageFile ? <TextField label='Image Base64' name='imageBase64' variant='outlined' /> : <TextField type='hidden' name='imageBase64' />}
+                    {/* &nbsp; */}
+                    {/* {showImageFile ? <TextField label='Image Base64' name='imageBase64' variant='outlined' /> : <TextField type='hidden' name='imageBase64' />} */}
                     {/* {showImageFile ? <input name='imageBase64' accept="image/*" id="icon-button-file" type="file" /> : <TextField type='hidden' name='imageBase64' />} */}
 
                 </div>
@@ -155,7 +171,7 @@ export default function Chats({ user }) {
                                         {(meme.owner === selectedUser) &&
                                             <div className='chat otherChat'>
                                                 {/* Don't show expired memes */}
-                                                {(meme.expiredAt !== -1 && meme.expiredAt < Date.now()) ? <i>Message expired</i> :
+                                                {(meme.expiredAt !== -1 && meme.expiredAt < Date.now()) ? <i>Message vanished</i> :
                                                     <div>
                                                         {/* Username of sender */}
                                                         <b>{(user && selectedUserInfo) ? (meme.owner === local_id) ? user.username : selectedUserInfo.username : 'Error'}</b>
@@ -184,11 +200,11 @@ export default function Chats({ user }) {
                                     <TableCell className='tableChat' width='20%' />
                                     <TableCell className='tableChat' width='40%'>
                                         {/* <div className={(meme.owner === localUser) ? 'chat localChat' : 'chat otherChat'}> */}
-                                        {meme.owner === local_id && (meme.expiredAt === -1 || meme.expiredAt > Date.now()) && <IconButton onClick={() => vanishMemeRequest(meme.meme_id)} aria-label='delete'><DeleteIcon /></IconButton>}
-                                        {(meme.owner === local_id) &&
+                                        {meme.owner === localUser && (meme.expiredAt === -1 || meme.expiredAt > Date.now()) && <Tooltip title='Vanish Meme' placement='right'><IconButton onClick={() => vanishMemeRequest(meme.meme_id)} aria-label='delete'><DeleteIcon /></IconButton></Tooltip>}
+                                        {(meme.owner === localUser) &&
                                             <div className='chat localChat'>
                                                 {/* Don't show expired memes */}
-                                                {(meme.expiredAt !== -1 && meme.expiredAt < Date.now()) ? <i>Message expired</i> :
+                                                {(meme.expiredAt !== -1 && meme.expiredAt < Date.now()) ? <i>Message vanished</i> :
                                                     <div>
                                                         {/* Username of sender */}
                                                         <b>{(user && selectedUserInfo) ? (meme.owner === local_id) ? user.username : selectedUserInfo.username : 'Error'}</b>
