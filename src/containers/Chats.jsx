@@ -54,10 +54,7 @@ export default function Chats({ user }) {
                 await getConversationRequest(user_id, 'refresh')
             }
         }
-        else {
-            setStatus('Select User')
-            return
-        }
+        else setStatus('Select User')
     }
 
     const createMemeRequest = async event => {
@@ -80,19 +77,22 @@ export default function Chats({ user }) {
         else if (component === 'expiration') showExpiration ? setShowExpiration(false) : setShowExpiration(true)
     }
 
-    const selectedUserRef = useRef(selectedUser)
-    selectedUserRef.current = selectedUser
+    // const selectedUserRef = useRef(selectedUser)
+    // selectedUserRef.current = selectedUser
+
+    const [timer, setTimer] = useState(0)
+    const updateConversation = async () => {
+        clearInterval(timer)
+        console.log('Updating conversations with', selectedUser)
+        // selectedUserRef.current ? getConversationRequest(selectedUserRef.current) : console.log('No user selected')
+    }
 
     useEffect(() => {
         updateUsers()
-        let timer = setInterval(() => {
-            console.log('Updating conversations...')
-            // selectedUserRef.current ? console.log(selectedUserRef.current) : console.log('No user selected')
-            // console.log(`Local user: ${localUserRef.current}`)
-            selectedUserRef.current ? getConversationRequest(selectedUserRef.current) : console.log('No user selected')
-        }, 5000)
-        return () => { clearTimeout(timer) }
+        setTimer(setInterval(updateConversation, 5000))
+        return () => clearTimeout(timer)
     }, [])
+    useEffect(() => updateConversation(), [selectedUser])
 
     return user.loading === undefined && (
         <>
