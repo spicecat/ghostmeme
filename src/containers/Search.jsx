@@ -22,14 +22,14 @@ export default function Search({ user }) {
 
     const updateMemes = async () => {
         console.log('Updating memes...')
-        setChatsMemes(await searchChatsMemes(user, chatsSearch))
-        setFriendsMemes(await searchFriendsMemes(user, friendsSearch))
+        if (openChats) setChatsMemes(await searchChatsMemes(user, chatsSearch))
+        if (openFriends) setFriendsMemes(await searchFriendsMemes(user, friendsSearch))
     }
 
     useEffect(() => {
         clearInterval(timer)
         updateMemes()
-    }, [chatsSearch, friendsSearch])
+    }, [openChats, openFriends, chatsSearch, friendsSearch])
 
     useEffect(() => {
         updateMemes()
@@ -40,7 +40,7 @@ export default function Search({ user }) {
     return (
         <>
             <IconButton onClick={() => { setOpenChats(!openChats) }}>
-                {openChats ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+                {openChats ? <KeyboardArrowDownIcon /> : <KeyboardArrowUpIcon />}
             </IconButton>
             Memes from Chats
             {openChats &&
@@ -52,7 +52,7 @@ export default function Search({ user }) {
             <br />
 
             <IconButton onClick={() => { setOpenFriends(!openFriends) }}>
-                {openFriends ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+                {openFriends ? <KeyboardArrowDownIcon /> : <KeyboardArrowUpIcon />}
             </IconButton>
             Memes from Friends
             {openFriends &&

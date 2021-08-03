@@ -3,7 +3,7 @@ import superagentCache from 'superagent-cache'
 
 import { serverUrl, apiUrl, apiKey } from '../var.js'
 
-import { getUser, getUsernames } from './userService'
+import { getUsernames } from './userService'
 
 superagentCache(superagent)
 

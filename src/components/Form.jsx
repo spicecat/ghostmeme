@@ -7,10 +7,15 @@ import captchaSrc from '../assets/captcha.jpg'
 
 import { fieldInfo, passwordStrength } from '../services/schemas'
 
+const Captcha = () =>
+    <div>
+        <img src={captchaSrc} alt='CAPTCHA' />
+        <br /><br />
+    </div>
+const formatLabel = field => upperFirst(field.split(/(?=[A-Z\s])/).join('_').replaceAll('_', ' '))
 
-export default function Form({ name, action, schema, rememberMe = true, search = false }) {
-    const captcha = 'captcha' in schema.fields
-    const fields = Object.keys(schema.fields)
+export default function Form({ name, action, schema, rememberMe = false, search = false }) {
+    const fields = Object.keys(schema.fields), captcha = fields.includes('captcha')
     const formik = useFormik({
         initialValues: fields.reduce((o, i) => ({ ...o, [i]: '' }), {}),
         validationSchema: schema,
@@ -25,31 +30,31 @@ export default function Form({ name, action, schema, rememberMe = true, search =
                     <TextField
                         size='small'
                         name={field}
-                        label={name === 'Login' && field === 'username' ? 'Username or Email' : upperFirst(field.split(/(?=[A-Z\s])/).join('_').replaceAll('_', ' '))}
+                        label={name === 'Login' && field === 'username' ? 'Username or Email' : formatLabel(field)}
                         type={fieldInfo[field]}
                         {...{ fullWidth: !search }}
-                        {...fieldInfo[field] === 'date' && { InputLabelProps: { shrink: true } }}
+                        {...(fieldInfo[field] === 'date' || fieldInfo[field] === 'file') && { InputLabelProps: { shrink: true } }}
                         {...fieldInfo[field] === 'file' ?
                             { onChange: e => formik.setFieldValue(field, e.target.files[0]) } :
                             { onChange: formik.handleChange, value: formik.values[field] }}
                         error={Boolean(formik.touched[field] && formik.errors[field])}
-                        helperText={formik.touched[field] && (formik.errors[field] || (field === 'password' && name === 'Register' && `Password strength: ${passwordStrength(formik.values.password)}`))}
+                        helperText={formik.touched[field] && (formik.errors[field] || (name === 'Register' && field === 'password' && `Password strength: ${passwordStrength(formik.values.password)}`))}
                     />
                     {search && <>&nbsp;&nbsp;</>}
                 </span>
             )}
             {search || <><br /><br /></>}
-            {captcha &&
-                <div>
-                    <img src={captchaSrc} alt='CAPTCHA' />
-                    <br /><br />
-                </div>}
+            {captcha && <Captcha />}
             <Button type='submit' variant='contained' color='primary'>{search ? 'Search' : name}</Button>
-            &nbsp;&nbsp;&nbsp;
-            {(rememberMe && !search) && <FormControlLabel
-                control={<Checkbox checked={formik.rememberMe} onChange={formik.handleChange} name='rememberMe' />}
-                label='Remember Me'
-            />}
+            {rememberMe &&
+                <>
+                    &nbsp;&nbsp;&nbsp;
+                    <FormControlLabel
+                        name='rememberMe'
+                        label='Remember Me'
+                        control={<Checkbox checked={formik.rememberMe} onChange={formik.handleChange} />}
+                    />
+                </>}
         </form>
     )
 }

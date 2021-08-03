@@ -1,23 +1,12 @@
 import { useState, useEffect, useRef } from 'react'
-import {
-    Button,
-    ButtonGroup,
-    IconButton,
-    Table,
-    TableBody,
-    TableCell,
-    TableContainer,
-    TableHead,
-    TableRow,
-    Paper,
-    TextField
-} from '@material-ui/core'
-import { KeyboardDatePicker } from "@material-ui/pickers";
-import Typography from '@material-ui/core/Typography';
-
+import { Button, ButtonGroup, IconButton, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, TextField, Typography } from '@material-ui/core'
+import { KeyboardDatePicker } from "@material-ui/pickers"
 import SendIcon from '@material-ui/icons/Send'
 import DeleteIcon from '@material-ui/icons/DeleteOutline'
-// import FileBase64 from 'react-file-base64';
+// import FileBase64 from 'react-file-base64'
+
+import PaginatedTable from '../components/PaginatedTable'
+import User from '../components/User'
 
 import { redirect, getUsers, getUser } from '../services/userService'
 import { getConversation, createMeme, vanishMeme } from '../services/memeService'
@@ -40,23 +29,28 @@ export default function Chats({ user }) {
 
     const updateUsers = async () => { setUsers(await getUsers()) }
 
-    const getConversationRequest = async (selectedUserID, localUserID = localUser, requestType) => {
+    const getConversationRequest = async (selectedUserID, local_id = localUser, requestType) => {
         if (requestType === 'refresh') {
-            setMemes(await getConversation(localUserID, selectedUserID))
+            setMemes(await getConversation(local_id, selectedUserID))
         } else {
             // GRACEFULLY HANDLE API
-            const response = await getConversation(localUserID, selectedUserID)
+            const response = await getConversation(local_id, selectedUserID)
             response ? setMemes(response) : console.log('Error')
         }
     }
 
-    const selectUserRequest = async userID => {
-        setSelectedUser(userID)
-        setSelectedUserInfo(await getUser(userID))
-        await getConversationRequest(userID, localUser, 'refresh')
+    const selectUserRequest = async (user_id, status, setStatus) => {
+        if (!status) {
+            setStatus('Select User')
+            return
+        }
+        setSelectedUser(user_id)
+        console.log('selected', user_id)
+        // setSelectedUserInfo(await getUser(user_id))
+        // await getConversationRequest(userID, localUser, 'refresh')
     }
 
-    const createMemeRequest = async (event) => {
+    const createMemeRequest = async event => {
         event.preventDefault()
         const formData = new FormData(event.target)
         const jsonData = Object.fromEntries(formData.entries())
@@ -65,21 +59,15 @@ export default function Chats({ user }) {
         await getConversationRequest(selectedUser)
     }
 
-    const vanishMemeRequest = async (memeID) => {
+    const vanishMemeRequest = async memeID => {
         console.log(memeID)
         await vanishMeme(memeID)
     }
 
     const toggleComponent = (component) => {
-        if (component === 'imageLink') {
-            showImageLink ? setShowImageLink(false) : setShowImageLink(true)
-        }
-        else if (component === 'imageFile') {
-            showImageFile ? setShowImageFile(false) : setShowImageFile(true)
-        }
-        else if (component === 'expiration') {
-            showExpiration ? setShowExpiration(false) : setShowExpiration(true)
-        }
+        if (component === 'imageLink') showImageLink ? setShowImageLink(false) : setShowImageLink(true)
+        else if (component === 'imageFile') showImageFile ? setShowImageFile(false) : setShowImageFile(true)
+        else if (component === 'expiration') showExpiration ? setShowExpiration(false) : setShowExpiration(true)
     }
 
     const selectedUserRef = useRef(selectedUser)
@@ -111,16 +99,13 @@ export default function Chats({ user }) {
                 <TextField type='hidden' name='replyTo' />
                 {/* <TextField label='imageUrl' name='imageUrl' variant='outlined' />
                 <TextField label='imageBase64' name='imageBase64' variant='outlined' /> */}
-
                 {/* <Button type='submit' variant='contained' color='primary'>Add new meme</Button> */}
-
                 {/* <Button variant='contained' color='primary' onClick={() => console.log(new Date(Date.now()).toLocaleDateString())}>Get Current Date</Button> */}
                 <div align='center'>
                     <ButtonGroup variant="outlined" color="primary" aria-label="contained primary button group">
                         <Button color={showExpiration && 'secondary'} onClick={() => toggleComponent('expiration')}>Expiration</Button>
                         <Button color={showImageLink && 'secondary'} onClick={() => toggleComponent('imageLink')}>Image Link</Button>
                         <Button color={showImageFile && 'secondary'} onClick={() => toggleComponent('imageFile')}>Image File</Button>
-
                         <TextField placeholder='Chat message' name='description' variant='outlined' InputProps={{
                             endAdornment:
                                 // <Button type='submit' variant="contained" color="primary" endIcon={<SendIcon />}> </Button>
@@ -229,44 +214,19 @@ export default function Chats({ user }) {
                 </TableContainer>
             </Paper>
             <br /><br />
-
-            {/* Get all users */}
-            <Button variant='contained' color='primary' onClick={updateUsers}>Get All Users</Button>
-            <br /><br />
-            <TableContainer component={Paper}>
-                <Table>
-                    <TableHead>
-                        <TableRow>
-                            <TableCell>name</TableCell>
-                            {/* <TableCell>email</TableCell>
-                            <TableCell>phone</TableCell> */}
-                            <TableCell>username</TableCell>
-                            {/* <TableCell>imageUrl</TableCell> */}
-                            {/* <TableCell>deleted</TableCell> */}
-                            {/* <TableCell>user_id</TableCell> */}
-                            <TableCell>friends</TableCell>
-                            {/* <TableCell>liked</TableCell> */}
-                            <TableCell>Select User?</TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {users && users.map(user => (
-                            <TableRow key={user.user_id}>
-                                <TableCell>{user.name}</TableCell>
-                                {/* <TableCell>{user.email}</TableCell>
-                                <TableCell>{user.phone}</TableCell> */}
-                                <TableCell>{user.username}</TableCell>
-                                {/* <TableCell>{user.imageUrl}</TableCell> */}
-                                {/* <TableCell>{user.deleted}</TableCell> */}
-                                {/* <TableCell>{user.user_id}</TableCell> */}
-                                <TableCell>{user.friends}</TableCell>
-                                {/* <TableCell>{user.liked}</TableCell> */}
-                                <TableCell><Button variant='contained' color='primary' onClick={() => selectUserRequest(user.user_id)}>Select User</Button></TableCell>
-                            </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
-            </TableContainer>
+            <PaginatedTable
+                name='users'
+                headCells={[
+                    { name: 'Profile Picture', prop: 'imageUrl' },
+                    { name: 'Username', prop: 'username' },
+                    { name: 'Email', prop: 'email' },
+                    { name: 'Phone', prop: 'phone' },
+                    { name: 'Friends', prop: 'friends' },
+                    { name: 'Likes', prop: 'liked' }]}
+                data={users}
+                Component={User}
+                update={selectUserRequest}
+            />
         </>
     )
 }
