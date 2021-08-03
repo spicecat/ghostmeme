@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import {
     Button,
     ButtonGroup,
@@ -11,10 +11,10 @@ import {
     TableRow,
     Paper,
     TextField,
-    Tooltip
+    Tooltip,
+    Typography
 } from '@material-ui/core'
-import { KeyboardDatePicker } from "@material-ui/pickers";
-import Typography from '@material-ui/core/Typography';
+import { KeyboardDatePicker } from '@material-ui/pickers'
 
 import SendIcon from '@material-ui/icons/Send'
 import DeleteIcon from '@material-ui/icons/DeleteOutline'
@@ -33,7 +33,7 @@ export default function Chats({ user }) {
     const [memes, setMemes] = useState([])
     const [users, setUsers] = useState([])
     const [selectedUser, setSelectedUser] = useState('')
-    const [selectedUserInfo, setSelectedUserInfo] = useState([])
+    const [selectedUserInfo, setSelectedUserInfo] = useState({})
 
     const [imgBase64, setimgBase64] = useState('')
     const [selectedDate, handleDateChange] = useState(new Date());
@@ -46,6 +46,7 @@ export default function Chats({ user }) {
 
     const getConversationRequest = async (selectedUserID, requestType) => {
         if (requestType === 'refresh') {
+            console.log('Updating conversations with:', selectedUser)
             setMemes(await getConversation(localUser, selectedUserID))
         } else {
             // GRACEFULLY HANDLE API
@@ -56,7 +57,6 @@ export default function Chats({ user }) {
 
     const selectUserRequest = async (user_id, status, setStatus) => {
         if (status === 'Select User') {
-            console.log(selectedUser, user_id)
             if (selectedUser === user_id) {
                 setSelectedUser('')
                 setSelectedUserInfo([])
@@ -92,14 +92,10 @@ export default function Chats({ user }) {
         else if (component === 'expiration') setShowExpiration(!showExpiration)
     }
 
-    // const selectedUserRef = useRef(selectedUser)
-    // selectedUserRef.current = selectedUser
-
     const [timer, setTimer] = useState(0)
     const updateConversation = async () => {
         clearInterval(timer)
-        console.log('Updating conversations with:', selectedUser)
-        // selectedUserRef.current ? getConversationRequest(selectedUserRef.current) : console.log('No user selected')
+        if (selectedUser) getConversationRequest(selectedUser, 'refresh')
     }
 
     useEffect(() => {
@@ -124,34 +120,34 @@ export default function Chats({ user }) {
                 {/* <Button type='submit' variant='contained' color='primary'>Add new meme</Button> */}
                 {/* <Button variant='contained' color='primary' onClick={() => console.log(new Date(Date.now()).toLocaleDateString())}>Get Current Date</Button> */}
                 <div align='center'>
-                    <ButtonGroup variant="outlined" color="primary" aria-label="contained primary button group">
+                    <ButtonGroup variant='outlined' color='primary' aria-label='contained primary button group'>
                         <Button color={showExpiration && 'secondary'} onClick={() => toggleComponent('expiration')}>Expiration</Button>
                         <Button color={showImageLink && 'secondary'} onClick={() => toggleComponent('imageLink')}>Image Link</Button>
                         {/* <Button color={showImageFile && 'secondary'} onClick={() => toggleComponent('imageFile')}>Image File</Button> */}
 
                         <TextField placeholder='Chat message' name='description' variant='outlined' InputProps={{
                             endAdornment:
-                                // <Button type='submit' variant="contained" color="primary" endIcon={<SendIcon />}> </Button>
+                                // <Button type='submit' variant='contained' color='primary' endIcon={<SendIcon />}> </Button>
                                 <IconButton aria-label='send' type='submit'><SendIcon /></IconButton>
                         }} />
                     </ButtonGroup>
 
                     <br /><br />
-                    {/* {showExpiration ? <TextField label='Expiration' name='expiredAt' variant='outlined' type='date' defaultValue="2021-07-28" /> : <TextField type='hidden' name='expiredAt' />} */}
+                    {/* {showExpiration ? <TextField label='Expiration' name='expiredAt' variant='outlined' type='date' defaultValue='2021-07-28' /> : <TextField type='hidden' name='expiredAt' />} */}
                     {showExpiration ? <KeyboardDatePicker
                         name='expiredAt'
                         clearable
                         value={selectedDate}
-                        placeholder="10/10/2018"
+                        placeholder='10/10/2018'
                         onChange={date => handleDateChange(date)}
                         minDate={new Date()}
-                        format="MM/dd/yyyy"
+                        format='MM/dd/yyyy'
                     /> : <TextField type='hidden' name='expiredAt' />}
                     &nbsp;
                     {showImageLink ? <TextField label='Image URL' name='imageUrl' variant='outlined' /> : <TextField type='hidden' name='imageUrl' />}
                     {/* &nbsp; */}
                     {/* {showImageFile ? <TextField label='Image Base64' name='imageBase64' variant='outlined' /> : <TextField type='hidden' name='imageBase64' />} */}
-                    {/* {showImageFile ? <input name='imageBase64' accept="image/*" id="icon-button-file" type="file" /> : <TextField type='hidden' name='imageBase64' />} */}
+                    {/* {showImageFile ? <input name='imageBase64' accept='image/*' id='icon-button-file' type='file' /> : <TextField type='hidden' name='imageBase64' />} */}
 
                 </div>
             </form>
@@ -207,7 +203,7 @@ export default function Chats({ user }) {
                                                 {(meme.expiredAt !== -1 && meme.expiredAt < Date.now()) ? <i>Message vanished</i> :
                                                     <div>
                                                         {/* Username of sender */}
-                                                        <b>{(user && selectedUserInfo) ? (meme.owner === localUser) ? user.username : selectedUserInfo.username : 'Error'}</b>
+                                                        <b>{selectedUserInfo ? (meme.owner === localUser) ? user.username : selectedUserInfo.username : 'Error'}</b>
 
                                                         {/* Creation date of meme and number of likes */}
                                                         &nbsp;-&nbsp;{meme.createdAt.toLocaleString()}
