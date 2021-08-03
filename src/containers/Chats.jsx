@@ -38,9 +38,9 @@ export default function Chats({ user }) {
     const [imgBase64, setimgBase64] = useState('')
     const [selectedDate, handleDateChange] = useState(new Date());
 
-    const [showImageLink, setShowImageLink] = useState('')
-    const [showImageFile, setShowImageFile] = useState('')
-    const [showExpiration, setShowExpiration] = useState('')
+    const [showImageLink, setShowImageLink] = useState(false)
+    const [showImageFile, setShowImageFile] = useState(false)
+    const [showExpiration, setShowExpiration] = useState(false)
 
     const updateUsers = async () => { setUsers(await getUsers()) }
 
@@ -87,9 +87,9 @@ export default function Chats({ user }) {
     }
 
     const toggleComponent = (component) => {
-        if (component === 'imageLink') showImageLink ? setShowImageLink(false) : setShowImageLink(true)
-        else if (component === 'imageFile') showImageFile ? setShowImageFile(false) : setShowImageFile(true)
-        else if (component === 'expiration') showExpiration ? setShowExpiration(false) : setShowExpiration(true)
+        if (component === 'imageLink') setShowImageLink(!showImageLink)
+        else if (component === 'imageFile') setShowImageFile(!showImageFile)
+        else if (component === 'expiration') setShowExpiration(!showExpiration)
     }
 
     // const selectedUserRef = useRef(selectedUser)
@@ -98,7 +98,7 @@ export default function Chats({ user }) {
     const [timer, setTimer] = useState(0)
     const updateConversation = async () => {
         clearInterval(timer)
-        console.log('Updating conversations with', selectedUser)
+        console.log('Updating conversations with:', selectedUser)
         // selectedUserRef.current ? getConversationRequest(selectedUserRef.current) : console.log('No user selected')
     }
 
