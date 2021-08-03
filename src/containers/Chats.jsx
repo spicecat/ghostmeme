@@ -29,7 +29,7 @@ import { getConversation, createMeme, vanishMeme } from '../services/memeService
 export default function Chats({ user }) {
     useEffect(() => { redirect(user) }, [user])
 
-    const localUser = user.user_id
+    const local_id = user.user_id
     const [memes, setMemes] = useState([])
     const [users, setUsers] = useState([])
     const [selectedUser, setSelectedUser] = useState('')
@@ -46,10 +46,10 @@ export default function Chats({ user }) {
 
     const getConversationRequest = async (selectedUserID, requestType) => {
         if (requestType === 'refresh') {
-            setMemes(await getConversation(localUser, selectedUserID))
+            setMemes(await getConversation(local_id, selectedUserID))
         } else {
             // GRACEFULLY HANDLE API
-            const response = await getConversation(localUser, selectedUserID)
+            const response = await getConversation(local_id, selectedUserID)
             response ? setMemes(response) : console.log('Error')
         }
     }
@@ -69,7 +69,10 @@ export default function Chats({ user }) {
                 await getConversationRequest(user_id, 'refresh')
             }
         }
-        else setStatus('Select User')
+        else {
+            setStatus('Select User')
+            return
+        }
     }
 
     const createMemeRequest = async event => {
@@ -92,28 +95,25 @@ export default function Chats({ user }) {
         else if (component === 'expiration') showExpiration ? setShowExpiration(false) : setShowExpiration(true)
     }
 
-    // const selectedUserRef = useRef(selectedUser)
-    // selectedUserRef.current = selectedUser
-
-    const [timer, setTimer] = useState(0)
-    const updateConversation = async () => {
-        clearInterval(timer)
-        console.log('Updating conversations with', selectedUser)
-        // selectedUserRef.current ? getConversationRequest(selectedUserRef.current) : console.log('No user selected')
-    }
+    const selectedUserRef = useRef(selectedUser)
+    selectedUserRef.current = selectedUser
 
     useEffect(() => {
         updateUsers()
-        setTimer(setInterval(updateConversation, 5000))
-        return () => clearTimeout(timer)
+        let timer = setInterval(() => {
+            console.log('Updating conversations...')
+            // selectedUserRef.current ? console.log(selectedUserRef.current) : console.log('No user selected')
+            // console.log(`Local user: ${localUserRef.current}`)
+            selectedUserRef.current ? getConversationRequest(selectedUserRef.current) : console.log('No user selected')
+        }, 5000)
+        return () => { clearTimeout(timer) }
     }, [])
-    useEffect(() => updateConversation(), [selectedUser])
 
     return user.loading === undefined && (
         <>
             {/* Add new meme */}
             <form onSubmit={createMemeRequest} autoComplete='off'>
-                <TextField type='hidden' value={localUser} name='owner' />
+                <TextField type='hidden' value={local_id} name='owner' />
                 <TextField type='hidden' value={selectedUser} name='receiver' />
                 {/* <TextField label='expiredAt' placeholder=-1 name='expiredAt' variant='outlined' />
                 <TextField label='description' name='description' variant='outlined' /> */}
@@ -174,7 +174,7 @@ export default function Chats({ user }) {
                                                 {(meme.expiredAt !== -1 && meme.expiredAt < Date.now()) ? <i>Message vanished</i> :
                                                     <div>
                                                         {/* Username of sender */}
-                                                        <b>{(user && selectedUserInfo) ? (meme.owner === localUser) ? user.username : selectedUserInfo.username : 'Error'}</b>
+                                                        <b>{(user && selectedUserInfo) ? (meme.owner === local_id) ? user.username : selectedUserInfo.username : 'Error'}</b>
 
                                                         {/* Creation date of meme and number of likes */}
                                                         &nbsp;-&nbsp;{meme.createdAt.toLocaleString()}
@@ -207,7 +207,7 @@ export default function Chats({ user }) {
                                                 {(meme.expiredAt !== -1 && meme.expiredAt < Date.now()) ? <i>Message vanished</i> :
                                                     <div>
                                                         {/* Username of sender */}
-                                                        <b>{(user && selectedUserInfo) ? (meme.owner === localUser) ? user.username : selectedUserInfo.username : 'Error'}</b>
+                                                        <b>{(user && selectedUserInfo) ? (meme.owner === local_id) ? user.username : selectedUserInfo.username : 'Error'}</b>
 
                                                         {/* Creation date of meme and number of likes */}
                                                         &nbsp;-&nbsp;{meme.createdAt.toLocaleString()}
