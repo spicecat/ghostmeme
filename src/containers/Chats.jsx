@@ -119,7 +119,7 @@ export default function Chats({ user }) {
                     <ButtonGroup variant="outlined" color="primary" aria-label="contained primary button group">
                         <Button color={showExpiration && 'secondary'} onClick={() => toggleComponent('expiration')}>Expiration</Button>
                         <Button color={showImageLink && 'secondary'} onClick={() => toggleComponent('imageLink')}>Image Link</Button>
-                        <Button color={showImageFile && 'secondary'} onClick={() => toggleComponent('imageFile')}>Image File</Button>
+                        {/* <Button color={showImageFile && 'secondary'} onClick={() => toggleComponent('imageFile')}>Image File</Button> */}
 
                         <TextField placeholder='Chat message' name='description' variant='outlined' InputProps={{
                             endAdornment:
@@ -141,8 +141,8 @@ export default function Chats({ user }) {
                     /> : <TextField type='hidden' name='expiredAt' />}
                     &nbsp;
                     {showImageLink ? <TextField label='Image URL' name='imageUrl' variant='outlined' /> : <TextField type='hidden' name='imageUrl' />}
-                    &nbsp;
-                    {showImageFile ? <TextField label='Image Base64' name='imageBase64' variant='outlined' /> : <TextField type='hidden' name='imageBase64' />}
+                    {/* &nbsp; */}
+                    {/* {showImageFile ? <TextField label='Image Base64' name='imageBase64' variant='outlined' /> : <TextField type='hidden' name='imageBase64' />} */}
                     {/* {showImageFile ? <input name='imageBase64' accept="image/*" id="icon-button-file" type="file" /> : <TextField type='hidden' name='imageBase64' />} */}
 
                 </div>
