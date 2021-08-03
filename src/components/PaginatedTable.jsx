@@ -30,7 +30,6 @@ export default function PaginatedTable({ name, headCells = [
     }
     const sortMemes = (ord = order, ordBy = orderBy) => {
         const arr = data, type = typeof (data[0][ordBy])
-        console.log(data[0], type)
         const compare = (a, b) => a > b ? 1 : -1
         arr.sort((a, b) => type === 'string' ? compare(a[ordBy].toUpperCase(), b[ordBy].toUpperCase()) : compare(a[ordBy], b[ordBy]))
         if (ord === 'desc') arr.reverse()

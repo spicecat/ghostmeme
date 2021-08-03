@@ -27,13 +27,9 @@ export default function Friends({ user, updateUser }) {
     }
 
     const updateStatus = async (target_id, status, setStatus) => {
-        if (!status) {
-            setStatus(getStatus(target_id))
-            return
-        }
-        console.log('handleFriendRequest', target_id)
         const deleteFromArray = (arr, e) => arr.splice(arr.indexOf(e), 1)
         let response = false
+
         if (status === 'Add Friend') {
             setStatus('Pending')
             response = await sendFriendRequest(user_id, target_id)
@@ -54,6 +50,11 @@ export default function Friends({ user, updateUser }) {
             response = await removeFriend(user_id, target_id)
             if (response) delete friends[target_id]
         }
+        else {
+            setStatus(getStatus(target_id))
+            return
+        }
+        
         if (response) await updateUser({ ...user, friends, incomingFriendRequests, outgoingFriendRequests })
         else setStatus(status)
     }

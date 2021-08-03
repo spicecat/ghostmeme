@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { TableRow, TableCell, Button } from '@material-ui/core'
 
 export default function User({ user_id, username, email, phone, friends, liked, imageUrl, update }) {
-    const [status, setStatus] = useState()
+    const [status, setStatus] = useState('')
 
     const updateStatus = () => update(user_id, status, setStatus)
 
