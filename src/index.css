@@ -54,6 +54,18 @@ img.chat-img {
   border-bottom: none !important;
 }
 
+.paper{
+  padding: 15px;
+}
+
+.menu-button{
+  margin-right: 20px;
+}
+
+.user-control{
+  margin-left: auto;
+}
+
 @media all and (min-width: 480px) {
   .ResetPassword {
     padding: 60px 0;

@@ -97,7 +97,7 @@ export default function Chats({ user }) {
 
     return user.loading === undefined && <>
         {memes && selectedUserInfo &&
-            <Paper elevation={3}>
+            <Paper className='paper' elevation={3}>
                 <Typography className='chat-header' variant='h4'>{`Conversation with ${selectedUserInfo.username}`}</Typography>
                 <Table>
                     <TableBody>

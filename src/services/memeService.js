@@ -49,10 +49,10 @@ export const searchMemes = async (baseQuery, query = {}, friends = {}) => {
 }
 
 export const searchChatsMemes = async ({ user_id, friends }, query) => searchMemes({ receiver: user_id, private: true, replyTo: null }, query, friends)
-
 export const searchFriendsMemes = async ({ friends }, query) => searchMemes({ receiver: null, private: true, owner: Object.keys(friends).join('|') }, query, friends)
 
-export const getConversation = async (user1, user2) => searchMemes({ receiver: `${user1}|${user2}`, owner: `${user1}|${user2}` })
+export const getConversation = async (user1, user2) => searchMemes({ owner: `${user1}|${user2}`, receiver: `${user1}|${user2}`, private: true })
+export const getStoryMemes = async ({ user_id }) => searchMemes({ owner: user_id, receiver: null, private: true })
 
 const postMeme = async body => {
     const URL = `${apiUrl}/memes`
