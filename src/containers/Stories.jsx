@@ -4,19 +4,13 @@ import { searchMemes } from '../services/memeService'
 
 export default function Stories({ user }) {
   useEffect(() => { redirect(user) }, [user])
-  const [UsersMemesArray, setUserMemesArray] = useState([])
-  const [valid, setValid] = useState(false)
 
-  const GetsUsersMemes = async () => {
-    try {
-      setUserMemesArray(await searchMemes({ owner: user.user_id }))
-      setValid(true)
-      console.log('got it!')
-    }
-    catch {
-      console.log('error!')
-    }
-  }
+  const [memes, setMemes] = useState([])
+
+  const updateMemes = async () => { setMemes(await searchMemes({ owner: user.user_id })) }
+
+  useEffect(() => updateMemes(), [])
+
   const mapper = (ix) => {
     return (
       <article className="Post" >
@@ -41,18 +35,13 @@ export default function Stories({ user }) {
         </div>
 
       </article>
-
     )
-
   }
 
-  const TitleItems = UsersMemesArray.map(mapper)
+  const TitleItems = memes.map(mapper)
 
-  return (
-    <>
-      <h1>{user.username}'s Stories!</h1> <br />
-      <button onClick={GetsUsersMemes} > Get up to date on your posts!</button>
-      {valid && (<ul> {TitleItems}</ul>)}
-    </>
-  )
+  return user.loading === undefined && <>
+    <h1>{user.username}'s Stories!</h1> <br />
+    {<ul> {TitleItems}</ul>}
+  </>
 }

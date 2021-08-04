@@ -19,6 +19,27 @@ import { redirect, getUsers, getUser } from '../services/userService'
 import { getConversation, createMeme, vanishMeme, isExpired } from '../services/memeService'
 import { memeSchema } from '../services/schemas'
 
+const Chat = ({ meme: { meme_id, createdAt, expiredAt, description, likes, imageUrl, }, isLocal, username, action }) => <>
+    {isLocal && !isExpired({ expiredAt }) && <Tooltip title='Vanish Meme' placement='right'><IconButton onClick={() => action(meme_id)} aria-label='delete'><DeleteIcon /></IconButton></Tooltip>}
+    <div className={`chat ${isLocal ? 'local' : 'other'}Chat`}>
+        {isExpired({ expiredAt }) ? <i>Message vanished</i> :
+            <div>
+                <b>{username}</b>
+                &nbsp;-&nbsp;{createdAt.toLocaleString()}
+                &nbsp;-&nbsp;{likes} likes
+                <br />
+                <img className='chat-img' src={imageUrl} alt={imageUrl} />
+                {imageUrl && <br />}
+                {description}
+                {expiredAt !== -1 && <>
+                    <br /><br />
+                    <i>{`Expires at ${expiredAt.toLocaleString()}`}</i>
+                </>}
+            </div>
+        }
+    </div>
+</>
+
 export default function Chats({ user }) {
     useEffect(() => { redirect(user) }, [user])
 
@@ -34,37 +55,37 @@ export default function Chats({ user }) {
         if (status === 'Select User') {
             if (selectedUser === user_id) {
                 setSelectedUser('')
-                setSelectedUserInfo([])
+                setSelectedUserInfo()
                 setMemes([])
             }
             else {
                 setSelectedUser(user_id)
                 console.log('selected', user_id)
                 setSelectedUserInfo(await getUser(user_id) || selectedUserInfo)
-                await getConversationRequest()
+                await updateMemes()
             }
         }
         else setStatus('Select User')
     }
 
-    const getConversationRequest = async () => {
+    const updateMemes = async () => {
         console.log('Updating conversations with:', selectedUser, memes)
         if (selectedUser) setMemes(await getConversation(localUser, selectedUser) || memes)
     }
 
     const createMemeRequest = async values => {
-        if (await createMeme(user, selectedUser, values)) await getConversationRequest()
+        if (await createMeme(user, selectedUser, values)) await updateMemes()
     }
 
     const vanishMemeRequest = async meme_id => {
         console.log(meme_id)
-        if (await vanishMeme(meme_id)) getConversationRequest()
+        if (await vanishMeme(meme_id)) updateMemes()
     }
 
     const [timer, setTimer] = useState(0)
     const updateConversation = async () => {
         clearInterval(timer)
-        getConversationRequest()
+        updateMemes()
     }
 
     useEffect(() => {
@@ -74,92 +95,49 @@ export default function Chats({ user }) {
     }, [])
     useEffect(() => updateConversation(), [selectedUser])
 
-    return user.loading === undefined && (
-        <>
-            {memes && selectedUserInfo &&
-                <Paper elevation={3}>
-                    <Typography className='chat-header' variant='h4'>{`Conversation with ${selectedUserInfo.username}`}</Typography>
-                    <Table>
-                        <TableBody>
-                            {memes.map(meme => (
-                                <TableRow key={meme.meme_id}>
-                                    <TableCell className='tableChat' width='40%'>
-                                        {meme.owner === selectedUser &&
-                                            <div className='chat otherChat'>
-                                                {/* Don't show expired memes */}
-                                                {isExpired(meme) ? <i>Message vanished</i> :
-                                                    <div>
-                                                        <b>{selectedUserInfo.username}</b>
-                                                        {/* Creation date of meme and number of likes */}
-                                                        &nbsp;-&nbsp;{meme.createdAt.toLocaleString()}
-                                                        &nbsp;-&nbsp;{meme.likes} likes
-                                                        <br />
-                                                        {/* Image, if any */}
-                                                        <img className='chat-img' src={meme.imageUrl} alt={meme.imageUrl} />
-                                                        {meme.imageUrl && <br />}
-                                                        {meme.description}
-                                                        {/* Expired At date, if any */}
-                                                        {meme.expiredAt !== -1 && <>
-                                                            <br /><br />
-                                                            <i>{`Expires at ${meme.expiredAt.toLocaleString()}`}</i>
-                                                        </>}
-                                                    </div>
-                                                }
-                                            </div>
-                                        }
-                                    </TableCell>
-                                    <TableCell className='tableChat' width='20%' />
-                                    <TableCell className='tableChat' width='40%'>
-                                        {meme.owner === localUser && <>
-                                            {!isExpired(meme) && <Tooltip title='Vanish Meme' placement='right'><IconButton onClick={() => vanishMemeRequest(meme.meme_id)} aria-label='delete'><DeleteIcon /></IconButton></Tooltip>}
-                                            <div className='chat localChat'>
-                                                {isExpired(meme) ? <i>Message vanished</i> :
-                                                    <div>
-                                                        <b>{user.username}</b>
-                                                        &nbsp;-&nbsp;{meme.createdAt.toLocaleString()}
-                                                        &nbsp;-&nbsp;{meme.likes} likes
-                                                        <br />
-                                                        <img className='chat-img' src={meme.imageUrl} alt={meme.imageUrl} />
-                                                        {meme.imageUrl && <br />}
-                                                        {meme.description}
-                                                        {meme.expiredAt !== -1 && <>
-                                                            <br /><br />
-                                                            <i>{`Expires at ${meme.expiredAt.toLocaleString()}`}</i>
-                                                        </>}
-                                                    </div>
-                                                }
-                                            </div>
-                                        </>}
-                                    </TableCell>
-                                </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
-                    <hr />
-                    <div className='chat-footer'>
-                        <Form
-                            name='Post Meme'
-                            action={createMemeRequest}
-                            schema={memeSchema}
-                            inline={true}
-                        />
-                    </div>
-                </Paper>
-            }
-            <br /><br />
-            <PaginatedTable
-                name='users'
-                headCells={[
-                    { name: 'Profile Picture', prop: 'imageUrl' },
-                    { name: 'Username', prop: 'username' },
-                    { name: 'Email', prop: 'email' },
-                    { name: 'Phone', prop: 'phone' },
-                    { name: 'Friends', prop: 'friends' },
-                    { name: 'Likes', prop: 'liked' }]}
-                data={users}
-                Component={User}
-                update={selectUserRequest}
-            />
-        </>
-    )
+    return user.loading === undefined && <>
+        {memes && selectedUserInfo &&
+            <Paper elevation={3}>
+                <Typography className='chat-header' variant='h4'>{`Conversation with ${selectedUserInfo.username}`}</Typography>
+                <Table>
+                    <TableBody>
+                        {memes.map(meme => (
+                            <TableRow key={meme.meme_id}>
+                                <TableCell className='tableChat' width='40%'>
+                                    {meme.owner === selectedUser && <Chat meme={meme} isLocal={false} username={selectedUserInfo.username} action={vanishMemeRequest} />}
+                                </TableCell>
+                                <TableCell className='tableChat' width='20%' />
+                                <TableCell className='tableChat' width='40%'>
+                                    {meme.owner === localUser && <Chat meme={meme} isLocal={true} username={user.username} action={vanishMemeRequest} />}
+                                </TableCell>
+                            </TableRow>
+                        ))}
+                    </TableBody>
+                </Table>
+                <hr />
+                <div className='chat-footer'>
+                    <Form
+                        name='Post Meme'
+                        action={createMemeRequest}
+                        schema={memeSchema}
+                        inline={true}
+                    />
+                </div>
+            </Paper>
+        }
+        <br /><br />
+        <PaginatedTable
+            name='users'
+            headCells={[
+                { name: 'Profile Picture', prop: 'imageUrl' },
+                { name: 'Username', prop: 'username' },
+                { name: 'Email', prop: 'email' },
+                { name: 'Phone', prop: 'phone' },
+                { name: 'Friends', prop: 'friends' },
+                { name: 'Likes', prop: 'liked' }]}
+            data={users}
+            Component={User}
+            update={selectUserRequest}
+        />
+    </>
 }
