@@ -3,28 +3,23 @@ import superagentCache from 'superagent-cache'
 import Cookies from 'universal-cookie'
 import { pick } from 'lodash'
 
-import { serverUrl, apiUrl, apiKey } from '../var.js'
+import { serverUrl, apiUrl, apiKey, nullifyUndefined, retry } from '../var.js'
 
 const userServerUrl = serverUrl + '/users', userApiUrl = apiUrl + '/users'
 superagentCache(superagent)
 const cookies = new Cookies()
 
-const retry = async ({ status }, action, ...props) => {
-    if (status === 555) return new Promise(resolve => setTimeout(() => { resolve(action(...props)) }, 4000))
-    else return
-}
-
 export const redirect = async user => {
     if (!user.username && user.loading === false) window.location.href = '/login'
 }
 
-export const register = async ({ username, password, profile_picture, rememberMe, ...info }) => {
+export const register = async ({ username, password, profilePicture, rememberMe, ...info }) => {
     const URL = userServerUrl
     try {
-        delete info.confirm_password
-        if (profile_picture) var imageBase64 = await profile_picture.text()
+        delete info.confirmPassword
+        if (profilePicture) var imageBase64 = await profilePicture.text()
         const auth = Buffer.from(username + ':' + password, 'ascii').toString('base64')
-        var response = await superagent.post(URL, { ...info, imageBase64 }).query({ rememberMe }).set('Authorization', 'Basic ' + auth)
+        var response = await superagent.post(URL, nullifyUndefined({ ...info, imageBase64 })).query({ rememberMe }).set('Authorization', 'Basic ' + auth)
     } catch (err) { return err.status }
     const { token } = response.body
     cookies.set('token', token)

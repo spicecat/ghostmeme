@@ -14,7 +14,7 @@ const Captcha = () =>
     </div>
 const formatLabel = field => upperFirst(field.split(/(?=[A-Z\s])/).join('_').replaceAll('_', ' '))
 
-export default function Form({ name, action, schema, rememberMe = false, search = false }) {
+export default function Form({ name, action, schema, rememberMe = false, search = false, inline = search }) {
     const fields = Object.keys(schema.fields), captcha = fields.includes('captcha')
     const formik = useFormik({
         initialValues: fields.reduce((o, i) => ({ ...o, [i]: '' }), {}),
@@ -24,7 +24,7 @@ export default function Form({ name, action, schema, rememberMe = false, search 
 
     return (
         <form onSubmit={formik.handleSubmit}>
-            {search || <Typography>{name}</Typography>}
+            {inline || <Typography>{name}</Typography>}
             {fields.map(field =>
                 <span key={name + field}>
                     <TextField
@@ -32,7 +32,7 @@ export default function Form({ name, action, schema, rememberMe = false, search 
                         name={field}
                         label={name === 'Login' && field === 'username' ? 'Username or Email' : formatLabel(field)}
                         type={fieldInfo[field]}
-                        {...{ fullWidth: !search }}
+                        {...{ fullWidth: !inline }}
                         {...(fieldInfo[field] === 'date' || fieldInfo[field] === 'file') && { InputLabelProps: { shrink: true } }}
                         {...fieldInfo[field] === 'file' ?
                             { onChange: e => formik.setFieldValue(field, e.target.files[0]) } :
@@ -40,10 +40,10 @@ export default function Form({ name, action, schema, rememberMe = false, search 
                         error={Boolean(formik.touched[field] && formik.errors[field])}
                         helperText={formik.touched[field] && (formik.errors[field] || (name === 'Register' && field === 'password' && `Password strength: ${passwordStrength(formik.values.password)}`))}
                     />
-                    {search && <>&nbsp;&nbsp;</>}
+                    {inline && <>&nbsp;&nbsp;</>}
                 </span>
             )}
-            {search || <><br /><br /></>}
+            {inline || <><br /><br /></>}
             {captcha && <Captcha />}
             <Button type='submit' variant='contained' color='primary'>{search ? 'Search' : name}</Button>
             {rememberMe &&

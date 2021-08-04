@@ -23,8 +23,8 @@ export default function Search({ user }) {
     const updateMemes = async () => {
         console.log('Updating memes...')
         clearInterval(timer)
-        if (openChats) setChatsMemes(await searchChatsMemes(user, chatsSearch))
-        if (openFriends) setFriendsMemes(await searchFriendsMemes(user, friendsSearch))
+        if (openChats) setChatsMemes(await searchChatsMemes(user, chatsSearch) || chatsMemes)
+        if (openFriends) setFriendsMemes(await searchFriendsMemes(user, friendsSearch) || friendsMemes)
     }
 
     useEffect(() => {

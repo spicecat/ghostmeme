@@ -1,16 +1,11 @@
 import superagent from 'superagent'
 import superagentCache from 'superagent-cache'
 
-import { serverUrl, apiUrl, apiKey } from '../var.js'
+import { serverUrl, apiUrl, apiKey, nullifyUndefined, retry } from '../var.js'
 
 import { getUsernames } from './userService'
 
 superagentCache(superagent)
-
-const retry = async ({ status }, action, ...props) => {
-    if (status === 555) return new Promise(resolve => setTimeout(() => { resolve(action(...props)) }, 4000))
-    else return []
-}
 
 const addUsernames = async (memes, friends = {}) => {
     const user_ids = memes.map(meme => meme.owner)
@@ -29,11 +24,11 @@ export const getMemes = async () => {
 
 export const searchMemes = async (baseQuery, query = {}, friends = {}) => {
     try {
-        const { owner = '', description, created_after, created_before } = query
-        if (created_after || created_before)
+        const { owner = '', description, createdAfter, createdBefore } = query
+        if (createdAfter || createdBefore)
             baseQuery.createdAt = {
-                ...(created_after && { $gt: (new Date(created_after)).getTime() }),
-                ...(created_before && { $lt: (new Date(created_before)).getTime() })
+                ...(createdAfter && { $gt: (new Date(createdAfter)).getTime() }),
+                ...(createdBefore && { $lt: (new Date(createdBefore)).getTime() })
             }
         const regexQuery = {
             ...description && { description }
@@ -48,7 +43,7 @@ export const searchMemes = async (baseQuery, query = {}, friends = {}) => {
             meme.expiredAt = meme.expiredAt === -1 ? -1 : new Date(meme.expiredAt)
         }
         return memes
-    } catch (err) { return await retry(err, searchMemes, baseQuery, query) }
+    } catch (err) { return retry(err, searchMemes, baseQuery, query, friends) }
 }
 
 export const searchChatsMemes = async ({ user_id, friends }, query) => searchMemes({ receiver: user_id, private: true, replyTo: null }, query, friends)
@@ -57,32 +52,27 @@ export const searchFriendsMemes = async ({ friends }, query) => searchMemes({ re
 
 export const getConversation = async (user1, user2) => searchMemes({ receiver: `${user1}|${user2}`, owner: `${user1}|${user2}` })
 
-export const createMeme = async (json) => {
+const postMeme = async body => {
     const URL = `${apiUrl}/memes`
-
     try {
-        console.log(json)
-        const body = JSON.stringify({
-            owner: json.owner,
-            receiver: json.receiver,
-            // expiredAt: json.expiredAt ? Number(json.expiredAt) : Number('-1'),
-            expiredAt: json.expiredAt ? new Date(json.expiredAt).getTime() : Number('-1'),
-            description: json.description,
-            private: (json.private == 'true') ? true : false,
-            replyTo: json.replyTo,
-            imageUrl: json.imageUrl,
-            imageBase64: json.imageBase64 ? json.imageBase64 : null,
-        })
-        console.log(body)
-
-        return await superagent.post(URL).set('key', apiKey).set('Content-Type', 'application/json').send(body)
-    } catch (err) {
-        retry(err, createMeme, json)
-    }
+        return await superagent.post(URL, body).set('key', apiKey).set('Content-Type', 'application/json')
+    } catch (err) { return retry(err, postMeme, body) }
 }
 
-export const vanishMeme = async (memeID) => {
-    const URL = `${apiUrl}/memes/${memeID}`
+export const createMeme = async ({ user_id: owner }, receiver, { description, imageUrl, uploadImage: imageBase64, expiredAt }) =>
+    postMeme(nullifyUndefined({
+        owner,
+        receiver,
+        expiredAt: expiredAt ? new Date(expiredAt).getTime() : -1,
+        description,
+        private: true,
+        replyTo: null,
+        imageUrl,
+        imageBase64
+    }))
+
+export const vanishMeme = async meme_id => {
+    const URL = `${apiUrl}/memes/${meme_id}`
 
     try {
         const body = JSON.stringify({
@@ -91,7 +81,5 @@ export const vanishMeme = async (memeID) => {
 
         return await superagent.put(URL).set('key', apiKey).set('Content-Type', 'application/json').send(body)
 
-    } catch (err) {
-        retry(err, vanishMeme, memeID)
-    }
+    } catch (err) { return retry(err, vanishMeme, meme_id) }
 }
