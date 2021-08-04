@@ -22,6 +22,8 @@ export const getMemes = async () => {
     } catch (err) { return retry(err, getMemes) }
 }
 
+export const isExpired = ({ expiredAt }) => expiredAt !== -1 && expiredAt < Date.now()
+
 export const searchMemes = async (baseQuery, query = {}, friends = {}) => {
     try {
         const { owner = '', description, createdAfter, createdBefore } = query
@@ -73,13 +75,7 @@ export const createMeme = async ({ user_id: owner }, receiver, { description, im
 
 export const vanishMeme = async meme_id => {
     const URL = `${apiUrl}/memes/${meme_id}`
-
     try {
-        const body = JSON.stringify({
-            expiredAt: 0
-        })
-
-        return await superagent.put(URL).set('key', apiKey).set('Content-Type', 'application/json').send(body)
-
+        return await superagent.put(URL, { expiredAt: 0 }).set('key', apiKey).set('Content-Type', 'application/json')
     } catch (err) { return retry(err, vanishMeme, meme_id) }
 }

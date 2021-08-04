@@ -16,7 +16,7 @@ import User from '../components/User'
 import Form from '../components/Form'
 
 import { redirect, getUsers, getUser } from '../services/userService'
-import { getConversation, createMeme, vanishMeme } from '../services/memeService'
+import { getConversation, createMeme, vanishMeme, isExpired } from '../services/memeService'
 import { memeSchema } from '../services/schemas'
 
 export default function Chats({ user }) {
@@ -48,7 +48,7 @@ export default function Chats({ user }) {
     }
 
     const getConversationRequest = async () => {
-        console.log('Updating conversations with:', selectedUser)
+        console.log('Updating conversations with:', selectedUser, memes)
         if (selectedUser) setMemes(await getConversation(localUser, selectedUser) || memes)
     }
 
@@ -58,7 +58,7 @@ export default function Chats({ user }) {
 
     const vanishMemeRequest = async meme_id => {
         console.log(meme_id)
-        await vanishMeme(meme_id)
+        if (await vanishMeme(meme_id)) getConversationRequest()
     }
 
     const [timer, setTimer] = useState(0)
@@ -84,26 +84,22 @@ export default function Chats({ user }) {
                             {memes.map(meme => (
                                 <TableRow key={meme.meme_id}>
                                     <TableCell className='tableChat' width='40%'>
-                                        {(meme.owner === selectedUser) &&
+                                        {meme.owner === selectedUser &&
                                             <div className='chat otherChat'>
                                                 {/* Don't show expired memes */}
-                                                {(meme.expiredAt !== -1 && meme.expiredAt < Date.now()) ? <i>Message vanished</i> :
+                                                {isExpired(meme) ? <i>Message vanished</i> :
                                                     <div>
-                                                        <b>{meme.owner === localUser ? user.username : selectedUserInfo.username}</b>
-
+                                                        <b>{selectedUserInfo.username}</b>
                                                         {/* Creation date of meme and number of likes */}
                                                         &nbsp;-&nbsp;{meme.createdAt.toLocaleString()}
                                                         &nbsp;-&nbsp;{meme.likes} likes
                                                         <br />
-
                                                         {/* Image, if any */}
                                                         <img className='chat-img' src={meme.imageUrl} alt={meme.imageUrl} />
                                                         {meme.imageUrl && <br />}
-
                                                         {meme.description}
-
                                                         {/* Expired At date, if any */}
-                                                        {meme.expiredAt === -1 || <>
+                                                        {meme.expiredAt !== -1 && <>
                                                             <br /><br />
                                                             <i>{`Expires at ${meme.expiredAt.toLocaleString()}`}</i>
                                                         </>}
@@ -114,26 +110,26 @@ export default function Chats({ user }) {
                                     </TableCell>
                                     <TableCell className='tableChat' width='20%' />
                                     <TableCell className='tableChat' width='40%'>
-                                        {meme.owner === localUser && (meme.expiredAt === -1 || meme.expiredAt > Date.now()) && <Tooltip title='Vanish Meme' placement='right'><IconButton onClick={() => vanishMemeRequest(meme.meme_id)} aria-label='delete'><DeleteIcon /></IconButton></Tooltip>}
-                                        {(meme.owner === localUser) &&
+                                        {meme.owner === localUser && <>
+                                            {!isExpired(meme) && <Tooltip title='Vanish Meme' placement='right'><IconButton onClick={() => vanishMemeRequest(meme.meme_id)} aria-label='delete'><DeleteIcon /></IconButton></Tooltip>}
                                             <div className='chat localChat'>
-                                                {(meme.expiredAt !== -1 && meme.expiredAt < Date.now()) ? <i>Message vanished</i> :
+                                                {isExpired(meme) ? <i>Message vanished</i> :
                                                     <div>
-                                                        <b>{meme.owner === localUser ? user.username : selectedUserInfo.username}</b>
+                                                        <b>{user.username}</b>
                                                         &nbsp;-&nbsp;{meme.createdAt.toLocaleString()}
                                                         &nbsp;-&nbsp;{meme.likes} likes
                                                         <br />
                                                         <img className='chat-img' src={meme.imageUrl} alt={meme.imageUrl} />
                                                         {meme.imageUrl && <br />}
                                                         {meme.description}
-                                                        {meme.expiredAt === -1 || <>
+                                                        {meme.expiredAt !== -1 && <>
                                                             <br /><br />
                                                             <i>{`Expires at ${meme.expiredAt.toLocaleString()}`}</i>
                                                         </>}
                                                     </div>
                                                 }
                                             </div>
-                                        }
+                                        </>}
                                     </TableCell>
                                 </TableRow>
                             ))}
