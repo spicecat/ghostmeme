@@ -8,10 +8,11 @@ import { memeSearchSchema } from '../services/schemas'
 
 import PaginatedTable from '../components/PaginatedTable'
 import Meme from '../components/Meme'
+import Search from '../components/Search'
 import Form from '../components/Form'
 
-export default function Search({ user }) {
-    const [timer, setTimer] = useState(0)
+export default function MemeSearch({ user }) {
+    const [timer, setTimer] = useState()
 
     const [openChats, setOpenChats] = useState(true)
     const [openFriends, setOpenFriends] = useState(true)
@@ -41,7 +42,7 @@ export default function Search({ user }) {
             Memes from Chats
             {openChats &&
                 <>
-                    <Form name='chats' action={values => { setChatsSearch(values) }} schema={memeSearchSchema} search={true} />
+                    <Form name='chats' action={setChatsSearch} schema={memeSearchSchema} search={true} />
                     <br />
                     <PaginatedTable name='chats' data={chatsMemes} Component={Meme} />
                 </>}
@@ -53,7 +54,8 @@ export default function Search({ user }) {
             Memes from Friends
             {openFriends &&
                 <>
-                    <Form name='friends' action={async values => { setFriendsSearch(values) }} schema={memeSearchSchema} search={true} />
+                    {/* <Search name='friends' action={search => console.log(user, search)} schema={memeSearchSchema} Component={Meme} refresh={true} /> */}
+                    <Form name='friends' action={setFriendsSearch} schema={memeSearchSchema} search={true} />
                     <br />
                     <PaginatedTable name='friends' data={friendsMemes} Component={Meme} />
                 </>}

@@ -19,7 +19,7 @@ import { memeSchema } from '../services/schemas'
 
 export default function Chats({ user }) {
     useEffect(() => { redirect(user) }, [user])
-    const [timer, setTimer] = useState(0)
+    const [timer, setTimer] = useState()
 
     const localUser = user.user_id
     const [memes, setMemes] = useState([])

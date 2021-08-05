@@ -29,15 +29,15 @@ export default function PaginatedTable({ name, headCells = [
         sortMemes(newOrder, prop)
     }
     const sortMemes = (ord = order, ordBy = orderBy) => {
-        const arr = data, type = typeof (data[0][ordBy])
+        const arr = data, type = typeof ((data[0]||{})[ordBy])
         const compare = (a, b) => a > b ? 1 : -1
         arr.sort((a, b) => type === 'string' ? compare(a[ordBy].toUpperCase(), b[ordBy].toUpperCase()) : compare(a[ordBy], b[ordBy]))
         if (ord === 'desc') arr.reverse()
         setOrderedMemes(arr)
     }
 
-    useEffect(() => { if (data.length) sortMemes() }, [data])
-    // onRequestSort={changeOrder}
+    useEffect(sortMemes, [data])
+    
     return (
         <Table size='small'>
             <TableHead>

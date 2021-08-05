@@ -67,6 +67,12 @@ export const loginSchema = Yup.object({
     password: Yup.string().required('Password is required')
 })
 
+export const userSearchSchema = Yup.object({
+    username: Yup.string(),
+    email: Yup.string(),
+    phone: Yup.string()
+})
+
 export const memeSchema = Yup.object({
     description: Yup.string()
         .required('Description is required')

@@ -8,7 +8,7 @@ import './index.css'
 import Navbar from './components/Navbar'
 
 import Home from './containers/Home'
-import Search from './containers/Search'
+import MemeSearch from './containers/MemeSearch'
 import Login from './containers/Login'
 import Register from './containers/Register'
 import ResetPassword from './containers/ResetPassword'
@@ -29,7 +29,7 @@ export default function App() {
       <Navbar user={user} />
       <div className='body'>
         <Paper className='paper' elevation={5}>
-          {user.loading === undefined && <Search user={user} />}
+          {user.loading === undefined && <MemeSearch user={user} />}
           <br /><br />
           <Switch>
             <Route exact path='/' component={Home} />

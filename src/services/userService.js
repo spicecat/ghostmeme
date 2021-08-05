@@ -117,7 +117,6 @@ export const getUser = async user_id => {
 
 export const getUsers = async (after = '') => {
     const URL = `${apiUrl}/users?after=${after}`
-
     try {
         const response = await superagent.get(URL).set('key', apiKey)
         const { users } = response.body
@@ -131,9 +130,17 @@ export const getUsers = async (after = '') => {
     } catch (err) { return retry(err, getUsers) || [] }
 }
 
+export const getUserLikes = async user_id => {
+    const URL = `${apiUrl}/users/${user_id}/liked`
+    try {
+        const response = await superagent.get(URL).set('key', apiKey)
+        const { memes } = response.body
+        return memes
+    } catch (err) { return retry(err, getUserLikes, user_id) }
+}
+
 export const getFriends = async user_id => {
     const URL = `${userApiUrl}/${user_id}/friends`
-
     try {
         const response = await superagent.get(URL).set('key', apiKey).forceUpdate(true)
         return addUsernames(response.body.users)

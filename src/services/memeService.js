@@ -78,7 +78,14 @@ export const likeMeme = async (meme_id, user_id) => {
     const URL = `${apiUrl}/memes/${meme_id}/likes/${user_id}`
     try {
         return await superagent.put(URL).set('key', apiKey)
-    } catch (err) { return retry(err, likeMeme, meme_id, { user_id }) }
+    } catch (err) { return retry(err, likeMeme, meme_id, user_id) }
+}
+
+export const unlikeMeme = async (meme_id, user_id) => {
+    const URL = `${apiUrl}/memes/${meme_id}/likes/${user_id}`
+    try {
+        return await superagent.delete(URL).set('key', apiKey)
+    } catch (err) { return retry(err, likeMeme, meme_id, user_id) }
 }
 
 export const vanishMeme = async meme_id => {
