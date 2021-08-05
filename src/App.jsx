@@ -28,7 +28,7 @@ export default function App() {
     <BrowserRouter>
       <Navbar user={user} />
       <div className='body'>
-        <Paper className='paper' elevation={5} fullWidth>
+        <Paper className='paper' elevation={5}>
           {user.loading === undefined && <Search user={user} />}
           <br /><br />
           <Switch>

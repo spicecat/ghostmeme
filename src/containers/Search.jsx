@@ -20,19 +20,18 @@ export default function Search({ user }) {
     const [chatsSearch, setChatsSearch] = useState()
     const [friendsSearch, setFriendsSearch] = useState()
 
-    const updateMemes = async () => {
-        console.log('Updating memes...')
-        clearInterval(timer)
-        if (openChats) setChatsMemes(await searchChatsMemes(user, chatsSearch) || chatsMemes)
-        if (openFriends) setFriendsMemes(await searchFriendsMemes(user, friendsSearch) || friendsMemes)
+    const updateMemes = () => {
+        clearTimeout(timer)
+        const getMemes = async () => {
+            console.log('Updating memes...')
+            if (openChats) setChatsMemes(await searchChatsMemes(user, chatsSearch) || chatsMemes)
+            if (openFriends) setFriendsMemes(await searchFriendsMemes(user, friendsSearch) || friendsMemes)
+        }
+        getMemes()
+        setTimer(setInterval(getMemes, 7500))
     }
 
-    useEffect(() => {
-        setTimer(setInterval(updateMemes, 23711))
-        return () => clearInterval(timer)
-    }, [])
-
-    useEffect(() => updateMemes(), [openChats, openFriends, chatsSearch, friendsSearch])
+    useEffect(updateMemes, [openChats, openFriends, chatsSearch, friendsSearch])
 
     return (
         <>

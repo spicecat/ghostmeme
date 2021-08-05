@@ -51,14 +51,15 @@ export const searchMemes = async (baseQuery, query = {}, friends = {}) => {
 export const searchChatsMemes = async ({ user_id, friends }, query) => searchMemes({ receiver: user_id, private: true, replyTo: null }, query, friends)
 export const searchFriendsMemes = async ({ friends }, query) => searchMemes({ receiver: null, private: true, owner: Object.keys(friends).join('|') }, query, friends)
 
-export const getConversation = async (user1, user2) => searchMemes({ owner: `${user1}|${user2}`, receiver: `${user1}|${user2}`, private: true })
-export const getStoryMemes = async ({ user_id }) => searchMemes({ owner: user_id, receiver: null, private: true })
+export const getConversation = async (user1, user2) => user1 && user2 && searchMemes({ owner: `${user1}|${user2}`, receiver: `${user1}|${user2}`, private: true })
+export const getStoryMemes = async ({ user_id }) => user_id && searchMemes({ owner: user_id, receiver: null, private: true })
 
-const postMeme = async body => {
+const postMeme = async post => {
     const URL = `${apiUrl}/memes`
     try {
-        return await superagent.post(URL, body).set('key', apiKey).set('Content-Type', 'application/json')
-    } catch (err) { return retry(err, postMeme, body) }
+        const response = await superagent.post(URL, post).set('key', apiKey).set('Content-Type', 'application/json')
+        return response.body.success
+    } catch (err) { return retry(err, postMeme, post) }
 }
 
 export const createMeme = async ({ user_id: owner }, receiver, { description, imageUrl, uploadImage: imageBase64, expiredAt }) =>
@@ -72,6 +73,13 @@ export const createMeme = async ({ user_id: owner }, receiver, { description, im
         imageUrl,
         imageBase64
     }))
+
+export const likeMeme = async (meme_id, user_id) => {
+    const URL = `${apiUrl}/memes/${meme_id}/likes/${user_id}`
+    try {
+        return await superagent.put(URL).set('key', apiKey)
+    } catch (err) { return retry(err, likeMeme, meme_id, { user_id }) }
+}
 
 export const vanishMeme = async meme_id => {
     const URL = `${apiUrl}/memes/${meme_id}`

@@ -10,7 +10,7 @@ superagentCache(superagent)
 const cookies = new Cookies()
 
 export const redirect = async user => {
-    if (!user.username && user.loading === false) window.location.href = '/login'
+    if (user.loading === false) window.location.href = '/login'
 }
 
 export const register = async ({ username, password, profilePicture, rememberMe, ...info }) => {
@@ -148,10 +148,8 @@ const addUsernames = async user_ids => {
 export const getUsernames = async user_ids => { // returns object {user_id:username...}
     const usernames = {}, users = await getUsers()
     for (const user of users) usernames[user.user_id] = user.username
-
-    for (let i in user_ids) {
+    for (const [i, user_id] in user_ids.entries()) {
         const delay = 1000 * i
-        const user_id = user_ids[i]
         if (!(user_id in usernames))
             new Promise(async function (resolve) {
                 await new Promise(res => setTimeout(res, delay))

@@ -19,6 +19,7 @@ import { memeSchema } from '../services/schemas'
 
 export default function Chats({ user }) {
     useEffect(() => { redirect(user) }, [user])
+    const [timer, setTimer] = useState(0)
 
     const localUser = user.user_id
     const [memes, setMemes] = useState([])
@@ -28,7 +29,7 @@ export default function Chats({ user }) {
 
     const updateUsers = async () => { setUsers(await getUsers()) }
 
-    const selectUserRequest = async (user_id, status, setStatus) => {
+    const updateSelectUser = async (user_id, status, setStatus) => {
         if (status === 'Select User') {
             if (selectedUser === user_id) {
                 setSelectedUser('')
@@ -36,33 +37,30 @@ export default function Chats({ user }) {
                 setMemes([])
             }
             else {
-                setSelectedUser(user_id)
                 console.log('selected', user_id)
+                setSelectedUser(user_id)
                 setSelectedUserInfo(await getUser(user_id) || selectedUserInfo)
-                await updateMemes()
             }
         }
         else setStatus('Select User')
     }
 
-    const updateMemes = async () => {
-        clearInterval(timer)
-        console.log('Updating conversations with:', selectedUser)
-        if (selectedUser) setMemes(await getConversation(localUser, selectedUser) || memes)
+    const updateMemes = () => {
+        clearTimeout(timer)
+        const getMemes = async () => {
+            console.log('Updating conversations with:', selectedUser)
+            if (selectedUser) setMemes(await getConversation(localUser, selectedUser) || memes)
+        }
+        getMemes()
+        setTimer(setInterval(getMemes, 5500))
     }
 
-    const createMemeRequest = async values => {
+    const handleCreateMeme = async values => {
         if (await createMeme(user, selectedUser, values)) await updateMemes()
     }
 
-    const [timer, setTimer] = useState(0)
-
-    useEffect(() => {
-        updateUsers()
-        setTimer(setInterval(updateMemes, 7500))
-        return () => clearTimeout(timer)
-    }, [])
-    useEffect(() => updateMemes(), [selectedUser])
+    useEffect(() => { updateUsers() }, [])
+    useEffect(updateMemes, [selectedUser])
 
     return user.loading === undefined && <>
         {memes && selectedUserInfo &&
@@ -87,7 +85,7 @@ export default function Chats({ user }) {
                 <div className='chat-footer'>
                     <Form
                         name='Post Meme'
-                        action={createMemeRequest}
+                        action={handleCreateMeme}
                         schema={memeSchema}
                         inline={2}
                     />
@@ -106,7 +104,7 @@ export default function Chats({ user }) {
                 { name: 'Likes', prop: 'liked' }]}
             data={users}
             Component={User}
-            update={selectUserRequest}
+            update={updateSelectUser}
         />
     </>
 }
