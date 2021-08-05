@@ -47,7 +47,7 @@ export default function Chats({ user }) {
 
     const updateMemes = async () => {
         clearInterval(timer)
-        console.log('Updating conversations with:', selectedUser, memes)
+        console.log('Updating conversations with:', selectedUser)
         if (selectedUser) setMemes(await getConversation(localUser, selectedUser) || memes)
     }
 

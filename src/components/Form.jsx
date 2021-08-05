@@ -1,7 +1,9 @@
-
+import { useState } from 'react'
 import { upperFirst } from 'lodash/string'
 import { useFormik } from 'formik'
-import { Button, TextField, Typography, FormControlLabel, Checkbox } from '@material-ui/core'
+import { Button, Checkbox, FormControlLabel, IconButton, InputAdornment, TextField, Typography } from '@material-ui/core'
+import VisibilityIcon from '@material-ui/icons/Visibility'
+import VisibilityOffIcon from '@material-ui/icons/VisibilityOff'
 
 import captchaSrc from '../assets/captcha.jpg'
 
@@ -15,6 +17,7 @@ const Captcha = () =>
 const formatLabel = field => upperFirst(field.split(/(?=[A-Z\s])/).join('_').replaceAll('_', ' '))
 
 export default function Form({ name, action, schema, rememberMe = false, search = false, inline = search }) {
+    const [showPassword, setShowPassword] = useState(false)
     const fields = Object.keys(schema.fields), captcha = fields.includes('captcha')
     const formik = useFormik({
         initialValues: fields.reduce((o, i) => ({ ...o, [i]: '' }), {}),
@@ -31,18 +34,29 @@ export default function Form({ name, action, schema, rememberMe = false, search 
                         size='small'
                         name={field}
                         label={name === 'Login' && field === 'username' ? 'Username or Email' : formatLabel(field)}
-                        type={fieldInfo[field]}
-                        {...{ fullWidth: !inline }}
+                        type={((field === 'password' && showPassword && 'text') || fieldInfo[field])}
+                        fullWidth={!inline}
                         {...(fieldInfo[field] === 'date' || fieldInfo[field] === 'file') && { InputLabelProps: { shrink: true } }}
                         {...fieldInfo[field] === 'file' ?
                             { onChange: e => formik.setFieldValue(field, e.target.files[0]) } :
                             { onChange: formik.handleChange, value: formik.values[field] }}
                         error={Boolean(formik.touched[field] && formik.errors[field])}
                         helperText={formik.touched[field] && (formik.errors[field] || (name === 'Register' && field === 'password' && `Password strength: ${passwordStrength(formik.values.password)}`))}
+                        {...field === 'password' && {
+                            InputProps: {
+                                endAdornment: (
+                                    <InputAdornment position="end">
+                                        <IconButton onClick={() => setShowPassword(!showPassword)}>
+                                            {showPassword ? <VisibilityIcon /> : <VisibilityOffIcon />}
+                                        </IconButton>
+                                    </InputAdornment>)
+                            }
+                        }}
                     />
                     {inline && <>&nbsp;&nbsp;</>}
                 </span>
-            )}
+            )
+            }
             {inline || <><br /><br /></>}
             {captcha && <Captcha />}
             <Button type='submit' variant='contained' color='primary'>{search ? 'Search' : name}</Button>
