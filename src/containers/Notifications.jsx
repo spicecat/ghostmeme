@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import { useEffect } from 'react'
 
 import { List, ListItem, Divider, ListItemText, ListItemAvatar, Avatar, Typography } from '@material-ui/core'
 import Alert from '@material-ui/lab/Alert'
@@ -34,7 +34,7 @@ export default function Notifications({ user }) {
                             <ListItemText
                                 primary='Brunch this weekend?'
                                 secondary={
-                                    <React.Fragment>
+                                    <>
                                         <Typography
                                             component='span'
                                             variant='body2'
@@ -44,7 +44,7 @@ export default function Notifications({ user }) {
                                             Ali Connors
                                         </Typography>
                                         — I'll be in your neighborhood doing errands this...
-                                    </React.Fragment>
+                                    </>
                                 }
                             />
                         </ListItem></Alert>
@@ -57,7 +57,7 @@ export default function Notifications({ user }) {
                                 <ListItemText
                                     primary='Summer BBQ'
                                     secondary={
-                                        <React.Fragment>
+                                        <>
                                             <Typography
                                                 component='span'
                                                 variant='body2'
@@ -67,7 +67,7 @@ export default function Notifications({ user }) {
                                                 to Scott, Alex, Jennifer
                                             </Typography>
                                             — Wish I could come, but I'm out of town this...
-                                        </React.Fragment>
+                                        </>
                                     }
                                 />
                             </ListItem></Alert>
@@ -79,7 +79,7 @@ export default function Notifications({ user }) {
                             <ListItemText
                                 primary='Oui Oui'
                                 secondary={
-                                    <React.Fragment>
+                                    <>
                                         <Typography
                                             component='span'
                                             variant='body2'
@@ -89,7 +89,7 @@ export default function Notifications({ user }) {
                                             Sandra Adams
                                         </Typography>
                                         {' — Do you have Paris recommendations? Have you ever…'}
-                                    </React.Fragment>
+                                    </>
                                 }
                             />
                         </ListItem></Alert>
@@ -101,7 +101,7 @@ export default function Notifications({ user }) {
                             <ListItemText
                                 primary='Oui Oui'
                                 secondary={
-                                    <React.Fragment>
+                                    <>
                                         <Typography
                                             component='span'
                                             variant='body2'
@@ -111,7 +111,7 @@ export default function Notifications({ user }) {
                                             Travis Scott
                                         </Typography> —
                                         {'  Do you wanna get on this new song on my UTOPIA album?'}
-                                    </React.Fragment>
+                                    </>
                                 }
                             />
                         </ListItem></Alert>
@@ -128,7 +128,7 @@ export default function Notifications({ user }) {
                             <ListItemText
                                 primary='Brunch this weekend?'
                                 secondary={
-                                    <React.Fragment>
+                                    <>
                                         <Typography
                                             component='span'
                                             variant='body2'
@@ -138,7 +138,7 @@ export default function Notifications({ user }) {
                                             Ali Connors
                                         </Typography>
                                         — I'll be in your neighborhood doing errands this...
-                                    </React.Fragment>
+                                    </>
                                 }
                             />
                         </ListItem></Alert>
@@ -151,7 +151,7 @@ export default function Notifications({ user }) {
                                 <ListItemText
                                     primary='Summer BBQ'
                                     secondary={
-                                        <React.Fragment>
+                                        <>
                                             <Typography
                                                 component='span'
                                                 variant='body2'
@@ -161,7 +161,7 @@ export default function Notifications({ user }) {
                                                 to Scott, Alex, Jennifer
                                             </Typography>
                                             — Wish I could come, but I'm out of town this...
-                                        </React.Fragment>
+                                        </>
                                     }
                                 />
                             </ListItem></Alert>
@@ -173,7 +173,7 @@ export default function Notifications({ user }) {
                             <ListItemText
                                 primary='Oui Oui'
                                 secondary={
-                                    <React.Fragment>
+                                    <>
                                         <Typography
                                             component='span'
                                             variant='body2'
@@ -183,7 +183,7 @@ export default function Notifications({ user }) {
                                             Sandra Adams
                                         </Typography>
                                         {' — Do you have Paris recommendations? Have you ever…'}
-                                    </React.Fragment>
+                                    </>
                                 }
                             />
                         </ListItem></Alert>
@@ -195,7 +195,7 @@ export default function Notifications({ user }) {
                             <ListItemText
                                 primary='Oui Oui'
                                 secondary={
-                                    <React.Fragment>
+                                    <>
                                         <Typography
                                             component='span'
                                             variant='body2'
@@ -205,7 +205,7 @@ export default function Notifications({ user }) {
                                             Travis Scott
                                         </Typography> —
                                         {'  Do you wanna get on this new song on my UTOPIA album?'}
-                                    </React.Fragment>
+                                    </>
                                 }
                             />
                         </ListItem></Alert>
@@ -223,7 +223,7 @@ export default function Notifications({ user }) {
                             <ListItemText
                                 primary='Brunch this weekend?'
                                 secondary={
-                                    <React.Fragment>
+                                    <>
                                         <Typography
                                             component='span'
                                             variant='body2'
@@ -233,7 +233,7 @@ export default function Notifications({ user }) {
                                             Ali Connors
                                         </Typography>
                                         — I'll be in your neighborhood doing errands this...
-                                    </React.Fragment>
+                                    </>
                                 }
                             />
                         </ListItem></Alert>
@@ -246,7 +246,7 @@ export default function Notifications({ user }) {
                                 <ListItemText
                                     primary='Summer BBQ'
                                     secondary={
-                                        <React.Fragment>
+                                        <>
                                             <Typography
                                                 component='span'
                                                 variant='body2'
@@ -256,7 +256,7 @@ export default function Notifications({ user }) {
                                                 to Scott, Alex, Jennifer
                                             </Typography>
                                             — Wish I could come, but I'm out of town this...
-                                        </React.Fragment>
+                                        </>
                                     }
                                 />
                             </ListItem></Alert>
@@ -268,7 +268,7 @@ export default function Notifications({ user }) {
                             <ListItemText
                                 primary='Oui Oui'
                                 secondary={
-                                    <React.Fragment>
+                                    <>
                                         <Typography
                                             component='span'
                                             variant='body2'
@@ -278,7 +278,7 @@ export default function Notifications({ user }) {
                                             Sandra Adams
                                         </Typography>
                                         {' — Do you have Paris recommendations? Have you ever…'}
-                                    </React.Fragment>
+                                    </>
                                 }
                             />
                         </ListItem></Alert>
@@ -290,7 +290,7 @@ export default function Notifications({ user }) {
                             <ListItemText
                                 primary='Oui Oui'
                                 secondary={
-                                    <React.Fragment>
+                                    <>
                                         <Typography
                                             component='span'
                                             variant='body2'
@@ -300,7 +300,7 @@ export default function Notifications({ user }) {
                                             Travis Scott
                                         </Typography> —
                                         {'  Do you wanna get on this new song on my UTOPIA album?'}
-                                    </React.Fragment>
+                                    </>
                                 }
                             />
                         </ListItem></Alert>
@@ -318,7 +318,7 @@ export default function Notifications({ user }) {
                             <ListItemText
                                 primary='Brunch this weekend?'
                                 secondary={
-                                    <React.Fragment>
+                                    <>
                                         <Typography
                                             component='span'
                                             variant='body2'
@@ -328,7 +328,7 @@ export default function Notifications({ user }) {
                                             Ali Connors
                                         </Typography>
                                         — I'll be in your neighborhood doing errands this... 
-                                    </React.Fragment>
+                                    </>
                                 }
                             />
                         </ListItem></Alert>
@@ -341,7 +341,7 @@ export default function Notifications({ user }) {
                                 <ListItemText
                                     primary='Summer BBQ'
                                     secondary={
-                                        <React.Fragment>
+                                        <>
                                             <Typography
                                                 component='span'
                                                 variant='body2'
@@ -351,7 +351,7 @@ export default function Notifications({ user }) {
                                                 to Scott, Alex, Jennifer
                                             </Typography>
                                             — Wish I could come, but I'm out of town this... 
-                                        </React.Fragment>
+                                        </>
                                     }
                                 />
                             </ListItem></Alert>
@@ -363,7 +363,7 @@ export default function Notifications({ user }) {
                             <ListItemText
                                 primary='Oui Oui'
                                 secondary={
-                                    <React.Fragment>
+                                    <>
                                         <Typography
                                             component='span'
                                             variant='body2'
@@ -373,7 +373,7 @@ export default function Notifications({ user }) {
                                             Sandra Adams
                                         </Typography>
                                         {' — Do you have Paris recommendations? Have you ever…'}
-                                    </React.Fragment>
+                                    </>
                                 }
                             />
                         </ListItem></Alert>
@@ -385,7 +385,7 @@ export default function Notifications({ user }) {
                             <ListItemText
                                 primary='Oui Oui'
                                 secondary={
-                                    <React.Fragment>
+                                    <>
                                         <Typography
                                             component='span'
                                             variant='body2'
@@ -395,7 +395,7 @@ export default function Notifications({ user }) {
                                             Travis Scott
                                         </Typography> —
                                         {'  Do you wanna get on this new song on my UTOPIA album?'}
-                                    </React.Fragment>
+                                    </>
                                 }
                             />
                         </ListItem></Alert>

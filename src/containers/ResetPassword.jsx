@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 
 import { resetPassword } from '../services/userService'
 import { resetPasswordSchema } from '../services/schemas'

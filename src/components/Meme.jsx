@@ -1,7 +1,6 @@
-import React from 'react'
 import { TableRow, TableCell } from '@material-ui/core'
 
-export default function Meme({ meme_id, username, createdAt, description, likes, imageUrl }) {
+export default function Meme({ meme_id, username, createdAt, expiredAt, description, likes, imageUrl }) {
     const date = new Date(createdAt), formatedDate = `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`
 
     return (

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import MuiAlert from '@material-ui/lab/Alert'
 
 import { getLoginTimeout, getLoginAttempts } from '../services/userService'

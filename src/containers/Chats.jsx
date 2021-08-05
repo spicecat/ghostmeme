@@ -1,44 +1,21 @@
 import { useState, useEffect } from 'react'
 import {
-    IconButton,
     Table,
     TableBody,
     TableCell,
     TableRow,
     Paper,
-    Tooltip,
     Typography
 } from '@material-ui/core'
-import DeleteIcon from '@material-ui/icons/DeleteOutline'
 
 import PaginatedTable from '../components/PaginatedTable'
 import User from '../components/User'
 import Form from '../components/Form'
+import Chat from '../components/Chat'
 
 import { redirect, getUsers, getUser } from '../services/userService'
-import { getConversation, createMeme, vanishMeme, isExpired } from '../services/memeService'
+import { getConversation, createMeme } from '../services/memeService'
 import { memeSchema } from '../services/schemas'
-
-const Chat = ({ meme: { meme_id, createdAt, expiredAt, description, likes, imageUrl, }, isLocal, username, action }) => <>
-    {isLocal && !isExpired({ expiredAt }) && <Tooltip title='Vanish Meme' placement='right'><IconButton onClick={() => action(meme_id)} aria-label='delete'><DeleteIcon /></IconButton></Tooltip>}
-    <div className={`chat ${isLocal ? 'local' : 'other'}Chat`}>
-        {isExpired({ expiredAt }) ? <i>Message vanished</i> :
-            <div>
-                <b>{username}</b>
-                &nbsp;-&nbsp;{createdAt.toLocaleString()}
-                &nbsp;-&nbsp;{likes} likes
-                <br />
-                <img className='chat-img' src={imageUrl} alt={imageUrl} />
-                {imageUrl && <br />}
-                {description}
-                {expiredAt !== -1 && <>
-                    <br /><br />
-                    <i>{`Expires at ${expiredAt.toLocaleString()}`}</i>
-                </>}
-            </div>
-        }
-    </div>
-</>
 
 export default function Chats({ user }) {
     useEffect(() => { redirect(user) }, [user])
@@ -69,6 +46,7 @@ export default function Chats({ user }) {
     }
 
     const updateMemes = async () => {
+        clearInterval(timer)
         console.log('Updating conversations with:', selectedUser, memes)
         if (selectedUser) setMemes(await getConversation(localUser, selectedUser) || memes)
     }
@@ -77,23 +55,14 @@ export default function Chats({ user }) {
         if (await createMeme(user, selectedUser, values)) await updateMemes()
     }
 
-    const vanishMemeRequest = async meme_id => {
-        console.log(meme_id)
-        if (await vanishMeme(meme_id)) updateMemes()
-    }
-
     const [timer, setTimer] = useState(0)
-    const updateConversation = async () => {
-        clearInterval(timer)
-        updateMemes()
-    }
 
     useEffect(() => {
         updateUsers()
-        setTimer(setInterval(updateConversation, 7500))
+        setTimer(setInterval(updateMemes, 7500))
         return () => clearTimeout(timer)
     }, [])
-    useEffect(() => updateConversation(), [selectedUser])
+    useEffect(() => updateMemes(), [selectedUser])
 
     return user.loading === undefined && <>
         {memes && selectedUserInfo &&
@@ -104,11 +73,11 @@ export default function Chats({ user }) {
                         {memes.map(meme => (
                             <TableRow key={meme.meme_id}>
                                 <TableCell className='tableChat' width='40%'>
-                                    {meme.owner === selectedUser && <Chat meme={meme} isLocal={false} username={selectedUserInfo.username} action={vanishMemeRequest} />}
+                                    {meme.owner === selectedUser && <Chat meme={meme} isLocal={false} username={selectedUserInfo.username} update={updateMemes} />}
                                 </TableCell>
                                 <TableCell className='tableChat' width='20%' />
                                 <TableCell className='tableChat' width='40%'>
-                                    {meme.owner === localUser && <Chat meme={meme} isLocal={true} username={user.username} action={vanishMemeRequest} />}
+                                    {meme.owner === localUser && <Chat meme={meme} username={user.username} update={updateMemes} />}
                                 </TableCell>
                             </TableRow>
                         ))}
