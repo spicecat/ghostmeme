@@ -52,6 +52,11 @@ img.chat-img {
   border-bottom: none !important;
 }
 
+.comment {
+  background: #F1F3F4 !important;
+  padding: 15px;
+}
+
 .paper{
   padding: 15px;
 }

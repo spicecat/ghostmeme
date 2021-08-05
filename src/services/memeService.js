@@ -36,6 +36,7 @@ export const searchMemes = async (baseQuery, query = {}, friends = {}) => {
             ...description && { description }
         }
         const URL = `${apiUrl}/memes/search?match=${encodeURIComponent(JSON.stringify(baseQuery))}&regexMatch=${encodeURIComponent(JSON.stringify(regexQuery))}`
+        console.log(URL)
         const response = await superagent.get(URL).set('key', apiKey).forceUpdate(true)
         let { memes } = response.body
         memes = await addUsernames(memes, friends)
@@ -53,6 +54,38 @@ export const searchFriendsMemes = async ({ friends }, query) => searchMemes({ re
 
 export const getConversation = async (user1, user2) => user1 && user2 && searchMemes({ owner: `${user1}|${user2}`, receiver: `${user1}|${user2}`, private: true })
 export const getStoryMemes = async ({ user_id }) => user_id && searchMemes({ owner: user_id, receiver: null, private: true })
+// export const getCommentMemes = async ({ meme_id }) => meme_id && searchMemes({ receiver: null, private: true, replyTo: meme_id })
+
+export const getCommentMemes = async (memeID) => {
+    const query = encodeURIComponent(JSON.stringify({
+        "replyTo": `${memeID}`
+    }))
+
+    const URL = `${apiUrl}/memes/search?match=${query}`
+    // console.log(URL)
+
+    try {
+        const response = await superagent.get(URL).set('key', apiKey).forceUpdate(true)
+
+        const memesList = response.body.memes.map(meme => ({
+            createdAt: new Date(meme.createdAt),
+            expiredAt: meme.expiredAt === -1 ? meme.expiredAt : new Date(meme.expiredAt),
+            description: meme.description,
+            private: meme.private,
+            imageUrl: meme.imageUrl,
+            meme_id: meme.meme_id,
+            owner: meme.owner,
+            receiver: meme.receiver,
+            likes: meme.likes,
+            replyTo: meme.replyTo
+        }))
+
+        // console.log(memesList)
+        return memesList
+    } catch (err) {
+        console.error(err)
+    }
+}
 
 const postMeme = async post => {
     const URL = `${apiUrl}/memes`
