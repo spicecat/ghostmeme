@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react'
 import {
+    Paper,
     Table,
     TableBody,
     TableCell,
     TableRow,
-    Paper,
     Typography
 } from '@material-ui/core'
 
@@ -89,7 +89,7 @@ export default function Chats({ user }) {
                         name='Post Meme'
                         action={createMemeRequest}
                         schema={memeSchema}
-                        inline={true}
+                        inline={2}
                     />
                 </div>
             </Paper>

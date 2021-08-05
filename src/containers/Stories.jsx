@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Table, TableRow, Paper, Typography } from '@material-ui/core'
+import { Table, TableCell, TableRow, Paper, Typography } from '@material-ui/core'
 
 import Chat from '../components/Chat'
 
@@ -20,7 +20,9 @@ export default function Stories({ user }) {
     <Table>
       {memes.map(meme =>
         <TableRow>
-          <Chat meme={meme} username={user.username} update={updateMemes} />
+          <TableCell className='tableChat' width='40%'>
+            <Chat meme={meme} username={user.username} update={updateMemes} />
+          </TableCell>
         </TableRow>
       )}
     </Table>

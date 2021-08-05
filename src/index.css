@@ -13,8 +13,7 @@ code {
 }
 
 div.body {
-  max-width: 1000px;
-  margin: 20px auto 20px auto;
+  margin: 20px;
 }
 
 div.header {
@@ -38,7 +37,6 @@ img.chat-img {
 
 .chat-footer {
   padding: 5px;
-  text-align: center;
 }
 
 .localChat {

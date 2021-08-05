@@ -27,7 +27,7 @@ export default function Form({ name, action, schema, rememberMe = false, search 
 
     return (
         <form onSubmit={formik.handleSubmit}>
-            {inline || <Typography>{name}</Typography>}
+            {!inline && <Typography>{name}</Typography>}
             {fields.map(field =>
                 <span key={name + field}>
                     <TextField
@@ -35,7 +35,7 @@ export default function Form({ name, action, schema, rememberMe = false, search 
                         name={field}
                         label={name === 'Login' && field === 'username' ? 'Username or Email' : formatLabel(field)}
                         type={((field === 'password' && showPassword && 'text') || fieldInfo[field])}
-                        fullWidth={!inline}
+                        style={{ width: inline ? `${inline * 100 / (fields.length + 1)}%` : '100%' }}
                         {...(fieldInfo[field] === 'date' || fieldInfo[field] === 'file') && { InputLabelProps: { shrink: true } }}
                         {...fieldInfo[field] === 'file' ?
                             { onChange: e => formik.setFieldValue(field, e.target.files[0]) } :
@@ -57,7 +57,7 @@ export default function Form({ name, action, schema, rememberMe = false, search 
                 </span>
             )
             }
-            {inline || <><br /><br /></>}
+            {!inline && <><br /><br /></>}
             {captcha && <Captcha />}
             <Button type='submit' variant='contained' color='primary'>{search ? 'Search' : name}</Button>
             {rememberMe &&
