@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react'
-import { BrowserRouter, Switch, Route } from 'react-router-dom'
+import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom'
 import { Paper } from '@material-ui/core'
 
-import { getLocalUser } from './services/userService'
+import { getLocalUser, getLocalFriends, getLocalLikes } from './services/userService'
 
 import './index.css'
 import Navbar from './components/Navbar'
@@ -18,28 +18,46 @@ import Notifications from './containers/Notifications'
 import Friends from './containers/Friends'
 import NotFound from './containers/NotFound'
 
+const RedirectComponent = (Component, redirect) => redirect ? <Redirect to='login' /> : Component
+
 export default function App() {
   const [user, setUser] = useState({ loading: true })
+  const [friends, setFriends] = useState()
+  const [likes, setLikes] = useState()
 
   const updateUser = async newUser => { setUser(newUser || await getLocalUser() || user) }
+  const updateFriends = async newFriends => {
+    if (user.loading === undefined) setFriends(newFriends || await getLocalFriends(user.user_id) || friends)
+  }
+  const updateLikes = async newLikes => { setLikes(newLikes || likes) }
 
   useEffect(() => { updateUser() }, [])
+  useEffect(() => { updateFriends() }, [user])
+
   return (
     <BrowserRouter>
       <Navbar user={user} />
       <div className='body'>
         <Paper className='paper' elevation={5}>
-          {user.loading === undefined && <MemeSearch user={user} />}
+          {user.loading === undefined && friends && <MemeSearch user={user} friends={friends} />}
           <br /><br />
           <Switch>
             <Route exact path='/' component={Home} />
             <Route exact path='/login' component={Login} />
             <Route exact path='/register' component={Register} />
             <Route exact path='/reset_password' component={ResetPassword} />
-            <Route exact path='/chats'><Chats user={user} /></Route>
-            <Route exact path='/stories' ><Stories user={user} /></Route>
-            <Route exact path='/notifications' >< Notifications user={user} /></Route>
-            <Route exact path='/friends' ><Friends user={user} updateUser={updateUser} /></Route>
+            <Route exact path='/chats'>
+              {RedirectComponent(user.loading === undefined && <Chats user={user} />, user.loading === false)}
+            </Route>
+            <Route exact path='/stories' >
+              {RedirectComponent(user.loading === undefined && <Stories user={user} />, user.loading === false)}
+            </Route>
+            <Route exact path='/notifications' >
+              {RedirectComponent(user.loading === undefined && <Notifications user={user} />, user.loading === false)}
+            </Route>
+            <Route exact path='/friends' >
+              {RedirectComponent(user.loading === undefined && friends && <Friends user={user} friends={friends} updateFriends={updateFriends} />, user.loading === false)}
+            </Route>
             <Route path='*' component={NotFound} />
           </Switch>
         </Paper>

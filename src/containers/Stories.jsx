@@ -5,20 +5,17 @@ import Story from '../components/Story'
 import Comment from '../components/Comment'
 import Form from '../components/Form'
 
-import { redirect } from '../services/userService'
 import { getCommentMemes, getStoryMemes, createMeme } from '../services/memeService'
 import { commentSchema, storySchema } from '../services/schemas'
 
-export default function Stories({ user }) {
-  useEffect(() => { redirect(user) }, [user])
-  
+export default function Stories({ user: { loading, user_id, username } }) {
   var memeID = '610443ccfe98ab104293a280'
 
   const [memes, setMemes] = useState([])
   const [comments, setComments] = useState([])
 
   const updateMemes = async () => {
-    setMemes(await getStoryMemes(user) || memes)
+    setMemes(await getStoryMemes(user_id) || memes)
   }
 
   const updateCommentMemes = async () => {
@@ -26,20 +23,20 @@ export default function Stories({ user }) {
   }
 
   const handleCreateMeme = async values => {
-    if (await createMeme(user, null, values)) await updateMemes()
+    if (await createMeme(user_id, null, values)) await updateMemes()
   }
 
-  useEffect(() => updateMemes(), [user])
+  useEffect(() => updateMemes(), [])
   useEffect(() => updateCommentMemes())
 
-  return user.loading === undefined && <Paper className='paper' elevation={3}>
-    <Typography className='chat-header' variant='h4'>{user.username}'s Story!</Typography>
+  return <Paper className='paper' elevation={3}>
+    <Typography className='chat-header' variant='h4'>{username}'s Story!</Typography>
     <Table>
       {memes.map(meme =>
         <TableRow>
           <TableCell width='30%' />
           <TableCell width='40%'>
-            <Story meme={meme} username={user.username} update={updateMemes} />
+            <Story meme={meme} username={username} update={updateMemes} />
           </TableCell>
           <TableCell width='30%'>
           </TableCell>
@@ -53,7 +50,7 @@ export default function Stories({ user }) {
         <TableRow>
           <TableCell width='30%' />
           <TableCell width='40%'>
-            <Comment meme={comment} username={user.username} update={updateCommentMemes} />
+            <Comment meme={comment} username={username} update={updateCommentMemes} />
           </TableCell>
           <TableCell width='30%'>
           </TableCell>

@@ -36,7 +36,6 @@ export const searchMemes = async (baseQuery, query = {}, friends = {}) => {
             ...description && { description }
         }
         const URL = `${apiUrl}/memes/search?match=${encodeURIComponent(JSON.stringify(baseQuery))}&regexMatch=${encodeURIComponent(JSON.stringify(regexQuery))}`
-        console.log(URL)
         const response = await superagent.get(URL).set('key', apiKey).forceUpdate(true)
         let { memes } = response.body
         memes = await addUsernames(memes, friends)
@@ -49,16 +48,16 @@ export const searchMemes = async (baseQuery, query = {}, friends = {}) => {
     } catch (err) { return retry(err, searchMemes, baseQuery, query, friends) }
 }
 
-export const searchChatsMemes = async ({ user_id, friends }, query) => searchMemes({ receiver: user_id, private: true, replyTo: null }, query, friends)
-export const searchFriendsMemes = async ({ friends }, query) => searchMemes({ receiver: null, private: true, owner: Object.keys(friends).join('|') }, query, friends)
+export const searchChatsMemes = async (user_id, friends, query) => searchMemes({ receiver: user_id, private: true, replyTo: null }, query, friends)
+export const searchFriendsMemes = async (friends, query) => searchMemes({ receiver: null, private: true, owner: Object.keys(friends).join('|') }, query, friends)
 
 export const getConversation = async (user1, user2) => user1 && user2 && searchMemes({ owner: `${user1}|${user2}`, receiver: `${user1}|${user2}`, private: true })
-export const getStoryMemes = async ({ user_id }) => user_id && searchMemes({ owner: user_id, receiver: null, private: true })
+export const getStoryMemes = async user_id => user_id && searchMemes({ owner: user_id, receiver: null, private: true })
 // export const getCommentMemes = async ({ meme_id }) => meme_id && searchMemes({ receiver: null, private: true, replyTo: meme_id })
 
-export const getCommentMemes = async (memeID) => {
+export const getCommentMemes = async meme_id => {
     const query = encodeURIComponent(JSON.stringify({
-        "replyTo": `${memeID}`
+        "replyTo": `${meme_id}`
     }))
 
     const URL = `${apiUrl}/memes/search?match=${query}`
@@ -95,9 +94,9 @@ const postMeme = async post => {
     } catch (err) { return retry(err, postMeme, post) }
 }
 
-export const createMeme = async ({ user_id: owner }, receiver, { description, imageUrl, uploadImage: imageBase64, expiredAt }) =>
+export const createMeme = async (user_id, receiver, { description, imageUrl, uploadImage: imageBase64, expiredAt }) =>
     postMeme(nullifyUndefined({
-        owner,
+        owner: user_id,
         receiver,
         expiredAt: expiredAt ? new Date(expiredAt).getTime() : -1,
         description,

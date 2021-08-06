@@ -17,7 +17,6 @@ const Captcha = () =>
 const formatLabel = field => upperFirst(field.split(/(?=[A-Z\s])/).join('_').replaceAll('_', ' '))
 
 export default function Form({ name, action, schema, rememberMe = false, search = false, inline = search }) {
-    const [selectedDate] = useState(new Date())
     const [showPassword, setShowPassword] = useState(false)
     const fields = Object.keys(schema.fields), captcha = fields.includes('captcha')
     const formik = useFormik({

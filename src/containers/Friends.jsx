@@ -1,23 +1,19 @@
 import { useState, useEffect } from 'react'
 
-import { redirect, getUsers, sendFriendRequest, removeFriendRequest, addFriend, removeFriend } from '../services/userService'
-
-import PaginatedTable from '../components/PaginatedTable'
+import Search from '../components/Search'
 import User from '../components/User'
 
-export default function Friends({ user, updateUser }) {
-    useEffect(() => { redirect(user) }, [user])
+import { getUsers, searchUsers, sendFriendRequest, removeFriendRequest, addFriend, removeFriend } from '../services/userService'
+import { userSearchSchema } from '../services/schemas'
 
-    const [users, setUsers] = useState([])
+export default function Friends({ user: { user_id }, friends: { friends, incomingFriendRequests, outgoingFriendRequests }, updateFriends }) {
+    const [users, setUsers] = useState()
 
-    const updateUsers = async () => {
-        setUsers(await getUsers())
-        if (user.loading === undefined) await updateUser()
-    }
+    const loadUsers = async () => { setUsers(await getUsers()) }
 
-    useEffect(() => { updateUsers() }, [])
+    const updateUsers = async query => searchUsers(users, query)
 
-    let { user_id, friends, outgoingFriendRequests, incomingFriendRequests } = user
+    useEffect(() => loadUsers(), [])
 
     const getStatus = target_id => {
         if (target_id in friends) return 'Remove Friend'
@@ -54,26 +50,24 @@ export default function Friends({ user, updateUser }) {
             setStatus(getStatus(target_id))
             return
         }
-        
-        if (response) await updateUser({ ...user, friends, incomingFriendRequests, outgoingFriendRequests })
+
+        if (response) updateFriends({ friends, incomingFriendRequests, outgoingFriendRequests })
         else setStatus(status)
     }
 
-    return user.loading === undefined &&
-        <>
-            <PaginatedTable
-                name='friends'
-                headCells={[
-                    { name: 'Profile Picture', prop: 'imageUrl' },
-                    { name: 'Username', prop: 'username' },
-                    { name: 'Email', prop: 'email' },
-                    { name: 'Phone', prop: 'phone' },
-                    { name: 'Friends', prop: 'friends' },
-                    { name: 'Likes', prop: 'liked' }]}
-                data={users}
-                Component={User}
-                localUser={user}
-                update={updateStatus}
-            />
-        </>
+    return users ?
+        <Search
+            name='Users'
+            headCells={[
+                { name: 'Profile Picture', prop: 'imageUrl' },
+                { name: 'Username', prop: 'username' },
+                { name: 'Email', prop: 'email' },
+                { name: 'Phone', prop: 'phone' },
+                { name: 'Friends', prop: 'friends' },
+                { name: 'Likes', prop: 'liked' }]}
+            action={updateUsers}
+            schema={userSearchSchema}
+            Component={User}
+            update={updateStatus}
+        /> : null
 }

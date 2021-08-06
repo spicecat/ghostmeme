@@ -9,10 +9,6 @@ const userServerUrl = serverUrl + '/users', userApiUrl = apiUrl + '/users'
 superagentCache(superagent)
 const cookies = new Cookies()
 
-export const redirect = async user => {
-    if (user.loading === false) window.location.href = '/login'
-}
-
 export const register = async ({ username, password, profilePicture, rememberMe, ...info }) => {
     const URL = userServerUrl
     try {
@@ -42,7 +38,7 @@ export const login = async ({ username, password, rememberMe }) => {
                 cookies.remove('loginAttempts')
                 return 403
             }
-            cookies.set('loginAttempts', 1 + loginAttempts)
+            cookies.set('loginAttempts', loginAttempts + 1)
         }
         return err.status
     }
@@ -90,22 +86,15 @@ export const getLocalUser = async () => {
 
     const URL = userServerUrl + '/getUser'
     try {
-        var response = await superagent.get(URL).set('Authorization', 'Bearer ' + token).forceUpdate(true)
+        const response = await superagent.get(URL).set('Authorization', 'Bearer ' + token).forceUpdate(true)
+        return getUser(response.body.user_id) || { loading: false }
     } catch (err) {
         if (err.status === 401) logout()
         return
     }
-    const { user_id } = response.body
-
-    const user = await getUser(user_id)
-
-    if (!user) return { loading: false }
-    user.friends = await getFriends(user_id)
-    user.outgoingFriendRequests = await getFriendRequests(user_id, 'outgoing')
-    user.incomingFriendRequests = await getFriendRequests(user_id, 'incoming')
-    console.log(user)
-    return user
 }
+
+export const getLocalFriends = async user_id => ({ friends: await getFriends(user_id), outgoingFriendRequests: await getFriendRequests(user_id, 'outgoing'), incomingFriendRequests: await getFriendRequests(user_id, 'incoming') })
 
 export const getUser = async user_id => {
     const URL = `${userApiUrl}/${user_id}`
@@ -129,6 +118,8 @@ export const getUsers = async (after = '') => {
         // else return []
     } catch (err) { return retry(err, getUsers) || [] }
 }
+
+export const searchUsers = (users, query = {}) => Object.entries(query).reduce((o, i) => o.filter(user => !user[i[0]] || user[i[0]].includes(i[1])), users)
 
 export const getUserLikes = async user_id => {
     const URL = `${apiUrl}/users/${user_id}/liked`

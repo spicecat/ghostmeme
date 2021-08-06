@@ -13,15 +13,14 @@ import User from '../components/User'
 import Form from '../components/Form'
 import Chat from '../components/Chat'
 
-import { redirect, getUsers, getUser } from '../services/userService'
+import { getUsers, getUser } from '../services/userService'
 import { getConversation, createMeme } from '../services/memeService'
 import { memeSchema } from '../services/schemas'
 
-export default function Chats({ user }) {
-    useEffect(() => { redirect(user) }, [user])
+export default function Chats({ user: { user_id, username } }) {
     const [timer, setTimer] = useState()
 
-    const localUser = user.user_id
+    const localUser = user_id
     const [memes, setMemes] = useState([])
     const [users, setUsers] = useState([])
     const [selectedUser, setSelectedUser] = useState('')
@@ -53,13 +52,13 @@ export default function Chats({ user }) {
     }
 
     const handleCreateMeme = async values => {
-        if (await createMeme(user, selectedUser, values)) await updateMemes()
+        if (await createMeme(user_id, selectedUser, values)) await updateMemes()
     }
 
     useEffect(() => { updateUsers() }, [])
     useEffect(updateMemes, [selectedUser])
 
-    return user.loading === undefined && <>
+    return <>
         {memes && selectedUserInfo &&
             <Paper className='paper' elevation={3}>
                 <Typography className='chat-header' variant='h4'>{`Conversation with ${selectedUserInfo.username}`}</Typography>
@@ -72,7 +71,7 @@ export default function Chats({ user }) {
                                 </TableCell>
                                 <TableCell className='tableChat' width='20%' />
                                 <TableCell className='tableChat' width='40%'>
-                                    {meme.owner === localUser && <Chat meme={meme} username={user.username} update={updateMemes} />}
+                                    {meme.owner === localUser && <Chat meme={meme} username={username} update={updateMemes} />}
                                 </TableCell>
                             </TableRow>
                         ))}
