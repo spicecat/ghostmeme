@@ -13,7 +13,7 @@ export default function Friends({ user: { user_id }, friends: { friends, incomin
 
     const updateUsers = async query => searchUsers(users, query)
 
-    useEffect(() => loadUsers(), [])
+    useEffect(() => { loadUsers() }, [])
 
     const getStatus = target_id => {
         if (target_id in friends) return 'Remove Friend'

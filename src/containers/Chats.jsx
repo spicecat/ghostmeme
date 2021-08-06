@@ -8,25 +8,27 @@ import {
     Typography
 } from '@material-ui/core'
 
-import PaginatedTable from '../components/PaginatedTable'
+import Search from '../components/Search'
 import User from '../components/User'
 import Form from '../components/Form'
 import Chat from '../components/Chat'
 
-import { getUsers, getUser } from '../services/userService'
+import { getUsers, searchUsers, getUser } from '../services/userService'
 import { getConversation, createMeme } from '../services/memeService'
-import { memeSchema } from '../services/schemas'
+import { memeSchema, userSearchSchema } from '../services/schemas'
 
 export default function Chats({ user: { user_id, username } }) {
     const [timer, setTimer] = useState()
 
     const localUser = user_id
     const [memes, setMemes] = useState([])
-    const [users, setUsers] = useState([])
+    const [users, setUsers] = useState()
     const [selectedUser, setSelectedUser] = useState('')
     const [selectedUserInfo, setSelectedUserInfo] = useState()
 
-    const updateUsers = async () => { setUsers(await getUsers()) }
+    const loadUsers = async () => { setUsers(await getUsers()) }
+
+    const updateUsers = async query => searchUsers(users, query)
 
     const updateSelectUser = async (user_id, status, setStatus) => {
         if (status === 'Select User') {
@@ -55,7 +57,7 @@ export default function Chats({ user: { user_id, username } }) {
         if (await createMeme(user_id, selectedUser, values)) await updateMemes()
     }
 
-    useEffect(() => { updateUsers() }, [])
+    useEffect(() => { loadUsers() }, [])
     useEffect(updateMemes, [selectedUser])
 
     return <>
@@ -89,8 +91,8 @@ export default function Chats({ user: { user_id, username } }) {
             </Paper>
         }
         <br /><br />
-        <PaginatedTable
-            name='users'
+        {users && <Search
+            name='Users'
             headCells={[
                 { name: 'Profile Picture', prop: 'imageUrl' },
                 { name: 'Username', prop: 'username' },
@@ -98,9 +100,10 @@ export default function Chats({ user: { user_id, username } }) {
                 { name: 'Phone', prop: 'phone' },
                 { name: 'Friends', prop: 'friends' },
                 { name: 'Likes', prop: 'liked' }]}
-            data={users}
+            action={updateUsers}
+            schema={userSearchSchema}
             Component={User}
             update={updateSelectUser}
-        />
+        />}
     </>
 }

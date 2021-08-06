@@ -40,7 +40,7 @@ export default function Chat({ meme: { meme_id, createdAt, expiredAt, descriptio
                     {description}
                     {expiredAt !== -1 && <>
                         <br /><br />
-                        <i>{`Expires at ${expiredAt.toLocaleString()} ${expiredAt}`}</i>
+                        <i>{`Expires at ${expiredAt.toLocaleString()}`}</i>
                     </>}
                 </div>
             }
