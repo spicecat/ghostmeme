@@ -2,7 +2,6 @@ import { useState } from 'react'
 import { upperFirst } from 'lodash/string'
 import { useFormik } from 'formik'
 import { Button, Checkbox, FormControlLabel, IconButton, InputAdornment, TextField, Tooltip, Typography } from '@material-ui/core'
-import { KeyboardDatePicker } from '@material-ui/pickers'
 import VisibilityIcon from '@material-ui/icons/Visibility'
 import VisibilityOffIcon from '@material-ui/icons/VisibilityOff'
 
@@ -18,6 +17,7 @@ const Captcha = () =>
 const formatLabel = field => upperFirst(field.split(/(?=[A-Z\s])/).join('_').replaceAll('_', ' '))
 
 export default function Form({ name, action, schema, rememberMe = false, search = false, inline = search }) {
+    const [selectedDate] = useState(new Date())
     const [showPassword, setShowPassword] = useState(false)
     const fields = Object.keys(schema.fields), captcha = fields.includes('captcha')
     const formik = useFormik({
@@ -40,7 +40,13 @@ export default function Form({ name, action, schema, rememberMe = false, search 
                         {...(fieldInfo[field] === 'date' || fieldInfo[field] === 'file') && { InputLabelProps: { shrink: true } }}
                         {...fieldInfo[field] === 'file' ?
                             { onChange: e => formik.setFieldValue(field, e.target.files[0]) } :
-                            { onChange: formik.handleChange, value: formik.values[field] }}
+                            fieldInfo[field] === 'date' ? {
+                                onChange: e => {
+                                    const d = new Date(e.target.value)
+                                    formik.setFieldValue(field, new Date(d.getTime() + d.getTimezoneOffset() * 60 * 1000))
+                                }
+                            } :
+                                { onChange: formik.handleChange, value: formik.values[field] }}
                         error={Boolean(formik.touched[field] && formik.errors[field])}
                         helperText={formik.touched[field] && (formik.errors[field] || (name === 'Register' && field === 'password' && `Password strength: ${passwordStrength(formik.values.password)}`))}
                         {...field === 'password' && {
