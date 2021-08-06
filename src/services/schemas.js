@@ -86,6 +86,31 @@ export const memeSchema = Yup.object({
     expiredAt: Yup.date()
 })
 
+export const storySchema = Yup.object({
+    description: Yup.string()
+        .required('Description is required')
+        .min(1, 'Description must be between 1 and 500 characters')
+        .max(500, 'Description must be between 1 and 500 characters'),
+    imageUrl: Yup.string(),
+    uploadImage: Yup.mixed()
+        .nullable()
+        .test('fileType', 'Only JPG, JPEG, PNG, GIF allowed', validateFileType)
+        .test('fileSize', 'File must be ≤ 130 KB', validateFileSize),
+})
+
+export const commentSchema = Yup.object({
+    description: Yup.string()
+        .required('Description is required')
+        .min(1, 'Description must be between 1 and 500 characters')
+        .max(500, 'Description must be between 1 and 500 characters'),
+    imageUrl: Yup.string(),
+    uploadImage: Yup.mixed()
+        .nullable()
+        .test('fileType', 'Only JPG, JPEG, PNG, GIF allowed', validateFileType)
+        .test('fileSize', 'File must be ≤ 130 KB', validateFileSize),
+})
+
+
 export const memeSearchSchema = Yup.object({
     owner: Yup.string(),
     description: Yup.string(),
