@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react'
 import Search from '../components/Search'
 import User from '../components/User'
 
+import { deleteFromArray } from '../var.js'
 import { getUsers, searchUsers, sendFriendRequest, removeFriendRequest, addFriend, removeFriend } from '../services/userService'
 import { userSearchSchema } from '../services/schemas'
 
@@ -23,7 +24,6 @@ export default function Friends({ user: { user_id }, friends: { friends, incomin
     }
 
     const updateStatus = async (target_id, status, setStatus) => {
-        const deleteFromArray = (arr, e) => arr.splice(arr.indexOf(e), 1)
         let response = false
 
         if (status === 'Add Friend') {

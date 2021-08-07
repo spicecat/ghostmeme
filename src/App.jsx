@@ -25,9 +25,9 @@ export default function App() {
   const [friends, setFriends] = useState()
   const [likes, setLikes] = useState()
 
-  const updateUser = async newUser => { setUser(newUser || await getLocalUser() || user) }
-  const updateFriends = async newFriends => { setFriends(newFriends || await getLocalFriends(user.user_id) || friends) }
-  const updateLikes = async newLikes => { setLikes(newLikes || await getUserLikes(user.user_id) || likes) }
+  const updateUser = async () => { setUser(await getLocalUser() || user) }
+  const updateFriends = async () => { setFriends(await getLocalFriends(user.user_id) || friends) }
+  const updateLikes = async () => { setLikes(await getUserLikes(user.user_id) || likes) }
 
   useEffect(() => { updateUser() }, [])
   useEffect(() => {
@@ -50,7 +50,7 @@ export default function App() {
             <Route exact path='/register' component={Register} />
             <Route exact path='/reset_password' component={ResetPassword} />
             <Route exact path='/chats'>
-              {RedirectComponent(user.loading === undefined && <Chats user={user} likes={likes} />, user.loading === false)}
+              {RedirectComponent(user.loading === undefined && <Chats user={user} likes={likes} updateLikes={setLikes} />, user.loading === false)}
             </Route>
             <Route exact path='/stories' >
               {RedirectComponent(user.loading === undefined && <Stories user={user} />, user.loading === false)}
@@ -59,7 +59,7 @@ export default function App() {
               {RedirectComponent(user.loading === undefined && <Notifications user={user} />, user.loading === false)}
             </Route>
             <Route exact path='/friends' >
-              {RedirectComponent(user.loading === undefined && friends && <Friends user={user} friends={friends} updateFriends={updateFriends} />, user.loading === false)}
+              {RedirectComponent(user.loading === undefined && friends && <Friends user={user} friends={friends} updateFriends={setFriends} />, user.loading === false)}
             </Route>
             <Route path='*' component={NotFound} />
           </Switch>
