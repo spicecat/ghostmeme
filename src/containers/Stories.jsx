@@ -27,7 +27,7 @@ export default function Stories({ user: { loading, user_id, username } }) {
   }
 
   useEffect(() => updateMemes(), [])
-  useEffect(() => updateCommentMemes())
+  useEffect(() => updateCommentMemes(), [])
 
   return <Paper className='paper' elevation={3}>
     <Typography className='chat-header' variant='h4'>{username}'s Story!</Typography>
