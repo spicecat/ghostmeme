@@ -35,7 +35,7 @@ export default function Form({ name, action, schema, rememberMe = false, search 
                         name={field}
                         label={name === 'Login' && field === 'username' ? 'Username or Email' : formatLabel(field)}
                         type={((field === 'password' && showPassword && 'text') || fieldInfo[field])}
-                        style={{ width: inline ? `${inline * 100 / (fields.length + 1)}%` : '100%' }}
+                        style={{ width: inline ? `${inline * 100 / (fields.length + 1) - 5}%` : '100%' }}
                         {...(fieldInfo[field] === 'date' || fieldInfo[field] === 'file') && { InputLabelProps: { shrink: true } }}
                         {...fieldInfo[field] === 'file' ?
                             { onChange: e => formik.setFieldValue(field, e.target.files[0]) } :

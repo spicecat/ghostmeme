@@ -18,18 +18,19 @@ export default function Chat({ meme: { meme_id, createdAt, expiredAt, descriptio
     const handleVanishMeme = async () => { if (await vanishMeme(meme_id)) update() }
 
     return <>
-        {!isExpired({ expiredAt }) && (isLocal ? <Tooltip title='Vanish Meme' placement='right'>
-            <IconButton onClick={handleVanishMeme}>
-                <DeleteIcon />
-            </IconButton>
-        </Tooltip> : <Tooltip title={`${liked ? 'Like' : 'Unlike'} Meme`} placement='right'>
-            <IconButton onClick={handleLikeMeme}>
-                {liked ? <ThumbUpIcon /> : <ThumbUpOutlinedIcon />}
-            </IconButton>
-        </Tooltip>
-        )}
+        {!isExpired(expiredAt) &&
+            (isLocal ? <Tooltip title='Vanish Meme' placement='right'>
+                <IconButton onClick={handleVanishMeme}>
+                    <DeleteIcon />
+                </IconButton>
+            </Tooltip> : <Tooltip title={`${liked ? 'Like' : 'Unlike'} Meme`} placement='right'>
+                <IconButton onClick={handleLikeMeme}>
+                    {liked ? <ThumbUpIcon /> : <ThumbUpOutlinedIcon />}
+                </IconButton>
+            </Tooltip>
+            )}
         <div className={`chat ${isLocal ? 'local' : 'other'}Chat`}>
-            {isExpired({ expiredAt }) ? <i>Message vanished</i> :
+            {isExpired(expiredAt) ? <i>Message vanished</i> :
                 <div>
                     <b>{username}</b>
                     &nbsp;-&nbsp;{createdAt.toLocaleString()}

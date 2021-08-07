@@ -13,7 +13,7 @@ export default function Comment({ meme: { meme_id, createdAt, expiredAt, descrip
     const handleVanishMeme = async () => { if (await vanishMeme(meme_id)) update() }
 
     return (<>
-        {isLocal ? !isExpired({ expiredAt }) && <Tooltip title='Vanish Meme' placement='right'>
+        {isLocal ? !isExpired(expiredAt) && <Tooltip title='Vanish Meme' placement='right'>
             <IconButton onClick={handleVanishMeme}>
                 <DeleteIcon />
             </IconButton>
@@ -24,7 +24,7 @@ export default function Comment({ meme: { meme_id, createdAt, expiredAt, descrip
         </Tooltip>
         }
         <div className='comment'>
-            {isExpired({ expiredAt }) ? <i>Message vanished</i> :
+            {isExpired(expiredAt) ? <i>Message vanished</i> :
                 <div>
                     <b>{username}</b>
                     &nbsp;-&nbsp;{createdAt.toLocaleString()}

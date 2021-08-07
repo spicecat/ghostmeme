@@ -125,8 +125,7 @@ export const getUserLikes = async user_id => {
     const URL = `${apiUrl}/users/${user_id}/liked`
     try {
         const response = await superagent.get(URL).set('key', apiKey)
-        const { memes } = response.body
-        return memes
+        return response.body.memes
     } catch (err) { return retry(err, getUserLikes, user_id) }
 }
 

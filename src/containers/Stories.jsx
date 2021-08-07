@@ -9,7 +9,7 @@ import { getCommentMemes, getStoryMemes, createMeme } from '../services/memeServ
 import { commentSchema, storySchema } from '../services/schemas'
 
 export default function Stories({ user: { loading, user_id, username } }) {
-  var memeID = '610443ccfe98ab104293a280'
+  var meme_id = '610443ccfe98ab104293a280'
 
   const [memes, setMemes] = useState([])
   const [comments, setComments] = useState([])
@@ -19,7 +19,7 @@ export default function Stories({ user: { loading, user_id, username } }) {
   }
 
   const updateCommentMemes = async () => {
-    setComments(await getCommentMemes(memeID) || comments)
+    setComments(await getCommentMemes(meme_id) || comments)
   }
 
   const handleCreateMeme = async values => {
@@ -63,7 +63,7 @@ export default function Stories({ user: { loading, user_id, username } }) {
         name='Post Story'
         action={handleCreateMeme}
         schema={storySchema}
-        inline={2}
+        inline={3}
       />
     </div>
     <div className='chat-footer'>
@@ -71,7 +71,7 @@ export default function Stories({ user: { loading, user_id, username } }) {
         name='Post Comment'
         action={handleCreateMeme}
         schema={commentSchema}
-        inline={2}
+        inline={3}
       />
     </div>
   </Paper>

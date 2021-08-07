@@ -92,7 +92,7 @@ export default function Chats({ user: { user_id, username } }) {
         }
         <br /><br />
         {users && <Search
-            name='Users'
+            name='users'
             headCells={[
                 { name: 'Profile Picture', prop: 'imageUrl' },
                 { name: 'Username', prop: 'username' },

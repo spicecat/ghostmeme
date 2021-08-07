@@ -14,7 +14,7 @@ export default function Story({ meme: { meme_id, createdAt, expiredAt, descripti
 
     return (<>
         {meme_id}
-        {isLocal ? !isExpired({ expiredAt }) && <Tooltip title='Vanish Meme' placement='right'>
+        {isLocal ? !isExpired(expiredAt) && <Tooltip title='Vanish Meme' placement='right'>
             <IconButton onClick={handleVanishMeme}>
                 <DeleteIcon />
             </IconButton>
@@ -25,7 +25,7 @@ export default function Story({ meme: { meme_id, createdAt, expiredAt, descripti
         </Tooltip>
         }
         <div className={`chat ${isLocal ? 'local' : 'other'}Chat`}>
-            {isExpired({ expiredAt }) ? <i>Message vanished</i> :
+            {isExpired(expiredAt) ? <i>Message vanished</i> :
                 <div>
                     <b>{username}</b>
                     &nbsp;-&nbsp;{createdAt.toLocaleString()}

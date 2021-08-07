@@ -22,7 +22,7 @@ export const getMemes = async () => {
     } catch (err) { return retry(err, getMemes) }
 }
 
-export const isExpired = ({ expiredAt }) => expiredAt !== -1 && expiredAt < Date.now()
+export const isExpired = expiredAt => expiredAt !== -1 && expiredAt < Date.now()
 
 export const searchMemes = async (baseQuery, query = {}, friends = {}) => {
     try {
@@ -86,12 +86,12 @@ export const getCommentMemes = async meme_id => {
     }
 }
 
-const postMeme = async post => {
+const postMeme = async meme => {
     const URL = `${apiUrl}/memes`
     try {
-        const response = await superagent.post(URL, post).set('key', apiKey).set('Content-Type', 'application/json')
+        const response = await superagent.post(URL, meme).set('key', apiKey).set('Content-Type', 'application/json')
         return response.body.success
-    } catch (err) { return retry(err, postMeme, post) }
+    } catch (err) { return retry(err, postMeme, meme) }
 }
 
 export const createMeme = async (user_id, receiver, { description, imageUrl, uploadImage: imageBase64, expiredAt }) =>
@@ -117,7 +117,7 @@ export const unlikeMeme = async (meme_id, user_id) => {
     const URL = `${apiUrl}/memes/${meme_id}/likes/${user_id}`
     try {
         return await superagent.delete(URL).set('key', apiKey)
-    } catch (err) { return retry(err, likeMeme, meme_id, user_id) }
+    } catch (err) { return retry(err, unlikeMeme, meme_id, user_id) }
 }
 
 export const vanishMeme = async meme_id => {
