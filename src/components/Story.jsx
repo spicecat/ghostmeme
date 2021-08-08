@@ -50,5 +50,14 @@ export default function Stories({ user: { user_id, username }, likes, updateLike
                 )}
             </>)}
         </Grid>
+        <hr />
+        <div className='chat-footer'>
+            <Form
+                name='Post Story'
+                action={handleCreateMeme}
+                schema={memeSchema}
+                inline={2}
+            />
+        </div>
     </>
 }
