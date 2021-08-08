@@ -50,10 +50,10 @@ export default function App() {
             <Route exact path='/register' component={Register} />
             <Route exact path='/reset_password' component={ResetPassword} />
             <Route exact path='/chats'>
-              {RedirectComponent(user.loading === undefined && <Chats user={user} likes={likes} updateLikes={setLikes} />, user.loading === false)}
+              {RedirectComponent(user.loading === undefined && likes && <Chats user={user} likes={likes} updateLikes={setLikes} />, user.loading === false)}
             </Route>
             <Route exact path='/stories' >
-              {RedirectComponent(user.loading === undefined && <Stories user={user} likes={likes} updateLikes={setLikes} />, user.loading === false)}
+              {RedirectComponent(user.loading === undefined && likes && <Stories user={user} likes={likes} updateLikes={setLikes} />, user.loading === false)}
             </Route>
             <Route exact path='/notifications' >
               {RedirectComponent(user.loading === undefined && <Notifications user={user} />, user.loading === false)}

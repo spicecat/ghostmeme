@@ -7,10 +7,10 @@ import Form from '../components/Form'
 import { createMeme } from '../services/memeService'
 import { commentSchema, storySchema } from '../services/schemas'
 
-export default function Stories({ user }) {
+export default function Stories({ user, likes, updateLikes }) {
 
   return <Paper className='paper' elevation={3}>
-    <Story user={user} />
+    <Story user={user} likes={likes} updateLikes={updateLikes} />
     <hr />
     {/* <div className='chat-footer'>
       <Form

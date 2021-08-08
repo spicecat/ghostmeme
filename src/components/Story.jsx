@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Table, TableBody, TableCell, TableRow, Typography } from '@material-ui/core'
+import { Grid, Typography } from '@material-ui/core'
 
 import { deleteFromArray } from '../var.js'
 
@@ -32,7 +32,7 @@ export default function Stories({ user: { user_id, username }, likes, updateLike
         }
         else return likes.includes(meme_id)
     }
-    
+
     const handleCreateMeme = async values => {
         if (await createMeme(user_id, null, values)) await updateMemes()
     }
@@ -42,25 +42,13 @@ export default function Stories({ user: { user_id, username }, likes, updateLike
 
     return <>
         <Typography className='chat-header' variant='h4'>{username}'s Story!</Typography>
-        <Table>
-            <TableBody>
-                {memes && memes.map(meme => <>
-                    <TableRow>
-                        <TableCell width='60%' />
-                        <TableCell width='40%'>
-                            <Chat meme={meme} username={username} update={updateMemes} isLocal={meme.owner === user_id} />
-                        </TableCell>
-                    </TableRow>
-                    {comments && comments[meme.meme_id].map(comment =>
-                        <TableRow key={comment.meme_id}>
-                            <TableCell width='40%'>
-                                <Chat meme={comment} username={comment.username} update={updateLiked} local_id={user_id} isLocal={comment.owner === user_id} type='other' />
-                            </TableCell>
-                            <TableCell width='60%' />
-                        </TableRow>
-                    )}
-                </>)}
-            </TableBody>
-        </Table>
+        <Grid container>
+            {memes && memes.map(meme => <>
+                <Chat meme={meme} username={username} update={updateMemes} isLocal={meme.owner === user_id} type='story' />
+                {comments && comments[meme.meme_id].map(comment =>
+                    <Chat meme={comment} username={comment.username} update={updateLiked} local_id={user_id} isLocal={comment.owner === user_id} type='other' />
+                )}
+            </>)}
+        </Grid>
     </>
 }

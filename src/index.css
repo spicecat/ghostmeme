@@ -52,6 +52,10 @@ img.chat-img {
   border-bottom: none !important;
 }
 
+.storyChat {
+  background: #1A73E8 !important;
+  color: white !important;
+}
 .comment {
   background: #F1F3F4 !important;
   padding: 15px;

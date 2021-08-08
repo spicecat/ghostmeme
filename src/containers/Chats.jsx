@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Paper, Table, TableBody, TableCell, TableRow, Typography } from '@material-ui/core'
+import { Grid, Paper, Typography } from '@material-ui/core'
 
 import { deleteFromArray } from '../var.js'
 
@@ -23,7 +23,7 @@ export default function Chats({ user: { user_id: local_id, username }, likes, up
     const loadUsers = async () => { setUsers(await getUsers()) }
     const updateUsers = async query => searchUsers(users, query)
 
-    const updateSelectUser = async (user_id, status, setStatus) => {
+    const updateSelectedUser = async (user_id, status, setStatus) => {
         if (status === 'Select User') {
             if (selectedUser === user_id) {
                 setSelectedUser('')
@@ -66,21 +66,12 @@ export default function Chats({ user: { user_id: local_id, username }, likes, up
         {selectedUserInfo &&
             <Paper className='paper' elevation={3}>
                 <Typography className='chat-header' variant='h4'>{`Conversation with ${selectedUserInfo.username}`}</Typography>
-                <Table>
-                    <TableBody>
-                        {memes && memes.map(meme => (
-                            <TableRow key={meme.meme_id}>
-                                <TableCell className='tableChat' width='40%'>
-                                    {meme.owner === selectedUser && <Chat meme={meme} username={selectedUserInfo.username} update={updateLiked} local_id={local_id} type='other' />}
-                                </TableCell>
-                                <TableCell className='tableChat' width='20%' />
-                                <TableCell className='tableChat' width='40%'>
-                                    {meme.owner === local_id && <Chat meme={meme} username={username} update={updateMemes} />}
-                                </TableCell>
-                            </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
+                <Grid container spacing={1}>
+                    {memes && memes.map(meme => meme.owner === local_id ?
+                        <Chat meme={meme} username={username} update={updateMemes} /> :
+                        <Chat meme={meme} username={selectedUserInfo.username} update={updateLiked} local_id={local_id} type='other' />
+                    )}
+                </Grid>
                 <hr />
                 <div className='chat-footer'>
                     <Form
@@ -93,19 +84,21 @@ export default function Chats({ user: { user_id: local_id, username }, likes, up
             </Paper>
         }
         <br /><br />
-        {users && <Search
-            name='users'
-            headCells={[
-                { name: 'Profile Picture', prop: 'imageUrl' },
-                { name: 'Username', prop: 'username' },
-                { name: 'Email', prop: 'email' },
-                { name: 'Phone', prop: 'phone' },
-                { name: 'Friends', prop: 'friends' },
-                { name: 'Likes', prop: 'liked' }]}
-            action={updateUsers}
-            schema={userSearchSchema}
-            Component={User}
-            update={updateSelectUser}
-        />}
+        {
+            users && <Search
+                name='users'
+                headCells={[
+                    { name: 'Profile Picture', prop: 'imageUrl' },
+                    { name: 'Username', prop: 'username' },
+                    { name: 'Email', prop: 'email' },
+                    { name: 'Phone', prop: 'phone' },
+                    { name: 'Friends', prop: 'friends' },
+                    { name: 'Likes', prop: 'liked' }]}
+                action={updateUsers}
+                schema={userSearchSchema}
+                Component={User}
+                update={updateSelectedUser}
+            />
+        }
     </>
 }
