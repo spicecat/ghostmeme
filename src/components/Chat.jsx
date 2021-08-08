@@ -7,7 +7,7 @@ import ThumbUpOutlinedIcon from '@material-ui/icons/ThumbUpOutlined'
 import { likeMeme, vanishMeme, isExpired } from '../services/memeService'
 
 
-export default function Chat({ meme: { meme_id, createdAt, expiredAt, description, likes, imageUrl, }, username, update, local_id, isLocal = !local_id }) {
+export default function Chat({ meme: { meme_id, createdAt, expiredAt, description, likes, imageUrl, }, username, update, local_id, isLocal = !local_id, type='local' }) {
     const [liked, setLiked] = useState()
 
     const updateLikeMeme = async () => {
@@ -35,7 +35,7 @@ export default function Chat({ meme: { meme_id, createdAt, expiredAt, descriptio
                 </IconButton>
             </Tooltip>
             )}
-        <div className={`chat ${isLocal ? 'local' : 'other'}Chat`}>
+        <div className={`chat ${type}Chat`}>
             {isExpired(expiredAt) ? <i>Message vanished</i> :
                 <div>
                     <b>{username}</b>

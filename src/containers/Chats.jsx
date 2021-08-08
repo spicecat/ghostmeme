@@ -1,12 +1,5 @@
 import { useState, useEffect } from 'react'
-import {
-    Paper,
-    Table,
-    TableBody,
-    TableCell,
-    TableRow,
-    Typography
-} from '@material-ui/core'
+import { Paper, Table, TableBody, TableCell, TableRow, Typography } from '@material-ui/core'
 
 import { deleteFromArray } from '../var.js'
 
@@ -16,13 +9,12 @@ import Form from '../components/Form'
 import Chat from '../components/Chat'
 
 import { getUsers, searchUsers, getUser } from '../services/userService'
-import { getConversation, createMeme } from '../services/memeService'
+import { createMeme, getConversation } from '../services/memeService'
 import { memeSchema, userSearchSchema } from '../services/schemas'
 
-export default function Chats({ user: { user_id, username }, likes, updateLikes }) {
+export default function Chats({ user: { user_id: local_id, username }, likes, updateLikes }) {
     const [timer, setTimer] = useState()
 
-    const local_id = user_id
     const [memes, setMemes] = useState([])
     const [users, setUsers] = useState()
     const [selectedUser, setSelectedUser] = useState('')
@@ -64,22 +56,22 @@ export default function Chats({ user: { user_id, username }, likes, updateLikes 
     }
 
     const handleCreateMeme = async values => {
-        if (await createMeme(user_id, selectedUser, values)) await updateMemes()
+        if (await createMeme(local_id, selectedUser, values)) await updateMemes()
     }
 
     useEffect(() => { loadUsers() }, [])
     useEffect(updateMemes, [selectedUser])
 
     return <>
-        {memes && selectedUserInfo &&
+        {selectedUserInfo &&
             <Paper className='paper' elevation={3}>
                 <Typography className='chat-header' variant='h4'>{`Conversation with ${selectedUserInfo.username}`}</Typography>
                 <Table>
                     <TableBody>
-                        {memes.map(meme => (
+                        {memes && memes.map(meme => (
                             <TableRow key={meme.meme_id}>
                                 <TableCell className='tableChat' width='40%'>
-                                    {meme.owner === selectedUser && <Chat meme={meme} username={selectedUserInfo.username} update={updateLiked} local_id={local_id} />}
+                                    {meme.owner === selectedUser && <Chat meme={meme} username={selectedUserInfo.username} update={updateLiked} local_id={local_id} type='other' />}
                                 </TableCell>
                                 <TableCell className='tableChat' width='20%' />
                                 <TableCell className='tableChat' width='40%'>

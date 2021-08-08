@@ -6,7 +6,7 @@ import { pick } from 'lodash'
 import { serverUrl, apiUrl, apiKey, nullifyUndefined, retry } from '../var.js'
 
 const userServerUrl = serverUrl + '/users', userApiUrl = apiUrl + '/users'
-superagentCache(superagent)
+superagentCache(superagent, null, { preventDuplicateCalls: true })
 const cookies = new Cookies()
 
 export const register = async ({ username, password, profilePicture, rememberMe, ...info }) => {

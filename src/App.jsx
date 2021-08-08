@@ -53,7 +53,7 @@ export default function App() {
               {RedirectComponent(user.loading === undefined && <Chats user={user} likes={likes} updateLikes={setLikes} />, user.loading === false)}
             </Route>
             <Route exact path='/stories' >
-              {RedirectComponent(user.loading === undefined && <Stories user={user} />, user.loading === false)}
+              {RedirectComponent(user.loading === undefined && <Stories user={user} likes={likes} updateLikes={setLikes} />, user.loading === false)}
             </Route>
             <Route exact path='/notifications' >
               {RedirectComponent(user.loading === undefined && <Notifications user={user} />, user.loading === false)}

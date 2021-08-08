@@ -2,7 +2,7 @@ export const serverUrl = 'http://localhost:3030'
 export const apiUrl = 'https://ghostmeme.api.hscc.bdpa.org/v1'
 export const apiKey = process.env.REACT_APP_API_KEY
 
-export const nullifyUndefined = obj => Object.fromEntries(Object.entries(obj).map(v => [v[0], v[1] || null]))
+export const nullifyUndefined = obj => Object.fromEntries(Object.entries(obj).map(([k, v]) => [k, v || null]))
 export const deleteFromArray = (arr, e) => arr.splice(arr.indexOf(e), 1)
 
 export const retry = async ({ status }, action, ...props) => {

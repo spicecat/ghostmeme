@@ -5,10 +5,10 @@ import { serverUrl, apiUrl, apiKey, nullifyUndefined, retry } from '../var.js'
 
 import { getUsernames } from './userService'
 
-superagentCache(superagent)
+superagentCache(superagent, null, { preventDuplicateCalls: true })
 
 const addUsernames = async (memes, friends = {}) => {
-    const user_ids = memes.map(meme => meme.owner)
+    const user_ids = memes.map(({ owner }) => owner)
     const users = await getUsernames(user_ids, friends)
     return memes.map(meme => ({ ...meme, username: users[meme.owner] }))
 }
@@ -53,38 +53,44 @@ export const searchFriendsMemes = async (friends, query) => searchMemes({ receiv
 
 export const getConversation = async (user1, user2) => user1 && user2 && searchMemes({ owner: `${user1}|${user2}`, receiver: `${user1}|${user2}`, private: true })
 export const getStoryMemes = async user_id => user_id && searchMemes({ owner: user_id, receiver: null, private: true })
-// export const getCommentMemes = async ({ meme_id }) => meme_id && searchMemes({ receiver: null, private: true, replyTo: meme_id })
-
-export const getCommentMemes = async meme_id => {
-    const query = encodeURIComponent(JSON.stringify({
-        "replyTo": `${meme_id}`
-    }))
-
-    const URL = `${apiUrl}/memes/search?match=${query}`
-    // console.log(URL)
-
-    try {
-        const response = await superagent.get(URL).set('key', apiKey).forceUpdate(true)
-
-        const memesList = response.body.memes.map(meme => ({
-            createdAt: new Date(meme.createdAt),
-            expiredAt: meme.expiredAt === -1 ? meme.expiredAt : new Date(meme.expiredAt),
-            description: meme.description,
-            private: meme.private,
-            imageUrl: meme.imageUrl,
-            meme_id: meme.meme_id,
-            owner: meme.owner,
-            receiver: meme.receiver,
-            likes: meme.likes,
-            replyTo: meme.replyTo
-        }))
-
-        // console.log(memesList)
-        return memesList
-    } catch (err) {
-        console.error(err)
-    }
+// export const getCommentMemes = async meme_id => meme_id && searchMemes({ receiver: null, private: true, replyTo: meme_id })
+export const getStoryComments = async meme_ids => {
+    const memes = await searchMemes({ receiver: null, private: true, replyTo: meme_ids.join('|') })
+    const comments = {}
+    meme_ids.map(meme_id => comments[meme_id] = [])
+    memes.map(meme=>comments[meme.replyTo].push(meme))
+    return comments
 }
+// export const getCommentMemes = async meme_id => {
+//     const query = encodeURIComponent(JSON.stringify({
+//         "replyTo": `${meme_id}`
+//     }))
+
+//     const URL = `${apiUrl}/memes/search?match=${query}`
+//     // console.log(URL)
+
+//     try {
+//         const response = await superagent.get(URL).set('key', apiKey).forceUpdate(true)
+
+//         const memesList = response.body.memes.map(meme => ({
+//             createdAt: new Date(meme.createdAt),
+//             expiredAt: meme.expiredAt === -1 ? meme.expiredAt : new Date(meme.expiredAt),
+//             description: meme.description,
+//             private: meme.private,
+//             imageUrl: meme.imageUrl,
+//             meme_id: meme.meme_id,
+//             owner: meme.owner,
+//             receiver: meme.receiver,
+//             likes: meme.likes,
+//             replyTo: meme.replyTo
+//         }))
+
+//         // console.log(memesList)
+//         return memesList
+//     } catch (err) {
+//         console.error(err)
+//     }
+// }
 
 const postMeme = async meme => {
     const URL = `${apiUrl}/memes`
