@@ -6,8 +6,8 @@ import { deleteFromArray } from '../var.js'
 import Chat from '../components/Chat'
 import Form from '../components/Form'
 
-import { createMeme, getStoryMemes, getStoryComments } from '../services/memeService'
-import { commentSchema, storySchema } from '../services/schemas'
+import { createMeme, getStoryMemes, getComments } from '../services/memeService'
+import { memeSchema } from '../services/schemas'
 
 export default function Stories({ user: { user_id, username }, likes, updateLikes }) {
     const [timer, setTimer] = useState()
@@ -22,9 +22,9 @@ export default function Stories({ user: { user_id, username }, likes, updateLike
         setTimer(setInterval(getMemes, 7500))
     }
 
-    const updateComments = async () => { if (memes) setComments(await getStoryComments(memes.map(({ meme_id }) => meme_id)) || comments) }
+    const updateComments = async () => { if (memes) setComments(await getComments(memes.map(({ meme_id }) => meme_id)) || comments) }
 
-    const updateLiked = (meme_id, update = true) => {
+    const handleUpdateLikes = (meme_id, update = true) => {
         if (update) {
             if (likes.includes(meme_id)) deleteFromArray(likes, meme_id)
             else likes.push(meme_id)
@@ -44,9 +44,9 @@ export default function Stories({ user: { user_id, username }, likes, updateLike
         <Typography className='chat-header' variant='h4'>{username}'s Story!</Typography>
         <Grid container>
             {memes && memes.map(meme => <>
-                <Chat meme={meme} username={username} update={updateMemes} isLocal={meme.owner === user_id} type='story' />
-                {comments && comments[meme.meme_id].map(comment =>
-                    <Chat meme={comment} username={comment.username} update={updateLiked} local_id={user_id} isLocal={comment.owner === user_id} type='other' />
+                <Chat meme={meme} username={username} updateMemes={updateMemes} updateLikes={handleUpdateLikes} local_id={user_id} isLocal={meme.owner === user_id} type='story' />
+                {comments && comments[meme.meme_id] && comments[meme.meme_id].map(comment =>
+                    <Chat meme={comment} username={comment.username} updateMemes={updateMemes} updateLikes={handleUpdateLikes} local_id={user_id} isLocal={comment.owner === user_id} type='other' />
                 )}
             </>)}
         </Grid>

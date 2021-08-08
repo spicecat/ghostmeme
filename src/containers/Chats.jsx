@@ -39,7 +39,7 @@ export default function Chats({ user: { user_id: local_id, username }, likes, up
         else setStatus('Select User')
     }
 
-    const updateLiked = (meme_id, update = true) => {
+    const handleUpdateLikes = (meme_id, update = true) => {
         if (update) {
             if (likes.includes(meme_id)) deleteFromArray(likes, meme_id)
             else likes.push(meme_id)
@@ -68,8 +68,8 @@ export default function Chats({ user: { user_id: local_id, username }, likes, up
                 <Typography className='chat-header' variant='h4'>{`Conversation with ${selectedUserInfo.username}`}</Typography>
                 <Grid container spacing={1}>
                     {memes && memes.map(meme => meme.owner === local_id ?
-                        <Chat meme={meme} username={username} update={updateMemes} /> :
-                        <Chat meme={meme} username={selectedUserInfo.username} update={updateLiked} local_id={local_id} type='other' />
+                        <Chat meme={meme} username={username} updateMemes={updateMemes} /> :
+                        <Chat meme={meme} username={selectedUserInfo.username} updateLikes={handleUpdateLikes} local_id={local_id} type='other' />
                     )}
                 </Grid>
                 <hr />

@@ -51,46 +51,15 @@ export const searchMemes = async (baseQuery, query = {}, friends = {}) => {
 export const searchChatsMemes = async (user_id, friends, query) => searchMemes({ receiver: user_id, private: true, replyTo: null }, query, friends)
 export const searchFriendsMemes = async (friends, query) => searchMemes({ receiver: null, private: true, owner: Object.keys(friends).join('|') }, query, friends)
 
-export const getConversation = async (user1, user2) => user1 && user2 && searchMemes({ owner: `${user1}|${user2}`, receiver: `${user1}|${user2}`, private: true })
-export const getStoryMemes = async user_id => user_id && searchMemes({ owner: user_id, receiver: null, private: true })
-// export const getCommentMemes = async meme_id => meme_id && searchMemes({ receiver: null, private: true, replyTo: meme_id })
-export const getStoryComments = async meme_ids => {
+export const getConversation = async (user1, user2) => user1 && user2 && searchMemes({ owner: `${user1}|${user2}`, receiver: `${user1}|${user2}`, private: true, replyTo: null })
+export const getStoryMemes = async user_id => user_id && searchMemes({ owner: user_id, receiver: null, private: true, replyTo: null })
+export const getComments = async meme_ids => {
     const memes = await searchMemes({ receiver: null, private: true, replyTo: meme_ids.join('|') })
     const comments = {}
     meme_ids.map(meme_id => comments[meme_id] = [])
-    memes.map(meme=>comments[meme.replyTo].push(meme))
+    memes.map(meme => comments[meme.replyTo].push(meme))
     return comments
 }
-// export const getCommentMemes = async meme_id => {
-//     const query = encodeURIComponent(JSON.stringify({
-//         "replyTo": `${meme_id}`
-//     }))
-
-//     const URL = `${apiUrl}/memes/search?match=${query}`
-//     // console.log(URL)
-
-//     try {
-//         const response = await superagent.get(URL).set('key', apiKey).forceUpdate(true)
-
-//         const memesList = response.body.memes.map(meme => ({
-//             createdAt: new Date(meme.createdAt),
-//             expiredAt: meme.expiredAt === -1 ? meme.expiredAt : new Date(meme.expiredAt),
-//             description: meme.description,
-//             private: meme.private,
-//             imageUrl: meme.imageUrl,
-//             meme_id: meme.meme_id,
-//             owner: meme.owner,
-//             receiver: meme.receiver,
-//             likes: meme.likes,
-//             replyTo: meme.replyTo
-//         }))
-
-//         // console.log(memesList)
-//         return memesList
-//     } catch (err) {
-//         console.error(err)
-//     }
-// }
 
 const postMeme = async meme => {
     const URL = `${apiUrl}/memes`
@@ -100,14 +69,14 @@ const postMeme = async meme => {
     } catch (err) { return retry(err, postMeme, meme) }
 }
 
-export const createMeme = async (user_id, receiver, { description, imageUrl, uploadImage: imageBase64, expiredAt }) =>
+export const createMeme = async (user_id, receiver, { description, imageUrl, uploadImage: imageBase64, expiredAt }, replyTo = null) =>
     postMeme(nullifyUndefined({
         owner: user_id,
         receiver,
         expiredAt: expiredAt ? new Date(expiredAt).getTime() : -1,
         description,
         private: true,
-        replyTo: null,
+        replyTo,
         imageUrl,
         imageBase64
     }))

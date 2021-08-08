@@ -7,28 +7,28 @@ import ThumbUpOutlinedIcon from '@material-ui/icons/ThumbUpOutlined'
 
 import Form from '../components/Form'
 
-import { likeMeme, vanishMeme, isExpired } from '../services/memeService'
+import { createMeme, likeMeme, unlikeMeme, vanishMeme, isExpired } from '../services/memeService'
 import { memeSchema } from '../services/schemas'
 
-export default function Chat({ meme: { meme_id, createdAt, expiredAt, description, likes, imageUrl, }, username, update, local_id, isLocal = !local_id, type = 'local' }) {
+export default function Chat({ meme: { meme_id, createdAt, expiredAt, description, likes, imageUrl, }, username, updateMemes, updateLikes, local_id, isLocal = !local_id, type = 'local' }) {
     const [liked, setLiked] = useState()
     const [selected, setSelected] = useState(false)
 
-    const updateSelected = async () => {
-        setSelected(!selected)
-        // update(meme_id)
-    }
+    const updateSelected = async () => { setSelected(!selected) }
 
-    const getLikedStatus = () => { if (!isLocal) setLiked(update(meme_id, false)) }
+    const getLikedStatus = () => { if (!isLocal) setLiked(updateLikes(meme_id, false)) }
     const updateLikeMeme = async () => {
         if (isLocal) return
         setLiked(!liked)
-        const response = await likeMeme(meme_id, local_id)
-        if (response) update(meme_id)
+        if (liked ? await unlikeMeme(meme_id, local_id) : await likeMeme(meme_id, local_id)) updateLikes(meme_id)
         else setLiked(liked)
     }
 
-    const updateVanishMeme = async () => { if (await vanishMeme(meme_id)) update() }
+    const updateVanishMeme = async () => { if (await vanishMeme(meme_id)) updateMemes() }
+
+    const handleCreateComment = async values => {
+        if (await createMeme(local_id, null, values, meme_id)) await updateMemes()
+    }
 
     useEffect(() => { getLikedStatus() }, [])
 
@@ -41,7 +41,7 @@ export default function Chat({ meme: { meme_id, createdAt, expiredAt, descriptio
                         <IconButton onClick={updateVanishMeme}>
                             <DeleteIcon />
                         </IconButton>
-                    </Tooltip> : <Tooltip title={`${liked ? 'Like' : 'Unlike'} Meme`} placement='right'>
+                    </Tooltip> : <Tooltip title={`${liked ? 'Unlike' : 'Like'} Meme`} placement='right'>
                         <IconButton onClick={updateLikeMeme}>
                             {liked ? <ThumbUpIcon /> : <ThumbUpOutlinedIcon />}
                         </IconButton>
@@ -75,12 +75,14 @@ export default function Chat({ meme: { meme_id, createdAt, expiredAt, descriptio
         </Grid>
         <Grid item xs={1} />
         {selected && <Grid item xs>
-            <Form
-                name='Post Comment'
-                action={() => 1}
-                schema={memeSchema}
-                inline={2}
-            />
+            <div className='chat-footer'>
+                <Form
+                    name='Post Comment'
+                    action={handleCreateComment}
+                    schema={memeSchema}
+                    inline={2}
+                />
+            </div>
         </Grid>}
     </Grid >
 }
