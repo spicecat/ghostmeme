@@ -32,57 +32,84 @@ export default function Chat({ meme: { meme_id, createdAt, expiredAt, descriptio
 
     useEffect(() => { getLikedStatus() }, [])
 
-    return <Grid container spacing={1}>
-        <Grid container item>
-            {type !== 'other' && <Grid item xs={6} />}
-            <Grid item xs={1}>
-                {!isExpired(expiredAt) && <>
-                    {isLocal ? <Tooltip title='Vanish Meme' placement='right'>
-                        <IconButton onClick={updateVanishMeme}>
-                            <DeleteIcon />
-                        </IconButton>
-                    </Tooltip> : <Tooltip title={`${liked ? 'Unlike' : 'Like'} Meme`} placement='right'>
-                        <IconButton onClick={updateLikeMeme}>
-                            {liked ? <ThumbUpIcon /> : <ThumbUpOutlinedIcon />}
-                        </IconButton>
-                    </Tooltip>}
-                    {type === 'story' && <Tooltip title='Comment' placement='right'>
-                        <IconButton onClick={updateSelected}>
-                            <CommentIcon />
-                        </IconButton>
-                    </Tooltip>}
-                </>}
+    return (
+        <Grid container spacing={1}>
+            {/* Add spaces after stories to separate stories and comments*/}
+            {type == 'story' && <div><br /><br /></div>}
+
+            <Grid container item>
+                {type == 'local' && <Grid item xs={6} />}
+                {(type == 'story' || type == 'comment') && <Grid item xs={3} />}
+                <Grid item xs={1}>
+                    {!isExpired(expiredAt) && <>
+                        {isLocal && <Tooltip title='Vanish Meme' placement='right'>
+                            <IconButton onClick={updateVanishMeme}>
+                                <DeleteIcon />
+                            </IconButton>
+                        </Tooltip>}
+                        {!isLocal && <Tooltip title={`${liked ? 'Unlike' : 'Like'} Meme`} placement='right'>
+                            <IconButton onClick={updateLikeMeme}>
+                                {liked ? <ThumbUpIcon /> : <ThumbUpOutlinedIcon />}
+                            </IconButton>
+                        </Tooltip>}
+                        {type === 'story' && <Tooltip title='Comment' placement='right'>
+                            <IconButton onClick={updateSelected}>
+                                <CommentIcon />
+                            </IconButton>
+                        </Tooltip>}
+                    </>}
+                </Grid>
+                <Grid item xs={5}>
+                    <div className={`chat ${type}Chat`}>
+                        {isExpired(expiredAt) ? <i>Message vanished</i> :
+
+                            <div>
+                                {type == 'story' ?
+                                    <div>
+                                        <b>{username}</b>
+                                        &nbsp;-&nbsp;{createdAt.toDateString()}
+                                        &nbsp;-&nbsp;{likes} likes
+                                        <br />
+                                        <br /><img className='story-img' src={imageUrl} alt={imageUrl} />
+                                        {imageUrl && <br />}
+                                        {description}
+                                        {expiredAt !== -1 && <>
+                                            <br /><br />
+                                            <i>{`Expires at ${expiredAt.toLocaleString()}`}</i>
+                                        </>}
+                                    </div>
+                                    :
+                                    <div>
+                                        <b>{username}</b>
+                                        &nbsp;-&nbsp;{createdAt.toLocaleString()}
+                                        &nbsp;-&nbsp;{likes} likes
+                                        <br />
+                                        <img className='chat-img' src={imageUrl} alt={imageUrl} />
+                                        {imageUrl && <br />}
+                                        {description}
+                                        {expiredAt !== -1 && <>
+                                            <br /><br />
+                                            <i>{`Expires at ${expiredAt.toLocaleString()}`}</i>
+                                        </>}
+                                    </div>
+                                }
+                            </div>
+                        }
+                    </div>
+                </Grid>
             </Grid>
-            <Grid item xs={5}>
-                <div className={`chat ${type}Chat`}>
-                    {isExpired(expiredAt) ? <i>Message vanished</i> :
-                        <div>
-                            <b>{username}</b>
-                            &nbsp;-&nbsp;{createdAt.toLocaleString()}
-                            &nbsp;-&nbsp;{likes} likes
-                            <br />
-                            <img className='chat-img' src={imageUrl} alt={imageUrl} />
-                            {imageUrl && <br />}
-                            {description}
-                            {expiredAt !== -1 && <>
-                                <br /><br />
-                                <i>{`Expires at ${expiredAt.toLocaleString()}`}</i>
-                            </>}
-                        </div>
-                    }
+
+            <Grid item xs={1} />
+            {selected && <Grid item xs>
+                <div className='chat-footer'>
+                    <Form
+                        name='Post Comment'
+                        action={handleCreateComment}
+                        schema={memeSchema}
+                        inline={2}
+                    />
                 </div>
-            </Grid>
+            </Grid>}
         </Grid>
-        <Grid item xs={1} />
-        {selected && <Grid item xs>
-            <div className='chat-footer'>
-                <Form
-                    name='Post Comment'
-                    action={handleCreateComment}
-                    schema={memeSchema}
-                    inline={2}
-                />
-            </div>
-        </Grid>}
-    </Grid >
+    )
 }

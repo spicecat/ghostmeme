@@ -25,6 +25,11 @@ img.chat-img {
   max-height: 200px;
 }
 
+img.story-img {
+  max-width: 99%;
+  max-height: 500px;
+}
+
 .chat {
   padding: 15px;
   border-radius: 20px;
@@ -55,10 +60,12 @@ img.chat-img {
 .storyChat {
   background: #1A73E8 !important;
   color: white !important;
+  border-radius: 5px;
 }
-.comment {
+.commentChat {
   background: #F1F3F4 !important;
-  padding: 15px;
+  padding: 10px;
+  border-radius: 5px;
 }
 
 .paper{
