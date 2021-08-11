@@ -46,7 +46,7 @@ export default function Stories({ user: { user_id, username }, likes, updateLike
             {memes && memes.map(meme => <>
                 <Chat meme={meme} username={username} updateMemes={updateMemes} updateLikes={handleUpdateLikes} local_id={user_id} isLocal={meme.owner === user_id} type='story' />
                 {comments && comments[meme.meme_id] && comments[meme.meme_id].map(comment =>
-                    <Chat meme={comment} username={comment.username} updateMemes={updateMemes} updateLikes={handleUpdateLikes} local_id={user_id} isLocal={comment.owner === user_id} type='other' />
+                    <Chat meme={comment} username={comment.username} updateMemes={updateMemes} updateLikes={handleUpdateLikes} local_id={user_id} isLocal={comment.owner === user_id} type='comment' />
                 )}
             </>)}
         </Grid>
