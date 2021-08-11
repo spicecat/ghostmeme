@@ -11,6 +11,7 @@ import Home from './containers/Home'
 import MemeSearch from './containers/MemeSearch'
 import Login from './containers/Login'
 import Register from './containers/Register'
+import ForgotPassword from './containers/ForgotPassword'
 import ResetPassword from './containers/ResetPassword'
 import Chats from './containers/Chats'
 import Stories from './containers/Stories'
@@ -48,7 +49,8 @@ export default function App() {
             <Route exact path='/' component={Home} />
             <Route exact path='/login' component={Login} />
             <Route exact path='/register' component={Register} />
-            <Route exact path='/reset_password' component={ResetPassword} />
+            <Route exact path='/forgot_password' component={ForgotPassword}/>
+            <Route exact path='/reset/:emailHash/:email' component={ResetPassword}/>
             <Route exact path='/chats'>
               {RedirectComponent(user.loading === undefined && likes && <Chats user={user} likes={likes} updateLikes={setLikes} />, user.loading === false)}
             </Route>

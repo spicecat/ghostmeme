@@ -1,0 +1,12 @@
+.FormInputsFP { 
+    display: flex;
+    flex-direction: column;
+    align-items: center; 
+  
+  }
+
+  .App {
+    display: flex;
+    flex-direction: column;
+    align-items: center; 
+  }
