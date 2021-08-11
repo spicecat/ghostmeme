@@ -12,6 +12,7 @@ const {sha256} = require('crypto-hash')
 export default function ForgotPassword() {
 
 const [email, setEmail] = useState('')
+const [emailsent, setemailsent] = useState(false)
 
 
 const handleSubmit = (e) => {
@@ -22,7 +23,7 @@ const handleSubmit = (e) => {
 
 const handleClick = async () => { 
     const hashedEmail = await sha256(email) 
-    
+    setemailsent(true)
   
     const link = `http://localhost:3000/reset/${hashedEmail}/${email}`
     console.log('Hi! Please visit ', `${link}`, ' to reset your password. Thank you for using Ghostmeme. -Ghost,Inc')
@@ -41,6 +42,7 @@ return (
         <label htmlFor="email">Email  </label>
         <input onChange= {handleEmailInput} type="text" placeholder="please enter your email" id="email" value={email}/> <br/>
         <button disabled={email === ''} onClick={handleClick} type="submit"> Send Reset Password Email </button>
+        {emailsent && <p> Email sent to {email}! </p>}
     </form>
     </div>
 )
