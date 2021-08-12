@@ -17,6 +17,7 @@ import ForgotPassword from './containers/ForgotPassword'
 import ResetPassword from './containers/ResetPassword'
 import Chats from './containers/Chats'
 import Stories from './containers/Stories'
+import Spotlight from './containers/Spotlight'
 import Notifications from './containers/Notifications'
 import Friends from './containers/Friends'
 import NotFound from './containers/NotFound'
@@ -88,36 +89,43 @@ export default function App() {
   }
   useEffect(loadMemes, [friends])
 
-  return <BrowserRouter>
-    <Navbar />
-    <div className='body'>
-      <Paper className='paper' elevation={5}>
-        {user.loading === undefined && <MemeSearch />}
-        <br /><br />
-        <Switch>
-          <Route exact path='/' component={Home} />
-          <Route exact path='/login' component={Login} />
-          <Route exact path='/register' component={Register} />
-          <Route exact path='/forgot_password' component={ForgotPassword} />
-          <Route exact path='/reset/:emailHash/:email' component={ResetPassword} />
-          <Route exact path='/myprofile' >
-            {RedirectComponent(user.loading === undefined && <UserProfile {...{ user: user }} />, user.loading === false)}
-          </Route>
-          <Route exact path='/chats'>
-            {RedirectComponent(user.loading === undefined && <Chats {...{ updateMemes: loadMemes, updateLikes }} />, user.loading === false)}
-          </Route>
-          <Route exact path='/stories' >
-            {RedirectComponent(user.loading === undefined && <Stories {...{ updateMemes: loadMemes, updateLikes }} />, user.loading === false)}
-          </Route>
-          <Route exact path='/notifications' >
-            {RedirectComponent(user.loading === undefined && <Notifications {...{}} />, user.loading === false)}
-          </Route>
-          <Route exact path='/friends' >
-            {RedirectComponent(user.loading === undefined && <Friends {...{}} />, user.loading === false)}
-          </Route>
-          <Route path='*' component={NotFound} />
-        </Switch>
-      </Paper>
-    </div>
-  </BrowserRouter>
+  return (
+    <BrowserRouter>
+      <Navbar />
+      <div className='body'>
+        <Paper className='paper' elevation={5}>
+          {user.loading === undefined && <MemeSearch />}
+          <br /><br />
+          <Switch>
+            <Route exact path='/' component={Home} />
+            <Route exact path='/login' component={Login} />
+            <Route exact path='/register' component={Register} />
+            <Route exact path='/forgot_password' component={ForgotPassword} />
+            {/* <Route exact path='/spotlight' component={Spotlight} /> */}
+            <Route exact path='/reset/:emailHash/:email' component={ResetPassword} />
+            <Route exact path='/spotlight'>
+              {/* {(friends && storyMemes && likes && <Spotlight {...{ user, friends, storyMemes, updateMemes: loadMemes, likes, updateLikes }} />)} */}
+              {<Spotlight {...{ updateMemes: loadMemes }} />}
+            </Route>
+            <Route exact path='/myprofile' >
+              {RedirectComponent(user.loading === undefined && <UserProfile {...{ user }} />, user.loading === false)}
+            </Route>
+            <Route exact path='/chats'>
+              {RedirectComponent(user.loading === undefined && <Chats {...{ updateMemes: loadMemes, updateLikes }} />, user.loading === false)}
+            </Route>
+            <Route exact path='/stories' >
+              {RedirectComponent(user.loading === undefined && friends && <Stories {...{ updateMemes: loadMemes, updateLikes }} />, user.loading === false)}
+            </Route>
+            <Route exact path='/notifications' >
+              {RedirectComponent(user.loading === undefined && <Notifications {...{}} />, user.loading === false)}
+            </Route>
+            <Route exact path='/friends' >
+              {RedirectComponent(user.loading === undefined && friends && <Friends {...{}} />, user.loading === false)}
+            </Route>
+            <Route path='*' component={NotFound} />
+          </Switch>
+        </Paper>
+      </div>
+    </BrowserRouter>
+  )
 }

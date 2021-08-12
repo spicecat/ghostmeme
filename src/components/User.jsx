@@ -93,7 +93,7 @@ export default function User({ user_id: target_id, username, email, phone, frien
             <TableCell>
                 <Button variant='contained' color='primary' size='small' onClick={updateStatus}>{status}</Button>
                 &nbsp;
-                <Button variant='contained' color='primary' size='small' onClick={addRecipient}>Add recipient</Button>
+                {status == 'Select User' && <Button variant='contained' color='primary' size='small' onClick={addRecipient}>Add recipient</Button>}
                 {status !== 'Unblock' && <>
                     &nbsp;
                     {status === 'Accept Friend' && <Button variant='contained' color='primary' size='small' onClick={() => updateStatus('Reject Friend')}>Reject Friend</Button>}

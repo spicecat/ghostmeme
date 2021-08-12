@@ -99,7 +99,7 @@ export default function Chats({ updateMemes, updateLikes }) {
                     )}
                 </Grid>
                 <hr />
-                Current Recipients: {multipleRecipients}
+                {/* Current Recipients: {multipleRecipients} */}
                 <div className='chat-footer'>
                     <Form
                         name='Post Meme'
