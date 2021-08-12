@@ -68,7 +68,7 @@ const onClickHandler = () => { //this will reset the password. This is the last 
            <input onChange ={(e) => setconf(e.target.value)} id='confirmpassword'/> 
            <button onClick= {onClickHandler} disabled={passwordStr==='weak' || password!== conf } > Reset Password</button>
        </form>
-       {reset && <p>if an there account associated with {params.email}, then its password has been successfully reset. Please wait a few minutes before logging in.</p> }
+       {reset && <p>If an there account associated with {params.email}, then its password has been successfully reset. Please wait at least 45 seconds before logging in.</p> }
        </div>  
         }
        {/* <Form
