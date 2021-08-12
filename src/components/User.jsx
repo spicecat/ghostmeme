@@ -22,8 +22,6 @@ export default function User({ user_id, username, email, phone, friends, liked, 
 
     useEffect(() => { updateStatus() }, [user_id])
     
-    console.log(status)
-
     return (
         <TableRow>
             <TableCell>{imageUrl && <Avatar alt={username} src={imageUrl} />}</TableCell>
