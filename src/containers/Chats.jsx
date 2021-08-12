@@ -17,7 +17,7 @@ export default function Chats({ user: { user_id: local_id, username }, receivedC
     const [users, setUsers] = useState()
     const [selectedUser, setSelectedUser] = useState('')
     const [selectedUserInfo, setSelectedUserInfo] = useState()
-    
+
     // Array containing other users to send chats to
     // const [multipleRecipients, setMultipleRecipients] = useState(['6106f1b050309265789191a2', '6105642eda3de966b77eed89'])
     const [multipleRecipients, setMultipleRecipients] = useState([])
@@ -41,7 +41,19 @@ export default function Chats({ user: { user_id: local_id, username }, receivedC
         }
 
         else if (status === 'Add Recipient') {
-            setMultipleRecipients(multipleRecipients => [...multipleRecipients, user_id])
+            // If user already selected, unselect user
+            if (multipleRecipients.includes(user_id)) {
+                console.log('Recipient removed')
+                const index = multipleRecipients.indexOf(user_id)
+                multipleRecipients.splice(index, 1);
+            }
+
+            // Otherwise, add user
+            else {
+                setMultipleRecipients(multipleRecipients => [...multipleRecipients, user_id])
+            }
+            
+            console.log(multipleRecipients)
         }
 
         else setStatus('Select User')
