@@ -5,15 +5,16 @@ import { orderBy } from 'lodash'
 import Chat from './Chat'
 import Form from './Form'
 
-import { createMeme } from '../services/memeService'
+import { createSpotlight, createMeme } from '../services/memeService'
 import { memeSchema } from '../services/schemas'
 
 // export default function SpotlightComponent({ user: { user_id }, memes, updateMemes, updateLikes}) {
-export default function SpotlightComponent({ memes, updateMemes, updateLikes}) {
+export default function SpotlightComponent({ user: {user_id}, memes, updateMemes, updateLikes }) {
+    // console.log(`USER ${user_id} ${username}`)
 
-    // const handleCreateMeme = async values => {
-    //     if (await createMeme(user_id, null, values)) await updateMemes()
-    // }
+    const handleCreateMeme = async values => {
+        if (await createSpotlight(user_id, null, values)) await updateMemes()
+    }
 
     return <>
         <Typography className='chat-header' variant='h4'>Spotlight</Typography>
@@ -22,14 +23,18 @@ export default function SpotlightComponent({ memes, updateMemes, updateLikes}) {
                 <Chat {...{ meme, updateMemes, updateLikes, isLocal: '', type: 'spotlight' }} />
             </Fragment >)}
         </Grid>
-        {/* <hr />
-        <div className='chat-footer'>
-            <Form
-                name='Post Public Meme'
-                action={handleCreateMeme}
-                schema={memeSchema}
-                inline={2}
-            />
-        </div> */}
+        {user_id &&
+            <>
+                <hr />
+                <div className='chat-footer'>
+                    <Form
+                        name='Post Public Meme'
+                        action={handleCreateMeme}
+                        schema={memeSchema}
+                        inline={2}
+                    />
+                </div>
+            </>
+        }
     </>
 }

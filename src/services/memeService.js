@@ -70,6 +70,19 @@ const postMeme = async meme => {
         return response.body.success
     } catch (err) { return retry(err, postMeme, meme) }
 }
+
+export const createSpotlight = async (user_id, receiver, { description, imageUrl, uploadImage, expiredAt }, replyTo = null) =>
+    postMeme({
+        owner: user_id,
+        receiver: null,
+        expiredAt: expiredAt ? new Date(expiredAt).getTime() : -1,
+        description,
+        private: false,
+        replyTo,
+        imageUrl,
+        imageBase64: null
+    })
+
 export const createMeme = async (user_id, receiver, { description, imageUrl, uploadImage, expiredAt }, replyTo = null) =>
     postMeme(nullifyUndefined({
         owner: user_id,
