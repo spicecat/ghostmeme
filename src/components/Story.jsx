@@ -20,9 +20,18 @@ export default function Stories({ user: { user_id, username }, memes, updateMeme
             {memes && orderBy(memes, 'createdAt', 'desc').map(meme => <Fragment key={meme.meme_id} >
                 <Chat {...{ meme, username, updateMemes, updateLikes, local_id, isLocal: meme.owner === local_id, type: 'story' }} />
                 {meme.comments && meme.comments.map(comment =>
-                    <Chat {...{ meme: comment, username: comment.username, updateMemes, updateLikes, local_id, isLocal: comment.owner === local_id, type: 'other' }} />
+                    <Chat {...{ meme: comment, username: comment.username, updateMemes, updateLikes, local_id, isLocal: comment.owner === local_id, type: 'comment' }} />
                 )}
             </Fragment >)}
         </Grid>
+        <hr />
+        <div className='chat-footer'>
+            <Form
+                name='Post Story'
+                action={handleCreateMeme}
+                schema={memeSchema}
+                inline={2}
+            />
+        </div>
     </>
 }
