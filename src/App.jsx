@@ -97,8 +97,8 @@ export default function App() {
             <Route exact path='/forgot_password' component={ForgotPassword} />
             <Route exact path='/reset/:emailHash/:email' component={ResetPassword} />
             <Route exact path='/myprofile' >
-              {RedirectComponent(user.loading === undefined && <UserProfile {...{ user }}  />, user.loading === false)}
-            </Route> 
+              {RedirectComponent(user.loading === undefined && <UserProfile {...{ user }} />, user.loading === false)}
+            </Route>
             <Route exact path='/chats'>
               {RedirectComponent(user.loading === undefined && receivedChatsMemes && sentChatsMemes && likes && <Chats {...{ user, receivedChatsMemes, sentChatsMemes, updateMemes: loadMemes, updateLikes }} />, user.loading === false)}
             </Route>
@@ -109,7 +109,7 @@ export default function App() {
               {RedirectComponent(user.loading === undefined && incomingFriendRequests && mentions && <Notifications {...{ user, incomingFriendRequests, mentions }} />, user.loading === false)}
             </Route>
             <Route exact path='/friends' >
-              {RedirectComponent(user.loading === undefined && friends && outgoingFriendRequests, incomingFriendRequests && <Friends {...{ user, friends, outgoingFriendRequests, incomingFriendRequests, setFriends, setOutgoingFriendRequests, setIncomingFriendRequests }} />, user.loading === false)}
+              {RedirectComponent(user.loading === undefined && friends && outgoingFriendRequests && incomingFriendRequests && <Friends {...{ user, friends, outgoingFriendRequests, incomingFriendRequests, setFriends, setOutgoingFriendRequests, setIncomingFriendRequests }} />, user.loading === false)}
             </Route>
             <Route path='*' component={NotFound} />
           </Switch>
