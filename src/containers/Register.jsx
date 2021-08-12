@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 
 import { register } from '../services/userService'
 import { registerSchema } from '../services/schemas'
@@ -17,11 +17,15 @@ export default function Register() {
         <>
             <Alert statusCode={statusCode} />
             <br />
-            <Form name='Register' action={async values => {
-                setStatusCode(102)
-                setStatusCode(await register(values))
-            }
-            } schema={registerSchema} />
+            <Form
+                name='Register'
+                action={async values => {
+                    setStatusCode(102)
+                    setStatusCode(await register(values))
+                }}
+                schema={registerSchema}
+                rememberMe={true}
+            />
         </>
     )
 }

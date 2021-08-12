@@ -1,39 +1,46 @@
-import React, { useState, useEffect } from 'react'
-import { TableRow, TableCell, Button } from '@material-ui/core'
+import { useState, useEffect } from 'react'
+import { Avatar, TableRow, TableCell, Button } from '@material-ui/core'
 
-import { sendFriendRequest, removeFriendRequest, addFriend, removeFriend } from '../services/userService'
+import { blockUser } from '../services/userService'
 
-export default function User({ user_id: target_id, username, email, phone, friends, liked, imageUrl, localUser, update }) {
-    const [status, setStatus] = useState('Add Friend')
-    const { user_id: local_id, friends: localFriends, outgoingFriendRequests, incomingFriendRequests } = localUser
+export default function User({ user_id, username, email, phone, friends, liked, imageUrl, update }) {
+    const [status, setStatus] = useState('')
 
-    const updateStatus = async () => {
-        if (target_id in localFriends) setStatus('Remove Friend')
-        else if (incomingFriendRequests.includes(target_id)) setStatus('Accept Friend')
-        else if (outgoingFriendRequests.includes(target_id)) setStatus('Pending')
-        else setStatus('Add Friend')
-        console.log(target_id, username)
+    const updateStatus = async newStatus => {
+        if (status === 'Unblock') {
+            if (await blockUser(user_id)) update(user_id, '', setStatus)
+        }
+        else if (newStatus === 'Block') {
+            if (await blockUser(user_id)) setStatus('Unblock')
+        }
+        else update(user_id, status, setStatus)
     }
 
-    useEffect(() => { updateStatus() }, [target_id, localUser])
-
-    const handleFriendRequest = async () => {
-        if (status === 'Add Friend') await sendFriendRequest(local_id, target_id)
-        else if (status === 'Pending') await removeFriendRequest(local_id, target_id)
-        else if (status === 'Accept Friend') await addFriend(local_id, target_id)
-        else if (status === 'Remove Friend') await removeFriend(local_id, target_id)
-        await update()
+    const addRecipient = () => {
+        update(user_id, 'Add Recipient', setStatus)
     }
+
+    useEffect(() => { updateStatus() }, [user_id])
 
     return (
         <TableRow>
+            <TableCell>{imageUrl && <Avatar alt={username} src={imageUrl} />}</TableCell>
             <TableCell>{username}</TableCell>
             <TableCell>{email}</TableCell>
             <TableCell>{phone}</TableCell>
             <TableCell>{friends}</TableCell>
             <TableCell>{liked}</TableCell>
-            <TableCell>{imageUrl && <img src={imageUrl} alt={target_id} height="100" />}</TableCell>
-            <TableCell><Button variant='contained' color='primary' size='small' onClick={handleFriendRequest}>{status}</Button></TableCell>
+            <TableCell>
+                <Button variant='contained' color='primary' size='small' onClick={updateStatus}>{status}</Button>
+                &nbsp;
+                <Button variant='contained' color='primary' size='small' onClick={addRecipient}>Add recipient</Button>
+                {status !== 'Unblock' && <>
+                    &nbsp;
+                    {status === 'Accept Friend' && <Button variant='contained' color='primary' size='small' onClick={() => updateStatus('Reject Friend')}>Reject Friend</Button>}
+                    &nbsp;
+                    <Button variant='contained' color='primary' size='small' onClick={() => updateStatus('Block')}>Block</Button>
+                </>}
+            </TableCell>
         </TableRow >
     )
 }

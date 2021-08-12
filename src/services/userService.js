@@ -3,28 +3,18 @@ import superagentCache from 'superagent-cache'
 import Cookies from 'universal-cookie'
 import { pick } from 'lodash'
 
-import { serverUrl, apiUrl, apiKey } from '../var.js'
+import { serverUrl, apiUrl, apiKey, nullifyUndefined, retry, toBase64 } from '../var.js'
 
 const userServerUrl = serverUrl + '/users', userApiUrl = apiUrl + '/users'
-superagentCache(superagent)
+superagentCache(superagent, null, { preventDuplicateCalls: true })
 const cookies = new Cookies()
 
-const retry = async ({ status }, action, ...props) => {
-    if (status === 555) return new Promise(resolve => setTimeout(() => { resolve(action(...props)) }, 4000))
-    else return
-}
-
-export const redirect = async user => {
-    if (!user.username && user.loading === false) window.location.href = '/login'
-}
-
-export const register = async ({ username, password, profile_picture, rememberMe, ...info }) => {
+export const register = async ({ username, password, profilePicture, rememberMe, ...info }) => {
     const URL = userServerUrl
     try {
-        delete info.confirm_password
-        if (profile_picture) var imageBase64 = await profile_picture.text()
+        delete info.confirmPassword
         const auth = Buffer.from(username + ':' + password, 'ascii').toString('base64')
-        var response = await superagent.post(URL, { ...info, imageBase64 }).query({ rememberMe }).set('Authorization', 'Basic ' + auth)
+        var response = await superagent.post(URL, nullifyUndefined({ ...info, ...profilePicture && { imageBase64: await toBase64(profilePicture) } })).query({ rememberMe }).set('Authorization', 'Basic ' + auth)
     } catch (err) { return err.status }
     const { token } = response.body
     cookies.set('token', token)
@@ -47,7 +37,7 @@ export const login = async ({ username, password, rememberMe }) => {
                 cookies.remove('loginAttempts')
                 return 403
             }
-            cookies.set('loginAttempts', 1 + loginAttempts)
+            cookies.set('loginAttempts', loginAttempts + 1)
         }
         return err.status
     }
@@ -57,10 +47,7 @@ export const login = async ({ username, password, rememberMe }) => {
     return response.statusCode
 }
 
-export const resetPassword = ({ email }) => {
-    console.log(email)
-    return 501
-}
+
 
 export const logout = () => {
     cookies.remove('token')
@@ -95,21 +82,15 @@ export const getLocalUser = async () => {
 
     const URL = userServerUrl + '/getUser'
     try {
-        var response = await superagent.get(URL).set('Authorization', 'Bearer ' + token).forceUpdate(true)
+        const response = await superagent.get(URL).set('Authorization', 'Bearer ' + token).forceUpdate(true)
+        const { user_id, notifications, blocked } = response.body
+        const user = await getUser(user_id)
+        if (!user) return { loading: false }
+        return { ...user, notifications, blocked }
     } catch (err) {
         if (err.status === 401) logout()
         return
     }
-    const { user_id } = response.body
-
-    const user = await getUser(user_id)
-
-    if (!user) return { loading: false }
-    user.friends = await getFriends(user_id)
-    user.outgoingFriendRequests = await getFriendRequests(user_id, 'outgoing')
-    user.incomingFriendRequests = await getFriendRequests(user_id, 'incoming')
-    console.log(user)
-    return user
 }
 
 export const getUser = async user_id => {
@@ -122,7 +103,6 @@ export const getUser = async user_id => {
 
 export const getUsers = async (after = '') => {
     const URL = `${apiUrl}/users?after=${after}`
-
     try {
         const response = await superagent.get(URL).set('key', apiKey)
         const { users } = response.body
@@ -136,9 +116,18 @@ export const getUsers = async (after = '') => {
     } catch (err) { return retry(err, getUsers) || [] }
 }
 
+export const searchUsers = (users, query = {}) => Object.entries(query).reduce((o, [k, v]) => o.filter(user => !user[k] || user[k].includes(v)), users)
+
+export const getUserLikes = async user_id => {
+    const URL = `${apiUrl}/users/${user_id}/liked`
+    try {
+        const response = await superagent.get(URL).set('key', apiKey)
+        return response.body.memes
+    } catch (err) { return retry(err, getUserLikes, user_id) }
+}
+
 export const getFriends = async user_id => {
     const URL = `${userApiUrl}/${user_id}/friends`
-
     try {
         const response = await superagent.get(URL).set('key', apiKey).forceUpdate(true)
         return addUsernames(response.body.users)
@@ -150,15 +139,13 @@ const addUsernames = async user_ids => {
     return pick(usernames, user_ids)
 }
 
-export const getUsernames = async user_ids => { // returns object {user_id:username...}
+export const getUsernames = async user_ids => { // returns {[user_id]:username...}
     const usernames = {}, users = await getUsers()
     for (const user of users) usernames[user.user_id] = user.username
-
-    for (let i in user_ids) {
+    for (const [i, user_id] in user_ids.entries()) {
         const delay = 1000 * i
-        const user_id = user_ids[i]
         if (!(user_id in usernames))
-            new Promise(async function (resolve) {
+            new Promise(async (resolve) => {
                 await new Promise(res => setTimeout(res, delay))
                 resolve(await new Promise(async () => {
                     const { username } = await getUser(user_id)
@@ -169,9 +156,8 @@ export const getUsernames = async user_ids => { // returns object {user_id:usern
     return usernames
 }
 
-export const getFriendRequests = async (user_id, reqType = 'outgoing') => {
+export const getFriendRequests = async (user_id, reqType) => {
     const URL = `${userApiUrl}/${user_id}/requests/${reqType}`
-    console.log(URL)
     try {
         const response = await superagent.get(URL).set('key', apiKey).forceUpdate(true)
         return response.body.users
@@ -190,9 +176,9 @@ export const sendFriendRequest = async (user_id, target_id, reqType = 'outgoing'
 export const removeFriendRequest = async (user_id, target_id, reqType = 'outgoing') => {
     const URL = `${userApiUrl}/${user_id}/requests/${reqType}/${target_id}`
     try {
-        const response = await superagent.delete(URL).set('key', apiKey)
+        await superagent.delete(URL).set('key', apiKey)
         if (reqType === 'outgoing') return removeFriendRequest(target_id, user_id, 'incoming')
-        else return response.body.success
+        else return true
     } catch (err) {
         if (err.status === 404 && reqType === 'outgoing') return removeFriendRequest(target_id, user_id, 'incoming')
         return retry(err, removeFriendRequest, user_id, target_id, reqType) || false
@@ -226,3 +212,14 @@ export const removeFriend = async (user_id, target_id, reqType = 'outgoing') => 
     }
 }
 
+export const blockUser = async target_id => {
+    const token = cookies.get('token')
+    const URL = userServerUrl + '/blockUser'
+    try {
+        const response = await superagent.post(URL, { target_id }).set('Authorization', 'Bearer ' + token).forceUpdate(true)
+        return response.statusCode
+    } catch (err) {
+        if (err.status === 401) logout()
+        return
+    }
+}

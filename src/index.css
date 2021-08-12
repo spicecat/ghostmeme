@@ -13,8 +13,7 @@ code {
 }
 
 div.body {
-  max-width: 1000px;
-  margin: 20px auto 20px auto;
+  margin: 20px;
 }
 
 div.header {
@@ -26,12 +25,22 @@ img.chat-img {
   max-height: 200px;
 }
 
+img.story-img {
+  max-width: 99%;
+  max-height: 500px;
+}
+
 .chat {
   padding: 15px;
   border-radius: 20px;
 }
 
 .chat-header {
+  padding: 15px;
+  text-align: center;
+}
+
+.chat-footer {
   padding: 15px;
 }
 
@@ -46,6 +55,34 @@ img.chat-img {
 
 .tableChat {
   border-bottom: none !important;
+}
+
+.storyChat {
+  background: #1A73E8 !important;
+  color: white !important;
+  border-radius: 5px;
+}
+.commentChat {
+  background: #F1F3F4 !important;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+.spotlightChat {
+  background: #F1F3F4 !important;
+  border-radius: 5px;
+}
+
+.paper{
+  padding: 15px;
+}
+
+.menu-button{
+  margin-right: 20px;
+}
+
+.user-control{
+  margin-left: auto;
 }
 
 @media all and (min-width: 480px) {
@@ -72,3 +109,4 @@ img.chat-img {
   font-size: 30px;
   margin-bottom: 30px;
 }
+

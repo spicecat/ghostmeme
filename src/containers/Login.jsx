@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 
 import { login } from '../services/userService'
@@ -18,13 +18,17 @@ export default function Login() {
         <>
             <Alert statusCode={statusCode} />
             <br />
-            <Form name='Login' action={async values => {
-                setStatusCode(102)
-                setStatusCode(await login(values))
-            }
-            } schema={loginSchema} />
+            <Form
+                name='Login'
+                action={async values => {
+                    setStatusCode(102)
+                    setStatusCode(await login(values))
+                }}
+                schema={loginSchema}
+                rememberMe={true}
+            />
             <br />
-            <Link to='/reset_password'>Forgot Password</Link>
+            <Link to='/forgot_password'>Forgot Password</Link>
         </>
     )
 

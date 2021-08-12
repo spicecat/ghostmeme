@@ -1,24 +1,16 @@
-import React from 'react'
-import { Link } from "react-router-dom"
-import { makeStyles } from '@material-ui/core/styles'
-import { AppBar, Toolbar, Typography, IconButton, Button, Avatar } from '@material-ui/core'
+import { Link, useHistory } from 'react-router-dom'
+import { AppBar, Avatar, Button, IconButton, Toolbar, Typography } from '@material-ui/core'
 import MenuIcon from '@material-ui/icons/Menu'
 
 import { logout } from '../services/userService'
 
-const useStyles = makeStyles(theme => ({
-    menuButton: { marginRight: theme.spacing(2) },
-    userControl: { marginLeft: 'auto' }
-}))
-
-export default function Navbar({ page, user }) {
-    const classes = useStyles()
-    const { username, loading } = user
+export default function Navbar({ page, user: { username, loading, imageUrl } }) {
+    const history = useHistory()
 
     return (
         <AppBar position='static'>
             <Toolbar variant='dense'>
-                <IconButton color='inherit' className={classes.menuButton} onClick={() => window.location.href = '/'}>
+                <IconButton color='inherit' className='menu-button' onClick={() => history.push('/')}>
                     <MenuIcon />
                 </IconButton>
                 &nbsp;
@@ -28,14 +20,15 @@ export default function Navbar({ page, user }) {
                     <Button color='inherit' variant='outlined' size='small' to='/stories' component={Link}>Stories</Button>&nbsp;
                     <Button color='inherit' variant='outlined' size='small' to='/notifications' component={Link}>Notifications</Button>&nbsp;
                     <Button color='inherit' variant='outlined' size='small' to='/friends' component={Link}>Friends</Button>&nbsp;
-                    <Button color='inherit' variant='outlined' size='small' to='/themeSwap' component={Link}>Swap Themes</Button>
+                    <Button color='inherit' variant='outlined' size='small' to='/themeSwap' component={Link}>Swap Themes</Button>&nbsp;
+                    <Button color='inherit' variant='outlined' size='small' to='/myprofile' component={Link}>Profile</Button>&nbsp;
                 </>
-                <span className={classes.userControl} />
+                <span className='user-control' />
                 {loading || username ?
                     <>
                         <Typography>Logged in as: {username}</Typography>
                         &nbsp;&nbsp;&nbsp;
-                        <Avatar alt={username} />
+                        <Avatar alt={username} src={imageUrl} />
                         &nbsp;&nbsp;&nbsp;
                         <Button color='inherit' variant='outlined' size='small' onClick={logout}>Logout</Button>
                     </> :

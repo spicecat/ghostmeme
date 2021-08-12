@@ -1,59 +1,24 @@
-import React, { useState, useEffect } from 'react'
-import { BrowserRouter, Switch, Route } from 'react-router-dom'
-import { redirect } from '../services/userService'
-import { searchMemes } from '../services/memeService'
+import { useState, useEffect } from 'react'
+import { Paper } from '@material-ui/core'
 
-export default function Stories({ user }) {
-  useEffect(() => { redirect(user) }, [user])
-  const [UsersMemesArray, setUserMemesArray] = useState([])
-  const [valid, setValid] = useState(false)
+import Story from '../components/Story'
+import Search from '../components/Search'
 
-  const GetsUsersMemes = async () => {
-    try {
-      setUserMemesArray(await searchMemes({ owner: user.user_id }))
-      setValid(true)
-      console.log('got it!')
-    }
-    catch {
-      console.log('error!')
-    }
-  }
-  const mapper = (ix) => {
-    return (
-      <article className="Post" >
-        <header>
-          <div className="Post-user">
-            <div className="Post-user-profilepicture">
-              <img src={ix.imageUrl} alt="Me and my Friends" />
-              <p>{ix.description}</p>
-            </div>
-            <div className="Post-user-nickname">
-              <span>{ix.username}</span>
-            </div>
-          </div>
-        </header>
-        <div className="Post-image">
-          <div className="Post-image-bg">
-            <img alt="Icon Living" src={ix.imageUrl} />
-          </div>
-        </div>
-        <div className="Post-caption">
-          <strong>John D. Veloper </strong> Loving Educative!
-        </div>
+export default function Stories({ user, friends, storyMemes, updateMemes, updateLikes }) {
+  const [memes, setMemes] = useState([])
 
-      </article>
+  const [users, setUsers] = useState()
+  const [selectedUser, setSelectedUser] = useState(user.user_id)
+  const [selectedUserInfo, setSelectedUserInfo] = useState(user)
 
-    )
-
+  const getStory = () => {
+    console.log('Updating Story')
+    setMemes(storyMemes[selectedUser] || [])
   }
 
-  const TitleItems = UsersMemesArray.map(mapper)
+  useEffect(getStory, [selectedUserInfo, storyMemes])
 
-  return (
-    <>
-      <h1>{user.username}'s Stories!</h1> <br />
-      <button onClick={GetsUsersMemes} > Get up to date on your posts!</button>
-      {valid && (<ul> {TitleItems}</ul>)}
-    </>
-  )
+  return <Paper className='paper' elevation={3}>
+    <Story {...{ user: selectedUserInfo, memes, updateMemes, updateLikes, local_id: user.user_id }} />
+  </Paper>
 }
