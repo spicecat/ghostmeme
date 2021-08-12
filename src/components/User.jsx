@@ -16,7 +16,11 @@ export default function User({ user_id, username, email, phone, friends, liked, 
             <TableCell>{phone}</TableCell>
             <TableCell>{friends}</TableCell>
             <TableCell>{liked}</TableCell>
-            <TableCell><Button variant='contained' color='primary' size='small' onClick={updateStatus}>{status}</Button></TableCell>
+            <TableCell>
+                <Button variant='contained' color='primary' size='small' onClick={updateStatus}>{status}</Button>
+                &nbsp;
+                {status==='Accept Friend' && <Button variant='contained' color='primary' size='small' onClick={()=>update(user_id, 'Reject Friend', setStatus)}>Reject Friend</Button>}
+            </TableCell>
         </TableRow >
     )
 }

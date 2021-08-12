@@ -40,7 +40,7 @@ export default function App() {
     setOutgoingFriendRequests(await getFriendRequests(user.user_id, 'outgoing') || outgoingFriendRequests)
     setIncomingFriendRequests(await getFriendRequests(user.user_id, 'incoming') || incomingFriendRequests)
   }
-  
+
   const loadLikes = async () => { setLikes(await getUserLikes(user.user_id) || likes) }
   const updateLikes = (meme_id, update) => {
     if (update) {
