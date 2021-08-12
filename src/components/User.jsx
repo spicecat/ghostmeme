@@ -5,18 +5,14 @@ import { blockUser } from '../services/userService'
 
 export default function User({ user_id, username, email, phone, friends, liked, imageUrl, update }) {
     const [status, setStatus] = useState('')
-    const [blocked, setBlocked] = useState()
 
     const updateStatus = async newStatus => {
-        if (status === 'Blocked') return
+        if (status === 'Unblock') {
+            if (await blockUser(user_id)) update(user_id, '', setStatus)
+        }
         else if (newStatus === 'Block') {
             setStatus('Unblock')
             if (!await blockUser(user_id)) setStatus(status)
-        }
-        else if (status === 'Unblock') {
-            if (await blockUser(user_id))
-                update(user_id, '', setStatus)
-            else setStatus(status)
         }
         else update(user_id, status, setStatus)
     }
@@ -38,8 +34,8 @@ export default function User({ user_id, username, email, phone, friends, liked, 
             <TableCell>
                 <Button variant='contained' color='primary' size='small' onClick={updateStatus}>{status}</Button>
                 &nbsp;
-                {status === 'Select User' && <Button variant='contained' color='primary' size='small' onClick={addRecipient}>Add recipient</Button>}
-                {(status !== 'Blocked' && status !== 'Unblock') && <>
+                {status == 'Select User' && <Button variant='contained' color='primary' size='small' onClick={addRecipient}>Add recipient</Button>}
+                {status !== 'Unblock' && <>
                     &nbsp;
                     {status === 'Accept Friend' && <Button variant='contained' color='primary' size='small' onClick={() => updateStatus('Reject Friend')}>Reject Friend</Button>}
                     &nbsp;
