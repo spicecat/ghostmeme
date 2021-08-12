@@ -28,6 +28,7 @@ export default function Navbar({ page, user }) {
                     <Button color='inherit' variant='outlined' size='small' to='/stories' component={Link}>Stories</Button>&nbsp;
                     <Button color='inherit' variant='outlined' size='small' to='/notifications' component={Link}>Notifications</Button>&nbsp;
                     <Button color='inherit' variant='outlined' size='small' to='/friends' component={Link}>Friends</Button>&nbsp;
+                    <Button color='inherit' variant='outlined' size='small' to='/themeSwap' component={Link}>Swap Themes</Button>
                 </>
                 <span className={classes.userControl} />
                 {loading || username ?
