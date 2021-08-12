@@ -4,9 +4,8 @@ import MenuIcon from '@material-ui/icons/Menu'
 
 import { logout } from '../services/userService'
 
-export default function Navbar({ page, user }) {
+export default function Navbar({ page, user: { username, loading, imageBase64 } }) {
     const history = useHistory()
-    const { username, loading } = user
 
     return (
         <AppBar position='static'>
@@ -27,7 +26,7 @@ export default function Navbar({ page, user }) {
                     <>
                         <Typography>Logged in as: {username}</Typography>
                         &nbsp;&nbsp;&nbsp;
-                        <Avatar alt={username} />
+                        <Avatar alt={username} src={imageBase64} />
                         &nbsp;&nbsp;&nbsp;
                         <Button color='inherit' variant='outlined' size='small' onClick={logout}>Logout</Button>
                     </> :

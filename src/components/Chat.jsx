@@ -23,7 +23,7 @@ export default function Chat({ meme: { meme_id, createdAt, expiredAt, descriptio
         else setLiked(liked)
     }
 
-    const updateVanishMeme = async () => { if (await vanishMeme(meme_id)) updateMemes() }
+    const updateVanishMeme = async () => { if (await vanishMeme(meme_id)) await updateMemes() }
 
     const handleCreateComment = async values => {
         if (await createMeme(local_id, null, values, meme_id)) await updateMemes()

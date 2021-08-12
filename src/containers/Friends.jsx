@@ -7,7 +7,7 @@ import { deleteFromArray } from '../var.js'
 import { getUsers, searchUsers, sendFriendRequest, removeFriendRequest, addFriend, removeFriend } from '../services/userService'
 import { userSearchSchema } from '../services/schemas'
 
-export default function Friends({ user: { user_id }, friends: { friends, incomingFriendRequests, outgoingFriendRequests }, updateFriends }) {
+export default function Friends({ user: { user_id }, friends, outgoingFriendRequests, incomingFriendRequests, setFriends, setOutgoingFriendRequests, setIncomingFriendRequests }) {
     const [users, setUsers] = useState()
 
     const loadUsers = async () => { setUsers(await getUsers()) }
@@ -24,35 +24,45 @@ export default function Friends({ user: { user_id }, friends: { friends, incomin
     }
 
     const updateStatus = async (target_id, status, setStatus) => {
-        let response = false
-
         if (status === 'Add Friend') {
             setStatus('Pending')
-            response = await sendFriendRequest(user_id, target_id)
-            if (response) outgoingFriendRequests.push(target_id)
+            if (await sendFriendRequest(user_id, target_id)) {
+                outgoingFriendRequests.push(target_id)
+                setOutgoingFriendRequests(outgoingFriendRequests)
+                return
+            }
         }
         else if (status === 'Pending') {
             setStatus('Add Friend')
-            response = await removeFriendRequest(user_id, target_id)
-            if (response) deleteFromArray(outgoingFriendRequests, target_id)
+            if (await removeFriendRequest(user_id, target_id)) {
+                deleteFromArray(outgoingFriendRequests, target_id)
+                setOutgoingFriendRequests(outgoingFriendRequests)
+                return
+            }
         }
         else if (status === 'Accept Friend') {
             setStatus('Remove Friend')
-            response = await addFriend(user_id, target_id)
-            if (response) friends[target_id] = users.find(o => o.user_id === target_id).username
+            if (await addFriend(user_id, target_id)) {
+                friends[target_id] = users.find(o => o.user_id === target_id).username
+                setFriends(friends)
+                delete incomingFriendRequests[target_id]
+                setIncomingFriendRequests(incomingFriendRequests)
+                return
+            }
         }
         else if (status === 'Remove Friend') {
             setStatus('Add Friend')
-            response = await removeFriend(user_id, target_id)
-            if (response) delete friends[target_id]
+            if (await removeFriend(user_id, target_id)) {
+                delete friends[target_id]
+                setFriends(friends)
+                return
+            }
         }
         else {
             setStatus(getStatus(target_id))
             return
         }
-
-        if (response) updateFriends({ friends, incomingFriendRequests, outgoingFriendRequests })
-        else setStatus(status)
+        setStatus(status)
     }
 
     return users ?

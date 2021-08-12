@@ -12,6 +12,7 @@ import Home from './containers/Home'
 import MemeSearch from './containers/MemeSearch'
 import Login from './containers/Login'
 import Register from './containers/Register'
+import ForgotPassword from './containers/ForgotPassword'
 import ResetPassword from './containers/ResetPassword'
 import Chats from './containers/Chats'
 import Stories from './containers/Stories'
@@ -34,12 +35,13 @@ export default function App() {
   const updateUser = async () => { setUser(await getLocalUser() || user) }
   useEffect(() => { updateUser() }, [])
 
-  const updateFriends = async () => {
+  const loadFriends = async () => {
     setFriends(await getFriends(user.user_id) || friends)
     setOutgoingFriendRequests(await getFriendRequests(user.user_id, 'outgoing') || outgoingFriendRequests)
     setIncomingFriendRequests(await getFriendRequests(user.user_id, 'incoming') || incomingFriendRequests)
   }
-  const getLikes = async () => { setLikes(await getUserLikes(user.user_id) || likes) }
+  
+  const loadLikes = async () => { setLikes(await getUserLikes(user.user_id) || likes) }
   const updateLikes = (meme_id, update) => {
     if (update) {
       if (likes.includes(meme_id)) deleteFromArray(likes, meme_id)
@@ -52,8 +54,8 @@ export default function App() {
   useEffect(() => { updateUser() }, [])
   useEffect(() => {
     if (user.loading === undefined) {
-      updateFriends()
-      getLikes()
+      loadFriends()
+      loadLikes()
     }
   }, [user])
 
@@ -64,7 +66,7 @@ export default function App() {
   const [storyMemes, setStoryMemes] = useState()
   const [mentions, setMentions] = useState()
 
-  const updateMemes = () => {
+  const loadMemes = () => {
     if (!friends) return
     clearTimeout(timer)
     const getMemes = async () => {
@@ -77,9 +79,9 @@ export default function App() {
       setMentions(mentions)
     }
     getMemes()
-    setTimer(setInterval(getMemes, 9500))
+    setTimer(setInterval(getMemes, 10000))
   }
-  useEffect(updateMemes, [friends])
+  useEffect(loadMemes, [friends])
 
   return (
     <BrowserRouter>
@@ -92,12 +94,13 @@ export default function App() {
             <Route exact path='/' component={Home} />
             <Route exact path='/login' component={Login} />
             <Route exact path='/register' component={Register} />
-            <Route exact path='/reset_password' component={ResetPassword} />
+            <Route exact path='/forgot_password' component={ForgotPassword} />
+            <Route exact path='/reset/:emailHash/:email' component={ResetPassword} />
             <Route exact path='/chats'>
-              {RedirectComponent(user.loading === undefined && receivedChatsMemes && sentChatsMemes && likes && <Chats {...{ user, receivedChatsMemes, sentChatsMemes, updateMemes, updateLikes }} />, user.loading === false)}
+              {RedirectComponent(user.loading === undefined && receivedChatsMemes && sentChatsMemes && likes && <Chats {...{ user, receivedChatsMemes, sentChatsMemes, updateMemes: loadMemes, updateLikes }} />, user.loading === false)}
             </Route>
             <Route exact path='/stories' >
-              {RedirectComponent(user.loading === undefined && storyMemes && likes && <Stories {...{ user, storyMemes, updateMemes, likes, updateLikes }} />, user.loading === false)}
+              {RedirectComponent(user.loading === undefined && friends && storyMemes && likes && <Stories {...{ user, friends, storyMemes, updateMemes: loadMemes, likes, updateLikes }} />, user.loading === false)}
             </Route>
             <Route exact path='/notifications' >
               {RedirectComponent(user.loading === undefined && incomingFriendRequests && mentions && <Notifications {...{ user, incomingFriendRequests, mentions }} />, user.loading === false)}

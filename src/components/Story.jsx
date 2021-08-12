@@ -18,9 +18,9 @@ export default function Stories({ user: { user_id, username }, memes, updateMeme
         <Typography className='chat-header' variant='h4'>{username}'s Story!</Typography>
         <Grid container>
             {memes && orderBy(memes, 'createdAt', 'desc').map(meme => <Fragment key={meme.meme_id} >
-                <Chat key={meme.meme_id} {...{ meme, username, updateMemes, updateLikes, local_id, isLocal: meme.owner === local_id, type: 'story' }} />
+                <Chat {...{ meme, username, updateMemes, updateLikes, local_id, isLocal: meme.owner === local_id, type: 'story' }} />
                 {meme.comments && meme.comments.map(comment =>
-                    <Chat key={comment.meme_id} {...{ meme: comment, username: comment.username, updateMemes, updateLikes, local_id, isLocal: comment.owner === local_id, type: 'other' }} />
+                    <Chat {...{ meme: comment, username: comment.username, updateMemes, updateLikes, local_id, isLocal: comment.owner === local_id, type: 'other' }} />
                 )}
             </Fragment >)}
         </Grid>

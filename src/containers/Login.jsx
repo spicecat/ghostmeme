@@ -28,7 +28,7 @@ export default function Login() {
                 rememberMe={true}
             />
             <br />
-            <Link to='/reset_password'>Forgot Password</Link>
+            <Link to='/forgot_password'>Forgot Password</Link>
         </>
     )
 

@@ -47,13 +47,13 @@ export const registerSchema = Yup.object({
         .oneOf(['4'], 'Invalid CAPTCHA')
 })
 
-export const resetPasswordSchema = Yup.object({
-    email: Yup.string()
-        .required('Email is required')
-        .email('Invalid email'),
-    captcha: Yup.string()
-        .required('CAPTCHA is required')
-        .oneOf(['4'], 'Invalid CAPTCHA')
+export const ResetPasswordSchema = Yup.object({
+    password: Yup.string()
+        .min(11, 'Password strength: weak')
+        .required('Password is required'),
+    confirmPassword: Yup.string()
+        .oneOf([Yup.ref('password')], 'Passwords must match')
+        .required('Confirm password is required'),
 })
 
 export const passwordStrength = ({ length }) => {

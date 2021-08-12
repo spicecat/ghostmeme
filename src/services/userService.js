@@ -11,11 +11,16 @@ const cookies = new Cookies()
 
 export const register = async ({ username, password, profilePicture, rememberMe, ...info }) => {
     const URL = userServerUrl
+    const toBase64 = file => new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = error => reject(error);
+    })
     try {
         delete info.confirmPassword
-        if (profilePicture) var imageBase64 = await profilePicture.text()
         const auth = Buffer.from(username + ':' + password, 'ascii').toString('base64')
-        var response = await superagent.post(URL, nullifyUndefined({ ...info, imageBase64 })).query({ rememberMe }).set('Authorization', 'Basic ' + auth)
+        var response = await superagent.post(URL, nullifyUndefined({ ...info, ...profilePicture && { imageBase64: await toBase64(profilePicture) } })).query({ rememberMe }).set('Authorization', 'Basic ' + auth)
     } catch (err) { return err.status }
     const { token } = response.body
     cookies.set('token', token)
@@ -87,7 +92,10 @@ export const getLocalUser = async () => {
     const URL = userServerUrl + '/getUser'
     try {
         const response = await superagent.get(URL).set('Authorization', 'Bearer ' + token).forceUpdate(true)
-        return getUser(response.body.user_id) || { loading: false }
+        const { user_id, imageBase64 } = response.body
+        const user = await getUser(user_id)
+        if (!user) return { loading: false }
+        return { ...user, imageBase64 }
     } catch (err) {
         if (err.status === 401) logout()
         return
