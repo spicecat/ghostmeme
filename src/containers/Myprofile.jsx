@@ -6,8 +6,10 @@ import { login, register } from '../services/userService'
 import { lockedPageSchema, registerSchema } from '../services/schemas'
 import Alert from '../components/Alert'
 
-export default function UserProfile({ user }) {
+export default function UserProfile() {
     const state = useTrackedState()
+    const { user } = state
+
     const [abletoview, setabletoview] = useState(false)
     const [statusCode, setStatusCode] = useState(100)
 

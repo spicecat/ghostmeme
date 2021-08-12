@@ -82,8 +82,10 @@ export const getLocalUser = async () => {
 
     const URL = userServerUrl + '/getUser'
     try {
+        console.log(131)
         const response = await superagent.get(URL).set('Authorization', 'Bearer ' + token).forceUpdate(true)
         const { user_id, notifications, blocked, blockedBy } = response.body
+        console.log(response.body)
         const user = await getUser(user_id)
         if (!user) return { loading: false }
         return { ...user, notifications, blocked, blockedBy }

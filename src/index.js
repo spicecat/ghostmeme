@@ -9,7 +9,7 @@ import App from './App'
 
 const initialState = {
     user: { loading: true },
-    friends: [],
+    friends: null,
     outgoingFriendRequests: [],
     incomingFriendRequests: [],
     likes: [],

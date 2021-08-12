@@ -9,8 +9,9 @@ import User from '../components/User'
 
 import { getUsers, removeFriendRequest, addFriend } from '../services/userService'
 
-export default function Notifications({ user: { user_id }, incomingFriendRequests, mentions }) {
+export default function Notifications() {
     const state = useTrackedState()
+    const { user: { user_id }, incomingFriendRequests, mentions } = state
 
     const [users, setUsers] = useState()
     const loadUsers = async () => { setUsers(await getUsers()) }

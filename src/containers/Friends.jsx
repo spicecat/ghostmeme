@@ -7,7 +7,7 @@ import User from '../components/User'
 import { getUsers, searchUsers, sendFriendRequest, removeFriendRequest, addFriend, removeFriend } from '../services/userService'
 import { userSearchSchema } from '../services/schemas'
 
-export default function Friends({ setFriends, setOutgoingFriendRequests, setIncomingFriendRequests }) {
+export default function Friends() {
     const state = useTrackedState()
     const dispatch = useDispatch()
     const { user: { user_id }, friends, outgoingFriendRequests, incomingFriendRequests } = state

@@ -5,8 +5,10 @@ import { useTrackedState } from 'reactive-react-redux'
 import Story from '../components/Story'
 import Search from '../components/Search'
 
-export default function Stories({ user, friends, storyMemes, updateMemes, updateLikes }) {
+export default function Stories() {
   const state = useTrackedState()
+  const { user, friends, storyMemes, updateMemes, updateLikes } = state
+
   const [memes, setMemes] = useState([])
 
   const [users, setUsers] = useState()
