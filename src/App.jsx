@@ -19,6 +19,7 @@ import Stories from './containers/Stories'
 import Notifications from './containers/Notifications'
 import Friends from './containers/Friends'
 import NotFound from './containers/NotFound'
+import UserProfile from './containers/Myprofile.jsx'
 
 import { getLocalUser, getFriends, getFriendRequests, getUserLikes } from './services/userService'
 import { getVisibleMemes } from './services/memeService'
@@ -96,6 +97,9 @@ export default function App() {
             <Route exact path='/register' component={Register} />
             <Route exact path='/forgot_password' component={ForgotPassword} />
             <Route exact path='/reset/:emailHash/:email' component={ResetPassword} />
+            <Route exact path='/myprofile' >
+              {RedirectComponent(user.loading === undefined && UserProfile, user.loading === false)}
+            </Route> 
             <Route exact path='/chats'>
               {RedirectComponent(user.loading === undefined && receivedChatsMemes && sentChatsMemes && likes, <Chats {...{ user, receivedChatsMemes, sentChatsMemes, updateMemes: loadMemes, updateLikes }} />, user.loading === false)}
             </Route>
