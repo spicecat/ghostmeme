@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Grid, Paper, Typography } from '@material-ui/core'
+import { Button, Grid, Paper, Typography } from '@material-ui/core'
 import { orderBy } from 'lodash'
 
 import Search from '../components/Search'
@@ -19,7 +19,8 @@ export default function Chats({ user: { user_id: local_id, username }, receivedC
     const [selectedUserInfo, setSelectedUserInfo] = useState()
     
     // Array containing other users to send chats to
-    const [multipleUsers, setMultipleUsers] = useState(['6106f1b050309265789191a2', '6105642eda3de966b77eed89'])
+    // const [multipleRecipients, setMultipleRecipients] = useState(['6106f1b050309265789191a2', '6105642eda3de966b77eed89'])
+    const [multipleRecipients, setMultipleRecipients] = useState([])
 
     const loadUsers = async () => { setUsers(await getUsers()) }
     const updateUsers = async query => searchUsers(users, query)
@@ -37,6 +38,11 @@ export default function Chats({ user: { user_id: local_id, username }, receivedC
                 setSelectedUserInfo(await getUser(user_id) || selectedUserInfo)
             }
         }
+
+        else if (status === 'Add Recipient') {
+            setMultipleRecipients(multipleRecipients => [...multipleRecipients, user_id])
+        }
+
         else setStatus('Select User')
     }
 
@@ -51,8 +57,8 @@ export default function Chats({ user: { user_id: local_id, username }, receivedC
     const handleCreateMeme = async values => {
         // if (await createMeme(local_id, selectedUser, values)) await updateMemes()
         await createMeme(local_id, selectedUser, values)
-        for (const user in multipleUsers) {
-            await createMeme(local_id, multipleUsers[user], values)
+        for (const user in multipleRecipients) {
+            await createMeme(local_id, multipleRecipients[user], values)
         }
         await updateMemes()
     }
@@ -61,6 +67,7 @@ export default function Chats({ user: { user_id: local_id, username }, receivedC
     useEffect(getConversation, [selectedUser, receivedChatsMemes, sentChatsMemes])
 
     return <>
+        <Button onClick={() => console.log(multipleRecipients)}>Get Current Recipients</Button>
         {selectedUserInfo &&
             <Paper className='paper' elevation={3}>
                 <Typography className='chat-header' variant='h4'>{`Conversation with ${selectedUserInfo.username}`}</Typography>

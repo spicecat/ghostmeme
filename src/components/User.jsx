@@ -5,6 +5,10 @@ export default function User({ user_id, username, email, phone, friends, liked, 
     const [status, setStatus] = useState('')
 
     const updateStatus = () => update(user_id, status, setStatus)
+    const addRecipient = () => {
+        console.log(`Add recipient ${user_id}`)
+        update(user_id, 'Add Recipient', setStatus)
+    }
 
     useEffect(() => { updateStatus() }, [user_id])
 
@@ -18,6 +22,7 @@ export default function User({ user_id, username, email, phone, friends, liked, 
             <TableCell>{liked}</TableCell>
             <TableCell>
                 <Button variant='contained' color='primary' size='small' onClick={updateStatus}>{status}</Button>
+                <Button variant='contained' color='primary' size='small' onClick={addRecipient}>Add recipient</Button>
                 &nbsp;
                 {status === 'Accept Friend' && <Button variant='contained' color='primary' size='small' onClick={() => update(user_id, 'Reject Friend', setStatus)}>Reject Friend</Button>}
             </TableCell>
