@@ -102,8 +102,6 @@ export const getLocalUser = async () => {
     }
 }
 
-export const getLocalFriends = async user_id => ({ friends: await getFriends(user_id), outgoingFriendRequests: await getFriendRequests(user_id, 'outgoing'), incomingFriendRequests: await getFriendRequests(user_id, 'incoming') })
-
 export const getUser = async user_id => {
     const URL = `${userApiUrl}/${user_id}`
     try {
@@ -127,7 +125,7 @@ export const getUsers = async (after = '') => {
     } catch (err) { return retry(err, getUsers) || [] }
 }
 
-export const searchUsers = (users, query = {}) => Object.entries(query).reduce((o, i) => o.filter(user => !user[i[0]] || user[i[0]].includes(i[1])), users)
+export const searchUsers = (users, query = {}) => Object.entries(query).reduce((o, [k, v]) => o.filter(user => !user[k] || user[k].includes(v)), users)
 
 export const getUserLikes = async user_id => {
     const URL = `${apiUrl}/users/${user_id}/liked`
@@ -150,13 +148,13 @@ const addUsernames = async user_ids => {
     return pick(usernames, user_ids)
 }
 
-export const getUsernames = async user_ids => { // returns object {user_id:username...}
+export const getUsernames = async user_ids => { // returns {[user_id]:username...}
     const usernames = {}, users = await getUsers()
     for (const user of users) usernames[user.user_id] = user.username
     for (const [i, user_id] in user_ids.entries()) {
         const delay = 1000 * i
         if (!(user_id in usernames))
-            new Promise(async function (resolve) {
+            new Promise(async (resolve) => {
                 await new Promise(res => setTimeout(res, delay))
                 resolve(await new Promise(async () => {
                     const { username } = await getUser(user_id)

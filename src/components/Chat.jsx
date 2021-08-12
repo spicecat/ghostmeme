@@ -16,15 +16,14 @@ export default function Chat({ meme: { meme_id, createdAt, expiredAt, descriptio
 
     const updateSelected = async () => { setSelected(!selected) }
 
-    const getLikedStatus = () => { if (!isLocal) setLiked(updateLikes(meme_id, false)) }
-    const updateLikeMeme = async () => {
-        if (isLocal) return
+    const getLikedStatus = () => { if (!isLocal) setLiked(updateLikes(meme_id)) }
+    const handleUpdateLike = async () => {
         setLiked(!liked)
-        if (liked ? await unlikeMeme(meme_id, local_id) : await likeMeme(meme_id, local_id)) updateLikes(meme_id)
+        if (liked ? await unlikeMeme(meme_id, local_id) : await likeMeme(meme_id, local_id)) updateLikes(meme_id, true)
         else setLiked(liked)
     }
 
-    const updateVanishMeme = async () => { if (await vanishMeme(meme_id)) updateMemes() }
+    const updateVanishMeme = async () => { if (await vanishMeme(meme_id)) await updateMemes() }
 
     const handleCreateComment = async values => {
         if (await createMeme(local_id, null, values, meme_id)) await updateMemes()
@@ -32,84 +31,57 @@ export default function Chat({ meme: { meme_id, createdAt, expiredAt, descriptio
 
     useEffect(() => { getLikedStatus() }, [])
 
-    return (
-        <Grid container spacing={1}>
-            {/* Add spaces after stories to separate stories and comments*/}
-            {type == 'story' && <div><br /><br /></div>}
-
-            <Grid container item>
-                {type == 'local' && <Grid item xs={6} />}
-                {(type == 'story' || type == 'comment') && <Grid item xs={3} />}
-                <Grid item xs={1}>
-                    {!isExpired(expiredAt) && <>
-                        {isLocal && <Tooltip title='Vanish Meme' placement='right'>
-                            <IconButton onClick={updateVanishMeme}>
-                                <DeleteIcon />
-                            </IconButton>
-                        </Tooltip>}
-                        {!isLocal && <Tooltip title={`${liked ? 'Unlike' : 'Like'} Meme`} placement='right'>
-                            <IconButton onClick={updateLikeMeme}>
-                                {liked ? <ThumbUpIcon /> : <ThumbUpOutlinedIcon />}
-                            </IconButton>
-                        </Tooltip>}
-                        {type === 'story' && <Tooltip title='Comment' placement='right'>
-                            <IconButton onClick={updateSelected}>
-                                <CommentIcon />
-                            </IconButton>
-                        </Tooltip>}
-                    </>}
-                </Grid>
-                <Grid item xs={5}>
-                    <div className={`chat ${type}Chat`}>
-                        {isExpired(expiredAt) ? <i>Message vanished</i> :
-
-                            <div>
-                                {type == 'story' ?
-                                    <div>
-                                        <b>{username}</b>
-                                        &nbsp;-&nbsp;{createdAt.toDateString()}
-                                        &nbsp;-&nbsp;{likes} likes
-                                        <br />
-                                        <br /><img className='story-img' src={imageUrl} alt={imageUrl} />
-                                        {imageUrl && <br />}
-                                        {description}
-                                        {expiredAt !== -1 && <>
-                                            <br /><br />
-                                            <i>{`Expires at ${expiredAt.toLocaleString()}`}</i>
-                                        </>}
-                                    </div>
-                                    :
-                                    <div>
-                                        <b>{username}</b>
-                                        &nbsp;-&nbsp;{createdAt.toLocaleString()}
-                                        &nbsp;-&nbsp;{likes} likes
-                                        <br />
-                                        <img className='chat-img' src={imageUrl} alt={imageUrl} />
-                                        {imageUrl && <br />}
-                                        {description}
-                                        {expiredAt !== -1 && <>
-                                            <br /><br />
-                                            <i>{`Expires at ${expiredAt.toLocaleString()}`}</i>
-                                        </>}
-                                    </div>
-                                }
-                            </div>
-                        }
-                    </div>
-                </Grid>
+    return <Grid container spacing={1}>
+        <Grid container item>
+            {type !== 'other' && <Grid item xs={6} />}
+            <Grid item xs={1}>
+                {!isExpired(expiredAt) && <>
+                    {isLocal ? <Tooltip title='Vanish Meme' placement='right'>
+                        <IconButton onClick={updateVanishMeme}>
+                            <DeleteIcon />
+                        </IconButton>
+                    </Tooltip> : <Tooltip title={`${liked ? 'Unlike' : 'Like'} Meme`} placement='right'>
+                        <IconButton onClick={handleUpdateLike}>
+                            {liked ? <ThumbUpIcon /> : <ThumbUpOutlinedIcon />}
+                        </IconButton>
+                    </Tooltip>}
+                    {type === 'story' && <Tooltip title='Comment' placement='right'>
+                        <IconButton onClick={updateSelected}>
+                            <CommentIcon />
+                        </IconButton>
+                    </Tooltip>}
+                </>}
             </Grid>
-
-            <Grid item xs={1} />
-            {selected && <Grid item xs>
-                <div className='chat-footer'>
-                    <Form
-                        name='Post Comment'
-                        action={handleCreateComment}
-                        schema={memeSchema}
-                        inline={2}
-                    />
+            <Grid item xs={5}>
+                <div key={meme_id} className={`chat ${type}Chat`}>
+                    {isExpired(expiredAt) ? <i>Message vanished</i> :
+                        <div>
+                            <b>{username}</b>
+                            &nbsp;-&nbsp;{createdAt.toLocaleString()}
+                            &nbsp;-&nbsp;{likes} likes
+                            <br />
+                            <img className='chat-img' src={imageUrl} alt={imageUrl} />
+                            {imageUrl && <br />}
+                            {description}
+                            {expiredAt !== -1 && <>
+                                <br /><br />
+                                <i>{`Expires at ${expiredAt.toLocaleString()}`}</i>
+                            </>}
+                        </div>
+                    }
                 </div>
-            </Grid>}
+            </Grid>
         </Grid>
-    )
+        <Grid item xs={1} />
+        {selected && <Grid item xs>
+            <div className='chat-footer'>
+                <Form
+                    name='Post Comment'
+                    action={handleCreateComment}
+                    schema={memeSchema}
+                    inline={2}
+                />
+            </div>
+        </Grid>}
+    </Grid >
 }
