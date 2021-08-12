@@ -43,17 +43,21 @@ export default function Chats({ user: { user_id: local_id, username }, receivedC
         else if (status === 'Add Recipient') {
             // If user already selected, unselect user
             if (multipleRecipients.includes(user_id)) {
-                console.log('Recipient removed')
+                console.log(`Remove recipient ${user_id}`)
                 const index = multipleRecipients.indexOf(user_id)
                 multipleRecipients.splice(index, 1);
             }
 
+            // If addRecipient user = selectedUser, do nothing
+            else if (user_id === selectedUser) {
+                console.log('User already selected')
+            }
+
             // Otherwise, add user
             else {
+                console.log(`Add recipient ${user_id}`)
                 setMultipleRecipients(multipleRecipients => [...multipleRecipients, user_id])
             }
-            
-            console.log(multipleRecipients)
         }
 
         else setStatus('Select User')
@@ -81,7 +85,6 @@ export default function Chats({ user: { user_id: local_id, username }, receivedC
     useEffect(getConversation, [selectedUser, receivedChatsMemes, sentChatsMemes])
 
     return <>
-        Current Recipients: {multipleRecipients}
         {selectedUserInfo &&
             <Paper className='paper' elevation={3}>
                 <Typography className='chat-header' variant='h4'>{`Conversation with ${selectedUserInfo.username}`}</Typography>
@@ -92,6 +95,7 @@ export default function Chats({ user: { user_id: local_id, username }, receivedC
                     )}
                 </Grid>
                 <hr />
+                Current Recipients: {multipleRecipients}
                 <div className='chat-footer'>
                     <Form
                         name='Post Meme'

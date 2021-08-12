@@ -9,8 +9,8 @@ export default function User({ user_id, username, email, phone, friends, liked, 
         else if (status === 'Block') console.log('block')
         else update(user_id, status, setStatus)
     }
+
     const addRecipient = () => {
-        console.log(`Add recipient ${user_id}`)
         update(user_id, 'Add Recipient', setStatus)
     }
 
