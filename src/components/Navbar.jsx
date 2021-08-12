@@ -20,6 +20,7 @@ export default function Navbar({ page, user: { username, loading, imageBase64 } 
                     <Button color='inherit' variant='outlined' size='small' to='/stories' component={Link}>Stories</Button>&nbsp;
                     <Button color='inherit' variant='outlined' size='small' to='/notifications' component={Link}>Notifications</Button>&nbsp;
                     <Button color='inherit' variant='outlined' size='small' to='/friends' component={Link}>Friends</Button>&nbsp;
+                    <Button color='inherit' variant='outlined' size='small' to='/myprofile' component={Link}>Profile</Button>&nbsp;
                 </>
                 <span className='user-control' />
                 {loading || username ?

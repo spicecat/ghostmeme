@@ -86,6 +86,11 @@ export const memeSchema = Yup.object({
     expiredAt: Yup.date()
 })
 
+export const lockedPageSchema = Yup.object({
+    password: Yup.string().required('Password is required')
+})
+
+
 export const storySchema = Yup.object({
     description: Yup.string()
         .required('Description is required')
