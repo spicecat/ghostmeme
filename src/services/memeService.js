@@ -86,7 +86,7 @@ export const createMeme = async (user_id, receiver, { description, imageUrl, upl
         private: true,
         replyTo,
         imageUrl,
-        imageBase64: uploadImage ? await toBase64(uploadImage) : null
+        imageBase64: !imageUrl && uploadImage ? await toBase64(uploadImage) : null
     }))
 
 export const likeMeme = async (meme_id, user_id) => {
