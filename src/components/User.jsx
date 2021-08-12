@@ -7,7 +7,8 @@ export default function User({ user_id, username, email, phone, friends, liked, 
     const [status, setStatus] = useState('')
 
     const updateStatus = async newStatus => {
-        if (newStatus === 'Block') {
+        if (status === 'Blocked') return
+        else if (newStatus === 'Block') {
             setStatus('Unblock')
             if (!await blockUser(user_id)) setStatus(status)
         }
