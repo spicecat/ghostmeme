@@ -1,49 +1,56 @@
 import { useState , useEffect} from "react"
 import Form from '../components/Form'
-import { login, register } from '../services/userService'
-import { lockedPageSchema, registerSchema } from '../services/schemas'
+import {  register, editProfile } from '../services/userService'
+import { loginSchema, lockedPageSchema, registerSchema, EditAccountSchema } from '../services/schemas'
 import Alert from '../components/Alert'
 
 export default function UserProfile({user}) {
-    const [abletoview, setabletoview] = useState(false)
+    // const [abletoview, setabletoview] = useState(false)
     const [statusCode, setStatusCode] = useState(100)
 
-    const handleClick = () => { 
-        console.log(user)
-        console.log(user.user_id)
-    }
+    // useEffect(() => {
+    //     if ([201, 202].includes(statusCode)) window.location.href = '/myprofile'
+    // }, [statusCode])
 
-    useEffect(() => {
-        if ([201, 202].includes(statusCode)) window.location.href = '/'
-    }, [statusCode])
+    // const handleClick = () => { 
+    //     console.log(user)
+    //     console.log(user.user_id)
+    // }
+
     
 
 
 return (
-    
     <div>
-    <>
-            <Alert statusCode={statusCode} />
-            <br />
+    {/* <>
+             <Alert statusCode={statusCode} />
+             <br />
             <Form
-                name='Edit Profile'
+                name='Unlock'
                 action={async values => {
                     setStatusCode(102)
-                    setStatusCode(await register(values))
+                    setStatusCode(await loginEditUnlock(values))
                 }}
-                schema={registerSchema}
+                schema={loginSchema}
                 initialValues={user}
                 rememberMe={false}
             />
-    </>
+    </> */}
+            <h1> Edit Account Details</h1>
+             <br />
+            <Form
+                name='Edit Your Account'
+                action={async values => {
+                    setStatusCode(102)
+                    setStatusCode(await editProfile(values))
+                }}
+                schema={EditAccountSchema}
+                initialValues={user}
+                rememberMe={false}
+            />
 
 
-       {abletoview &&  
-        <div>
-        <p> hyi!</p>
-        <button onClick={handleClick}> test</button>
-        </div>
-       }
+
     </div>
     )
 

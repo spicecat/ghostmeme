@@ -25,7 +25,7 @@ export default function Login() {
                     setStatusCode(await login(values))
                 }}
                 schema={loginSchema}
-                rememberMe={true}
+                rememberMe={false}
             />
             <br />
             <Link to='/forgot_password'>Forgot Password</Link>
