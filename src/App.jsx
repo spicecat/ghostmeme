@@ -79,7 +79,7 @@ export default function App() {
       setMentions(mentions)
     }
     getMemes()
-    setTimer(setInterval(getMemes, 10000))
+    // setTimer(setInterval(getMemes, 10000))
   }
   useEffect(loadMemes, [friends])
 
