@@ -23,7 +23,7 @@ import NotFound from './containers/NotFound'
 import { getLocalUser, getFriends, getFriendRequests, getUserLikes } from './services/userService'
 import { getVisibleMemes } from './services/memeService'
 
-const RedirectComponent = (Component, redirect) => redirect ? <Redirect to='login' /> : Component
+const RedirectComponent = (loaded, Component, redirect) => redirect ? <Redirect to='login' /> : loaded && Component
 
 export default function App() {
   const [user, setUser] = useState({ loading: true })
@@ -97,16 +97,16 @@ export default function App() {
             <Route exact path='/forgot_password' component={ForgotPassword} />
             <Route exact path='/reset/:emailHash/:email' component={ResetPassword} />
             <Route exact path='/chats'>
-              {RedirectComponent(user.loading === undefined && receivedChatsMemes && sentChatsMemes && likes && <Chats {...{ user, receivedChatsMemes, sentChatsMemes, updateMemes: loadMemes, updateLikes }} />, user.loading === false)}
+              {RedirectComponent(user.loading === undefined && receivedChatsMemes && sentChatsMemes && likes, <Chats {...{ user, receivedChatsMemes, sentChatsMemes, updateMemes: loadMemes, updateLikes }} />, user.loading === false)}
             </Route>
             <Route exact path='/stories' >
-              {RedirectComponent(user.loading === undefined && friends && storyMemes && likes && <Stories {...{ user, friends, storyMemes, updateMemes: loadMemes, likes, updateLikes }} />, user.loading === false)}
+              {RedirectComponent(user.loading === undefined && friends && storyMemes && likes, <Stories {...{ user, friends, storyMemes, updateMemes: loadMemes, likes, updateLikes }} />, user.loading === false)}
             </Route>
             <Route exact path='/notifications' >
-              {RedirectComponent(user.loading === undefined && incomingFriendRequests && mentions && <Notifications {...{ user, incomingFriendRequests, mentions }} />, user.loading === false)}
+              {RedirectComponent(user.loading === undefined && incomingFriendRequests && mentions, <Notifications {...{ user, incomingFriendRequests, mentions }} />, user.loading === false)}
             </Route>
             <Route exact path='/friends' >
-              {RedirectComponent(user.loading === undefined && friends && outgoingFriendRequests && incomingFriendRequests && <Friends {...{ user, friends, outgoingFriendRequests, incomingFriendRequests, setFriends, setOutgoingFriendRequests, setIncomingFriendRequests }} />, user.loading === false)}
+              {RedirectComponent(user.loading === undefined && friends && outgoingFriendRequests, incomingFriendRequests && <Friends {...{ user, friends, outgoingFriendRequests, incomingFriendRequests, setFriends, setOutgoingFriendRequests, setIncomingFriendRequests }} />, user.loading === false)}
             </Route>
             <Route path='*' component={NotFound} />
           </Switch>
