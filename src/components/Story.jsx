@@ -24,14 +24,5 @@ export default function Stories({ user: { user_id, username }, memes, updateMeme
                 )}
             </Fragment >)}
         </Grid>
-        <hr />
-        <div className='chat-footer'>
-            <Form
-                name='Post Story'
-                action={handleCreateMeme}
-                schema={memeSchema}
-                inline={2}
-            />
-        </div>
     </>
 }
