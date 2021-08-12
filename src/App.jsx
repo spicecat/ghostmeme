@@ -53,7 +53,6 @@ export default function App() {
     else return likes.includes(meme_id)
   }
 
-  useEffect(() => { updateUser() }, [])
   useEffect(() => {
     if (user.loading === undefined) {
       loadFriends()
@@ -115,7 +114,7 @@ export default function App() {
               {RedirectComponent(user.loading === undefined && incomingFriendRequests && mentions && <Notifications {...{ user, incomingFriendRequests, mentions }} />, user.loading === false)}
             </Route>
             <Route exact path='/friends' >
-              {RedirectComponent(user.loading === undefined && friends && outgoingFriendRequests, incomingFriendRequests && <Friends {...{ user, friends, outgoingFriendRequests, incomingFriendRequests, setFriends, setOutgoingFriendRequests, setIncomingFriendRequests }} />, user.loading === false)}
+              {RedirectComponent(user.loading === undefined && friends && outgoingFriendRequests && incomingFriendRequests && <Friends {...{ user, friends, outgoingFriendRequests, incomingFriendRequests, setFriends, setOutgoingFriendRequests, setIncomingFriendRequests }} />, user.loading === false)}
             </Route>
             <Route path='*' component={NotFound} />
           </Switch>
