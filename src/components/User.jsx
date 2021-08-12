@@ -5,6 +5,7 @@ import { blockUser } from '../services/userService'
 
 export default function User({ user_id, username, email, phone, friends, liked, imageUrl, update }) {
     const [status, setStatus] = useState('')
+    const [blocked, setBlocked] = useState()
 
     const updateStatus = async newStatus => {
         if (status === 'Blocked') return
@@ -13,8 +14,9 @@ export default function User({ user_id, username, email, phone, friends, liked, 
             if (!await blockUser(user_id)) setStatus(status)
         }
         else if (status === 'Unblock') {
-            setStatus('Add Friend')
-            if (!await blockUser(user_id)) setStatus(status)
+            if (await blockUser(user_id))
+                update(user_id, '', setStatus)
+            else setStatus(status)
         }
         else update(user_id, status, setStatus)
     }
