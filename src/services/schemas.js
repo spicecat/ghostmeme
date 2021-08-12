@@ -47,6 +47,29 @@ export const registerSchema = Yup.object({
         .oneOf(['4'], 'Invalid CAPTCHA')
 })
 
+export const EditAccountSchema = Yup.object({
+    name: Yup.string()
+        .min(3, 'Name must be between 3 and 30 characters')
+        .max(30, 'Name must be between 3 and 30 characters'),
+    // .matches(/^[a-zA-Z0-9_]+$/, 'Name cannot contain special characters'),
+    email: Yup.string()
+        .email('Invalid email')
+        .min(5, 'Email must be between 5 and 50 characters')
+        .max(50, 'Email must be between 5 and 50 characters'),
+    phone: Yup.string()
+        .matches(phoneRegExp, 'Invalid phone number'),
+    newPassword: Yup.string()
+        .min(11, 'Password strength: weak'),
+    confirmPassword: Yup.string()
+        .oneOf([Yup.ref('newPassword')], 'Passwords must match'),
+    profilePicture: Yup.mixed()
+        .nullable()
+        .test('fileType', 'Only JPG, JPEG, PNG, GIF allowed', validateFileType)
+        .test('fileSize', 'File must be ≤ 1 MB', validateFileSize),
+    currentPassword: Yup.string().required('password required to authenticate')
+    // password: Yup.string().required('Password is required')
+})
+
 export const ResetPasswordSchema = Yup.object({
     password: Yup.string()
         .min(11, 'Password strength: weak')
@@ -85,6 +108,11 @@ export const memeSchema = Yup.object({
         .test('fileSize', 'File must be ≤ 130 KB', validateFileSize),
     expiredAt: Yup.date()
 })
+
+export const lockedPageSchema = Yup.object({
+    password: Yup.string().required('Password is required')
+})
+
 
 export const storySchema = Yup.object({
     description: Yup.string()

@@ -16,9 +16,11 @@ import ForgotPassword from './containers/ForgotPassword'
 import ResetPassword from './containers/ResetPassword'
 import Chats from './containers/Chats'
 import Stories from './containers/Stories'
+import Spotlight from './containers/Spotlight'
 import Notifications from './containers/Notifications'
 import Friends from './containers/Friends'
 import NotFound from './containers/NotFound'
+import UserProfile from './containers/Myprofile.jsx'
 
 import { getLocalUser, getFriends, getFriendRequests, getUserLikes } from './services/userService'
 import { getVisibleMemes } from './services/memeService'
@@ -51,7 +53,6 @@ export default function App() {
     else return likes.includes(meme_id)
   }
 
-  useEffect(() => { updateUser() }, [])
   useEffect(() => {
     if (user.loading === undefined) {
       loadFriends()
@@ -79,7 +80,7 @@ export default function App() {
       setMentions(mentions)
     }
     getMemes()
-    setTimer(setInterval(getMemes, 10000))
+    // setTimer(setInterval(getMemes, 10000))
   }
   useEffect(loadMemes, [friends])
 
@@ -95,7 +96,15 @@ export default function App() {
             <Route exact path='/login' component={Login} />
             <Route exact path='/register' component={Register} />
             <Route exact path='/forgot_password' component={ForgotPassword} />
+            {/* <Route exact path='/spotlight' component={Spotlight} /> */}
             <Route exact path='/reset/:emailHash/:email' component={ResetPassword} />
+            <Route exact path='/spotlight'>
+              {/* {(friends && storyMemes && likes && <Spotlight {...{ user, friends, storyMemes, updateMemes: loadMemes, likes, updateLikes }} />)} */}
+              {<Spotlight {...{ user, updateMemes: loadMemes, likes, updateLikes }} />}
+            </Route>
+            <Route exact path='/myprofile' >
+              {RedirectComponent(user.loading === undefined && <UserProfile {...{ user }} />, user.loading === false)}
+            </Route>
             <Route exact path='/chats'>
               {RedirectComponent(user.loading === undefined && receivedChatsMemes && sentChatsMemes && likes && <Chats {...{ user, receivedChatsMemes, sentChatsMemes, updateMemes: loadMemes, updateLikes }} />, user.loading === false)}
             </Route>

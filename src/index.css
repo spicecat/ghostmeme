@@ -68,6 +68,11 @@ img.story-img {
   border-radius: 5px;
 }
 
+.spotlightChat {
+  background: #F1F3F4 !important;
+  border-radius: 5px;
+}
+
 .paper{
   padding: 15px;
 }
