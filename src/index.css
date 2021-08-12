@@ -45,12 +45,12 @@ img.story-img {
 }
 
 .localChat {
-  background: #1A73E8 !important;
+  background: #e58c17 !important;
   color: white !important;
 }
 
 .otherChat {
-  background: #F1F3F4 !important;
+  background: #0e0c0b !important;
 }
 
 .tableChat {
@@ -58,18 +58,18 @@ img.story-img {
 }
 
 .storyChat {
-  background: #1A73E8 !important;
+  background: #e58c17 !important;
   color: white !important;
   border-radius: 5px;
 }
 .commentChat {
-  background: #F1F3F4 !important;
+  background: #0e0c0b !important;
   padding: 10px;
   border-radius: 5px;
 }
 
 .spotlightChat {
-  background: #F1F3F4 !important;
+  background: #0e0c0b !important;
   border-radius: 5px;
 }
 
@@ -105,7 +105,7 @@ img.story-img {
   text-align: center;
 }
 .ResetPassword .success .glyphicon {
-  color: grey;
+  color: #7f7f7f;
   font-size: 30px;
   margin-bottom: 30px;
 }
