@@ -29,6 +29,7 @@ export const getMemes = async (query, usernames) => {
         return memes
     } catch (err) { return retry(err, getMemes, query, usernames) || [] }
 }
+
 export const getVisibleMemes = async ({ user_id, username }, friends) => {
     const receivedChatsMemes = keyMemes(await getMemes({ receiver: user_id, private: true, replyTo: null }), 'owner')
     const { null: localStoryMemes = [], ...sentChatsMemes } = keyMemes(await getMemes({ owner: user_id, private: true, replyTo: null }, { [user_id]: username }), 'receiver')

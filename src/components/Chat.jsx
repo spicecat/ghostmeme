@@ -38,7 +38,7 @@ export default function Chat({ meme: { meme_id, createdAt, expiredAt, descriptio
 
             <Grid container item>
                 {type == 'local' && <Grid item xs={6} />}
-                {(type == 'story' || type == 'comment') && <Grid item xs={3} />}
+                {(type == 'story' || type == 'comment' || type == 'spotlight') && <Grid item xs={3} />}
                 <Grid item xs={1}>
                     {!isExpired(expiredAt) && <>
                         {isLocal && <Tooltip title='Vanish Meme' placement='right'>
