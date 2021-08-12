@@ -73,21 +73,6 @@ export const userSearchSchema = Yup.object({
     phone: Yup.string()
 })
 
-export const chatSchema = Yup.object({
-    description: Yup.string()
-        .required('Description is required')
-        .min(1, 'Description must be between 1 and 500 characters')
-        .max(500, 'Description must be between 1 and 500 characters'),
-    imageUrl: Yup.string(),
-    uploadImage: Yup.mixed()
-        .nullable()
-        .test('fileType', 'Only JPG, JPEG, PNG, GIF allowed', validateFileType)
-        .test('fileSize', 'File must be ≤ 130 KB', validateFileSize),
-    expiredAt: Yup.date(),
-    secondUserID: Yup.string(),
-    thirdUserID: Yup.string()
-})
-
 export const memeSchema = Yup.object({
     description: Yup.string()
         .required('Description is required')
