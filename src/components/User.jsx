@@ -26,6 +26,7 @@ export default function User({ user_id, username, email, phone, friends, liked, 
             <TableCell>{liked}</TableCell>
             <TableCell>
                 <Button variant='contained' color='primary' size='small' onClick={updateStatus}>{status}</Button>
+                &nbsp;
                 <Button variant='contained' color='primary' size='small' onClick={addRecipient}>Add recipient</Button>
                 {status !== 'Unblock' && <>
                     &nbsp;

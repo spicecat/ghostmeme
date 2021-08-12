@@ -9,7 +9,7 @@ import Chat from '../components/Chat'
 
 import { getUsers, searchUsers, getUser } from '../services/userService'
 import { createMeme } from '../services/memeService'
-import { chatSchema, memeSchema, userSearchSchema } from '../services/schemas'
+import { memeSchema, userSearchSchema } from '../services/schemas'
 
 export default function Chats({ user: { user_id: local_id, username }, receivedChatsMemes, sentChatsMemes, updateMemes, updateLikes }) {
     const [memes, setMemes] = useState([])
@@ -36,6 +36,7 @@ export default function Chats({ user: { user_id: local_id, username }, receivedC
                 console.log('selected', user_id)
                 setSelectedUser(user_id)
                 setSelectedUserInfo(await getUser(user_id) || selectedUserInfo)
+                await setMultipleRecipients([])
             }
         }
 
@@ -61,13 +62,14 @@ export default function Chats({ user: { user_id: local_id, username }, receivedC
             await createMeme(local_id, multipleRecipients[user], values)
         }
         await updateMemes()
+        await setMultipleRecipients([])
     }
 
     useEffect(() => { loadUsers() }, [])
     useEffect(getConversation, [selectedUser, receivedChatsMemes, sentChatsMemes])
 
     return <>
-        <Button onClick={() => console.log(multipleRecipients)}>Get Current Recipients</Button>
+        Current Recipients: {multipleRecipients}
         {selectedUserInfo &&
             <Paper className='paper' elevation={3}>
                 <Typography className='chat-header' variant='h4'>{`Conversation with ${selectedUserInfo.username}`}</Typography>
@@ -82,7 +84,7 @@ export default function Chats({ user: { user_id: local_id, username }, receivedC
                     <Form
                         name='Post Meme'
                         action={handleCreateMeme}
-                        schema={chatSchema}
+                        schema={memeSchema}
                         inline={2}
                     />
                 </div>
