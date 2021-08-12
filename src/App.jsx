@@ -2,9 +2,6 @@ import { useState, useEffect } from 'react'
 import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom'
 import { Paper } from '@material-ui/core'
 import { omit } from 'lodash'
-import { func, string } from 'prop-types';
-import {ThemeProvider} from "styled-components";
-import { lightTheme, darkTheme } from "./src/Themes"
 
 import { deleteFromArray } from './var.js'
 
@@ -127,70 +124,3 @@ export default function App() {
     </BrowserRouter>
   )
 }
-const App = () => {
-  const [videos, setVideos] = useState([]);
-  const [theme, setTheme] = useState('light');
-  const themeToggler = () => {
-    theme === 'light' ? setTheme('dark') : setTheme('light')
-}
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setVideos(dummyData);
-    }, 1000);
-    return () => clearTimeout(timer);
-  }, []);
-  return (
-    <ThemeProvider theme={theme === 'light' ? lightTheme : darkTheme}>
-      <>
-      <GlobalStyles/>
-        <div className="App">
-          <button onClick={themeToggler}>Switch Theme</button>
-          {
-            videos.map((list, index) => {
-              return (
-                <section key={index}>
-                  <h2 className="section-title">{list.section}</h2>
-                  <CardList list={list} />
-                  <hr />
-                </section>
-              );
-            })}
-        </div>
-      </>
-    </ThemeProvider>
-    
-  );
-};
-const [videos, setVideos] = useState([]);
-  const [theme, themeToggler] = useDarkMode();
-
-  const themeMode = theme === 'light' ? lightTheme : darkTheme;
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setVideos(dummyData);
-    }, 1000);
-    return () => clearTimeout(timer);
-  }, []);
-
-  return (
-    <ThemeProvider theme={themeMode}>
-      <>
-      <GlobalStyles/>
-        <div className="App">
-          <Toggle theme={theme} toggleTheme={themeToggler} />
-          {
-            videos.map((list, index) => {
-              return (
-                <section key={index}>
-                  <h2 className="section-title">{list.section}</h2>
-                  <CardList list={list} />
-                  <hr />
-                </section>
-              );
-            })}
-        </div>
-      </>
-    </ThemeProvider>
-    
-  );
