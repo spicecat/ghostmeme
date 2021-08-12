@@ -24,7 +24,7 @@ import UserProfile from './containers/Myprofile.jsx'
 import { getLocalUser, getFriends, getFriendRequests, getUserLikes } from './services/userService'
 import { getVisibleMemes } from './services/memeService'
 
-const RedirectComponent = (loaded, Component, redirect) => redirect ? <Redirect to='login' /> : loaded && Component
+const RedirectComponent = (Component, redirect) => redirect ? <Redirect to='login' /> : Component
 
 export default function App() {
   const [user, setUser] = useState({ loading: true })
@@ -99,15 +99,15 @@ export default function App() {
             <Route exact path='/reset/:emailHash/:email' component={ResetPassword} />
             <Route exact path='/myprofile' >
               {RedirectComponent(user.loading === undefined && UserProfile, user.loading === false)}
-            </Route> 
+            </Route>
             <Route exact path='/chats'>
-              {RedirectComponent(user.loading === undefined && receivedChatsMemes && sentChatsMemes && likes, <Chats {...{ user, receivedChatsMemes, sentChatsMemes, updateMemes: loadMemes, updateLikes }} />, user.loading === false)}
+              {RedirectComponent(user.loading === undefined && receivedChatsMemes && sentChatsMemes && likes && <Chats {...{ user, receivedChatsMemes, sentChatsMemes, updateMemes: loadMemes, updateLikes }} />, user.loading === false)}
             </Route>
             <Route exact path='/stories' >
-              {RedirectComponent(user.loading === undefined && friends && storyMemes && likes, <Stories {...{ user, friends, storyMemes, updateMemes: loadMemes, likes, updateLikes }} />, user.loading === false)}
+              {RedirectComponent(user.loading === undefined && friends && storyMemes && likes && <Stories {...{ user, friends, storyMemes, updateMemes: loadMemes, likes, updateLikes }} />, user.loading === false)}
             </Route>
             <Route exact path='/notifications' >
-              {RedirectComponent(user.loading === undefined && incomingFriendRequests && mentions, <Notifications {...{ user, incomingFriendRequests, mentions }} />, user.loading === false)}
+              {RedirectComponent(user.loading === undefined && incomingFriendRequests && mentions && <Notifications {...{ user, incomingFriendRequests, mentions }} />, user.loading === false)}
             </Route>
             <Route exact path='/friends' >
               {RedirectComponent(user.loading === undefined && friends && outgoingFriendRequests, incomingFriendRequests && <Friends {...{ user, friends, outgoingFriendRequests, incomingFriendRequests, setFriends, setOutgoingFriendRequests, setIncomingFriendRequests }} />, user.loading === false)}

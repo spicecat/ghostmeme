@@ -63,12 +63,6 @@ export const searchMemes = (query = {}, memes) => Object.entries(pickBy(query, i
 
 const getMentions = (username, ...memes) => searchMemes({ description: `@${username}[^0-9a-zA-Z]` }, memes.reduce((o, i) => o.concat(i)))
 
-const toBase64 = file => new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => resolve(reader.result);
-    reader.onerror = error => reject(error);
-})
 const postMeme = async meme => {
     const URL = `${apiUrl}/memes`
     try {
@@ -77,6 +71,12 @@ const postMeme = async meme => {
         return response.body.success
     } catch (err) { return retry(err, postMeme, meme) }
 }
+const toBase64 = file => new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = error => reject(error);
+})
 export const createMeme = async (user_id, receiver, { description, imageUrl, uploadImage, expiredAt }, replyTo = null) =>
     postMeme(nullifyUndefined({
         owner: user_id,
@@ -86,7 +86,7 @@ export const createMeme = async (user_id, receiver, { description, imageUrl, upl
         private: true,
         replyTo,
         imageUrl,
-        imageBase64: await toBase64(uploadImage)
+        imageBase64: uploadImage ? await toBase64(uploadImage) : null
     }))
 
 export const likeMeme = async (meme_id, user_id) => {
