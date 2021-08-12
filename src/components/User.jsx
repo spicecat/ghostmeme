@@ -36,7 +36,7 @@ export default function User({ user_id, username, email, phone, friends, liked, 
                 <Button variant='contained' color='primary' size='small' onClick={updateStatus}>{status}</Button>
                 &nbsp;
                 {status === 'Select User' && <Button variant='contained' color='primary' size='small' onClick={addRecipient}>Add recipient</Button>}
-                {status !== 'Unblock' && <>
+                {(status !== 'Blocked' && status !== 'Unblock') && <>
                     &nbsp;
                     {status === 'Accept Friend' && <Button variant='contained' color='primary' size='small' onClick={() => updateStatus('Reject Friend')}>Reject Friend</Button>}
                     &nbsp;
