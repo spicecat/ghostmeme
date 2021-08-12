@@ -5,12 +5,12 @@ import SpotlightComponent from '../components/SpotlightComponent'
 import { getMemes } from '../services/memeService'
 
 // export default function Spotlight({ user, friends, storyMemes, updateMemes, updateLikes }) {
-export default function Spotlight({ updateMemes, updateLikes }) {
+export default function Spotlight({ user, updateMemes, updateLikes }) {
     const [memes, setMemes] = useState([])
 
-    // const [users, setUsers] = useState()
-    // const [selectedUser, setSelectedUser] = useState(user.user_id)
-    // const [selectedUserInfo, setSelectedUserInfo] = useState(user)
+    const [users, setUsers] = useState()
+    const [selectedUser, setSelectedUser] = useState(user.user_id)
+    const [selectedUserInfo, setSelectedUserInfo] = useState(user)
 
     const getStory = async () => {
         console.log('Updating Spotlight')
@@ -32,6 +32,6 @@ export default function Spotlight({ updateMemes, updateLikes }) {
     
     return <Paper className='paper' elevation={3}>
         {/* <SpotlightComponent {...{ user: selectedUserInfo, memes, updateMemes, updateLikes, local_id: user.user_id }} /> */}
-        <SpotlightComponent {...{ memes, updateMemes, updateLikes }} />
+        <SpotlightComponent {...{ user: selectedUserInfo, memes, updateMemes, updateLikes }} />
     </Paper>
 }
