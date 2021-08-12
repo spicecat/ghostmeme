@@ -6,7 +6,7 @@ import User from '../components/User'
 import { getUsers, searchUsers, sendFriendRequest, removeFriendRequest, addFriend, removeFriend } from '../services/userService'
 import { userSearchSchema } from '../services/schemas'
 
-export default function Friends({ user: { user_id, blocked, blockedBy }, friends, outgoingFriendRequests, incomingFriendRequests, setFriends, setOutgoingFriendRequests, setIncomingFriendRequests }) {
+export default function Friends({ user: { user_id }, friends, outgoingFriendRequests, incomingFriendRequests, setFriends, setOutgoingFriendRequests, setIncomingFriendRequests }) {
     const [users, setUsers] = useState()
     const loadUsers = async () => { setUsers(await getUsers()) }
 
@@ -15,9 +15,7 @@ export default function Friends({ user: { user_id, blocked, blockedBy }, friends
     useEffect(() => { loadUsers() }, [])
 
     const getStatus = target_id => {
-        if (blocked.includes(target_id)) return 'Unblock'
-        else if (blockedBy.includes(target_id)) return 'Blocked'
-        else if (target_id in friends) return 'Remove Friend'
+        if (target_id in friends) return 'Remove Friend'
         else if (incomingFriendRequests.includes(target_id)) return 'Accept Friend'
         else if (outgoingFriendRequests.includes(target_id)) return 'Pending'
         else return 'Add Friend'

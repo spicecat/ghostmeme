@@ -29,17 +29,10 @@ export const getMemes = async (query, usernames) => {
         return memes
     } catch (err) { return retry(err, getMemes, query, usernames) || [] }
 }
-const removeBlocked = (memes, ...blocked) => {
-    for (const user of blocked.flat())
-        for (const meme of memes[user] || [])
-            meme.description = 'Blocked'
-}
-export const getVisibleMemes = async ({ user_id, username, blocked, blockedBy }, friends) => {
+
+export const getVisibleMemes = async ({ user_id, username }, friends) => {
     const receivedChatsMemes = keyMemes(await getMemes({ receiver: user_id, private: true, replyTo: null }), 'owner')
-    removeBlocked(receivedChatsMemes, blocked, blockedBy)
     const { null: localStoryMemes = [], ...sentChatsMemes } = keyMemes(await getMemes({ owner: user_id, private: true, replyTo: null }, { [user_id]: username }), 'receiver')
-    removeBlocked(localStoryMemes, blocked, blockedBy)
-    removeBlocked(sentChatsMemes, blocked, blockedBy)
     const storyMemes = localStoryMemes.concat(await getMemes({ owner: Object.keys(friends).join('|'), receiver: null, private: true, replyTo: null }, friends))
     const comments = await getComments(storyMemes)
     const mentions = getMentions(storyMemes, comments)
@@ -47,10 +40,8 @@ export const getVisibleMemes = async ({ user_id, username, blocked, blockedBy },
     const meme_idKeyedStoryMemes = {}
     storyMemes.map(meme => meme_idKeyedStoryMemes[meme.meme_id] = meme)
     const keyedComments = keyMemes(comments, 'replyTo')
-
     Object.entries(keyedComments).map(([meme_id, comments]) => meme_idKeyedStoryMemes[meme_id].comments = comments)
     const ownerKeyedStoryMemes = keyMemes(storyMemes, 'owner')
-    removeBlocked(ownerKeyedStoryMemes, blocked, blockedBy)
     return { receivedChatsMemes, sentChatsMemes, storyMemes: ownerKeyedStoryMemes, mentions }
 }
 const keyMemes = (memes, key) => {

@@ -11,7 +11,7 @@ import { getUsers, searchUsers, getUser } from '../services/userService'
 import { createMeme } from '../services/memeService'
 import { memeSchema, userSearchSchema } from '../services/schemas'
 
-export default function Chats({ user: { user_id: local_id, username, blocked, blockedBy }, receivedChatsMemes, sentChatsMemes, updateMemes, updateLikes }) {
+export default function Chats({ user: { user_id: local_id, username }, receivedChatsMemes, sentChatsMemes, updateMemes, updateLikes }) {
     const [memes, setMemes] = useState([])
 
     const [users, setUsers] = useState()
@@ -26,9 +26,7 @@ export default function Chats({ user: { user_id: local_id, username, blocked, bl
     const updateUsers = async query => searchUsers(users, query)
 
     const updateSelectedUser = async (user_id, status, setStatus) => {
-        if (blockedBy.includes(user_id)) setStatus('Blocked')
-        else if (blocked.includes(user_id)) setStatus('Unblock')
-        else if (status === 'Select User') {
+        if (status === 'Select User') {
             if (selectedUser === user_id) {
                 setSelectedUser('')
                 setSelectedUserInfo()
@@ -62,9 +60,7 @@ export default function Chats({ user: { user_id: local_id, username, blocked, bl
             }
         }
 
-        else {
-            setStatus('Select User')
-        }
+        else setStatus('Select User')
     }
 
     const getConversation = () => {

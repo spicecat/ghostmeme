@@ -7,14 +7,11 @@ export default function User({ user_id, username, email, phone, friends, liked, 
     const [status, setStatus] = useState('')
 
     const updateStatus = async newStatus => {
-        if (status === 'Blocked') return
-        else if (newStatus === 'Block') {
-            setStatus('Unblock')
-            if (!await blockUser(user_id)) setStatus(status)
+        if (status === 'Unblock') {
+            if (await blockUser(user_id)) update(user_id, '', setStatus)
         }
-        else if (status === 'Unblock') {
-            setStatus('Add Friend')
-            if (!await blockUser(user_id)) setStatus(status)
+        else if (newStatus === 'Block') {
+            if (await blockUser(user_id)) setStatus('Unblock')
         }
         else update(user_id, status, setStatus)
     }
@@ -24,7 +21,7 @@ export default function User({ user_id, username, email, phone, friends, liked, 
     }
 
     useEffect(() => { updateStatus() }, [user_id])
-
+    
     return (
         <TableRow>
             <TableCell>{imageUrl && <Avatar alt={username} src={imageUrl} />}</TableCell>
@@ -36,8 +33,8 @@ export default function User({ user_id, username, email, phone, friends, liked, 
             <TableCell>
                 <Button variant='contained' color='primary' size='small' onClick={updateStatus}>{status}</Button>
                 &nbsp;
-                {status === 'Select User' && <Button variant='contained' color='primary' size='small' onClick={addRecipient}>Add recipient</Button>}
-                {(status !== 'Blocked' && status !== 'Unblock') && <>
+                {status == 'Select User' && <Button variant='contained' color='primary' size='small' onClick={addRecipient}>Add recipient</Button>}
+                {status !== 'Unblock' && <>
                     &nbsp;
                     {status === 'Accept Friend' && <Button variant='contained' color='primary' size='small' onClick={() => updateStatus('Reject Friend')}>Reject Friend</Button>}
                     &nbsp;
