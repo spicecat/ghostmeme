@@ -33,6 +33,7 @@ return (
                     setStatusCode(await register(values))
                 }}
                 schema={registerSchema}
+                initialValues={user}
                 rememberMe={false}
             />
     </>

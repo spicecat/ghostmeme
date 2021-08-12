@@ -16,11 +16,11 @@ const Captcha = () =>
     </div>
 const formatLabel = field => upperFirst(field.split(/(?=[A-Z\s])/).join('_').replaceAll('_', ' '))
 
-export default function Form({ name, action, schema, rememberMe = false, search = false, inline = search }) {
+export default function Form({ name, action, schema, initialValues, rememberMe = false, search = false, inline = search }) {
     const [showPassword, setShowPassword] = useState(false)
     const fields = Object.keys(schema.fields), captcha = fields.includes('captcha')
     const formik = useFormik({
-        initialValues: fields.reduce((o, i) => ({ ...o, [i]: '' }), {}),
+        initialValues: initialValues || fields.reduce((o, i) => ({ ...o, [i]: '' }), {}),
         validationSchema: schema,
         onSubmit: async values => action(values)
     })

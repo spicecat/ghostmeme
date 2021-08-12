@@ -4,7 +4,11 @@ import { Avatar, TableRow, TableCell, Button } from '@material-ui/core'
 export default function User({ user_id, username, email, phone, friends, liked, imageUrl, update }) {
     const [status, setStatus] = useState('')
 
-    const updateStatus = () => update(user_id, status, setStatus)
+    const updateStatus = () => {
+        if (status === 'Unblock') console.log('unblock')
+        else if (status === 'Block') console.log('block')
+        else update(user_id, status, setStatus)
+    }
 
     useEffect(() => { updateStatus() }, [user_id])
 
@@ -18,8 +22,12 @@ export default function User({ user_id, username, email, phone, friends, liked, 
             <TableCell>{liked}</TableCell>
             <TableCell>
                 <Button variant='contained' color='primary' size='small' onClick={updateStatus}>{status}</Button>
-                &nbsp;
-                {status === 'Accept Friend' && <Button variant='contained' color='primary' size='small' onClick={() => update(user_id, 'Reject Friend', setStatus)}>Reject Friend</Button>}
+                {status !== 'Unblock' && <>
+                    &nbsp;
+                    {status === 'Accept Friend' && <Button variant='contained' color='primary' size='small' onClick={() => update(user_id, 'Reject Friend', setStatus)}>Reject Friend</Button>}
+                    &nbsp;
+                    <Button variant='contained' color='primary' size='small' onClick={() => update(user_id, 'Block', setStatus)}>Block</Button>
+                </>}
             </TableCell>
         </TableRow >
     )
