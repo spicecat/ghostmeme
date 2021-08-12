@@ -29,7 +29,12 @@ export default function Chat({ meme: { meme_id, createdAt, expiredAt, descriptio
         if (await createMeme(local_id, null, values, meme_id)) await updateMemes()
     }
 
-    useEffect(() => { getLikedStatus() }, [])
+    // useEffect(() => { getLikedStatus() }, [])
+    useEffect(() => {
+        if (type !== 'spotlight') {
+            getLikedStatus()
+        }
+    })
 
     return (
         <Grid container spacing={1}>
@@ -38,7 +43,7 @@ export default function Chat({ meme: { meme_id, createdAt, expiredAt, descriptio
 
             <Grid container item>
                 {type == 'local' && <Grid item xs={6} />}
-                {(type == 'story' || type == 'comment') && <Grid item xs={3} />}
+                {(type == 'story' || type == 'comment' || type == 'spotlight') && <Grid item xs={3} />}
                 <Grid item xs={1}>
                     {!isExpired(expiredAt) && <>
                         {isLocal && <Tooltip title='Vanish Meme' placement='right'>
@@ -79,8 +84,8 @@ export default function Chat({ meme: { meme_id, createdAt, expiredAt, descriptio
                                     </div>
                                     :
                                     <div>
-                                        <b>{username}</b>
-                                        &nbsp;-&nbsp;{createdAt.toLocaleString()}
+                                        {type !== 'spotlight' && <><b>{username}</b>&nbsp;-&nbsp;</>}
+                                        {createdAt.toLocaleString()}
                                         &nbsp;-&nbsp;{likes} likes
                                         <br />
                                         <img className='chat-img' src={imageUrl} alt={imageUrl} />

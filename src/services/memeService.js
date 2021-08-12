@@ -2,7 +2,7 @@ import superagent from 'superagent'
 import superagentCache from 'superagent-cache'
 import { identity, map, pickBy } from 'lodash'
 
-import { serverUrl, apiUrl, apiKey, nullifyUndefined, delay, retry } from '../var.js'
+import { serverUrl, apiUrl, apiKey, nullifyUndefined, delay, retry, toBase64 } from '../var.js'
 
 import { getUsernames } from './userService'
 
@@ -29,6 +29,7 @@ export const getMemes = async (query, usernames) => {
         return memes
     } catch (err) { return retry(err, getMemes, query, usernames) || [] }
 }
+
 export const getVisibleMemes = async ({ user_id, username }, friends) => {
     const receivedChatsMemes = keyMemes(await getMemes({ receiver: user_id, private: true, replyTo: null }), 'owner')
     const { null: localStoryMemes = [], ...sentChatsMemes } = keyMemes(await getMemes({ owner: user_id, private: true, replyTo: null }, { [user_id]: username }), 'receiver')
@@ -71,12 +72,19 @@ const postMeme = async meme => {
         return response.body.success
     } catch (err) { return retry(err, postMeme, meme) }
 }
-const toBase64 = file => new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => resolve(reader.result);
-    reader.onerror = error => reject(error);
-})
+
+export const createSpotlight = async (user_id, receiver, { description, imageUrl, uploadImage, expiredAt }, replyTo = null) =>
+    postMeme({
+        owner: user_id,
+        receiver: null,
+        expiredAt: expiredAt ? new Date(expiredAt).getTime() : -1,
+        description,
+        private: false,
+        replyTo,
+        imageUrl,
+        imageBase64: null
+    })
+
 export const createMeme = async (user_id, receiver, { description, imageUrl, uploadImage, expiredAt }, replyTo = null) =>
     postMeme(nullifyUndefined({
         owner: user_id,

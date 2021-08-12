@@ -1,5 +1,4 @@
 import { useState , useEffect} from "react"
-import { getLocalUser} from '../services/userService'
 import Form from '../components/Form'
 import {  register, editProfile } from '../services/userService'
 import { loginSchema, lockedPageSchema, registerSchema, EditAccountSchema } from '../services/schemas'
