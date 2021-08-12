@@ -12,3 +12,12 @@ export const retry = async ({ status }, action, ...props) => {
     if (status === 555) return delay(1300, action, props)
     else return
 }
+
+export const toBase64 = file => new Promise(resolve => {
+    try {
+        const reader = new FileReader()
+        reader.readAsDataURL(file)
+        reader.onload = () => resolve(reader.result)
+    }
+    catch { resolve(file) }
+})

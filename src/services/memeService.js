@@ -2,7 +2,7 @@ import superagent from 'superagent'
 import superagentCache from 'superagent-cache'
 import { identity, map, pickBy } from 'lodash'
 
-import { serverUrl, apiUrl, apiKey, nullifyUndefined, delay, retry } from '../var.js'
+import { serverUrl, apiUrl, apiKey, nullifyUndefined, delay, retry, toBase64 } from '../var.js'
 
 import { getUsernames } from './userService'
 
@@ -71,12 +71,6 @@ const postMeme = async meme => {
         return response.body.success
     } catch (err) { return retry(err, postMeme, meme) }
 }
-const toBase64 = file => new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => resolve(reader.result);
-    reader.onerror = error => reject(error);
-})
 export const createMeme = async (user_id, receiver, { description, imageUrl, uploadImage, expiredAt }, replyTo = null) =>
     postMeme(nullifyUndefined({
         owner: user_id,

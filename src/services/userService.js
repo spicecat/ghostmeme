@@ -3,7 +3,7 @@ import superagentCache from 'superagent-cache'
 import Cookies from 'universal-cookie'
 import { pick } from 'lodash'
 
-import { serverUrl, apiUrl, apiKey, nullifyUndefined, retry } from '../var.js'
+import { serverUrl, apiUrl, apiKey, nullifyUndefined, retry, toBase64 } from '../var.js'
 
 const userServerUrl = serverUrl + '/users', userApiUrl = apiUrl + '/users'
 superagentCache(superagent, null, { preventDuplicateCalls: true })
@@ -11,12 +11,6 @@ const cookies = new Cookies()
 
 export const register = async ({ username, password, profilePicture, rememberMe, ...info }) => {
     const URL = userServerUrl
-    const toBase64 = file => new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = () => resolve(reader.result);
-        reader.onerror = error => reject(error);
-    })
     try {
         delete info.confirmPassword
         const auth = Buffer.from(username + ':' + password, 'ascii').toString('base64')
@@ -89,10 +83,10 @@ export const getLocalUser = async () => {
     const URL = userServerUrl + '/getUser'
     try {
         const response = await superagent.get(URL).set('Authorization', 'Bearer ' + token).forceUpdate(true)
-        const { user_id } = response.body
+        const { user_id, notifications, blocked } = response.body
         const user = await getUser(user_id)
         if (!user) return { loading: false }
-        return user
+        return { ...user, notifications, blocked }
     } catch (err) {
         if (err.status === 401) logout()
         return
@@ -218,3 +212,14 @@ export const removeFriend = async (user_id, target_id, reqType = 'outgoing') => 
     }
 }
 
+export const blockUser = async target_id => {
+    const token = cookies.get('token')
+    const URL = userServerUrl + '/blockUser'
+    try {
+        const response = await superagent.post(URL, { target_id }).set('Authorization', 'Bearer ' + token).forceUpdate(true)
+        return response.statusCode
+    } catch (err) {
+        if (err.status === 401) logout()
+        return
+    }
+}

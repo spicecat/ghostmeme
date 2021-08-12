@@ -52,7 +52,6 @@ export default function App() {
     else return likes.includes(meme_id)
   }
 
-  useEffect(() => { updateUser() }, [])
   useEffect(() => {
     if (user.loading === undefined) {
       loadFriends()
