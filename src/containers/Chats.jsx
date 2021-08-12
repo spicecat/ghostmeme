@@ -9,7 +9,7 @@ import Chat from '../components/Chat'
 
 import { getUsers, searchUsers, getUser } from '../services/userService'
 import { createMeme } from '../services/memeService'
-import { memeSchema, userSearchSchema } from '../services/schemas'
+import { chatSchema, memeSchema, userSearchSchema } from '../services/schemas'
 
 export default function Chats({ user: { user_id: local_id, username }, receivedChatsMemes, sentChatsMemes, updateMemes, updateLikes }) {
     const [memes, setMemes] = useState([])
@@ -17,6 +17,9 @@ export default function Chats({ user: { user_id: local_id, username }, receivedC
     const [users, setUsers] = useState()
     const [selectedUser, setSelectedUser] = useState('')
     const [selectedUserInfo, setSelectedUserInfo] = useState()
+    
+    // Array containing other users to send chats to
+    const [multipleUsers, setMultipleUsers] = useState(['6106f1b050309265789191a2', '6105642eda3de966b77eed89'])
 
     const loadUsers = async () => { setUsers(await getUsers()) }
     const updateUsers = async query => searchUsers(users, query)
@@ -46,7 +49,12 @@ export default function Chats({ user: { user_id: local_id, username }, receivedC
     }
 
     const handleCreateMeme = async values => {
-        if (await createMeme(local_id, selectedUser, values)) await updateMemes()
+        // if (await createMeme(local_id, selectedUser, values)) await updateMemes()
+        await createMeme(local_id, selectedUser, values)
+        for (const user in multipleUsers) {
+            await createMeme(local_id, multipleUsers[user], values)
+        }
+        await updateMemes()
     }
 
     useEffect(() => { loadUsers() }, [])
@@ -67,7 +75,7 @@ export default function Chats({ user: { user_id: local_id, username }, receivedC
                     <Form
                         name='Post Meme'
                         action={handleCreateMeme}
-                        schema={memeSchema}
+                        schema={chatSchema}
                         inline={2}
                     />
                 </div>
