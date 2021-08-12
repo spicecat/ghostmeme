@@ -95,7 +95,7 @@ export default function Chats({ user: { user_id: local_id, username }, receivedC
                     )}
                 </Grid>
                 <hr />
-                Current Recipients: {multipleRecipients}
+                {/* Current Recipients: {multipleRecipients} */}
                 <div className='chat-footer'>
                     <Form
                         name='Post Meme'
