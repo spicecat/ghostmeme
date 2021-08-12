@@ -92,10 +92,10 @@ export const getLocalUser = async () => {
     const URL = userServerUrl + '/getUser'
     try {
         const response = await superagent.get(URL).set('Authorization', 'Bearer ' + token).forceUpdate(true)
-        const { user_id, imageBase64 } = response.body
+        const { user_id } = response.body
         const user = await getUser(user_id)
         if (!user) return { loading: false }
-        return { ...user, imageBase64 }
+        return user
     } catch (err) {
         if (err.status === 401) logout()
         return

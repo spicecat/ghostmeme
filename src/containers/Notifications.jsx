@@ -38,6 +38,7 @@ export default function Notifications({ user: { user_id }, incomingFriendRequest
     }
 
     return <>
+        Incoming Friend Requests
         {users ? <PaginatedTable
             name='Incoming Friend Requests'
             headCells={[
