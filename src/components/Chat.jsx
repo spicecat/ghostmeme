@@ -16,11 +16,10 @@ export default function Chat({ meme: { meme_id, createdAt, expiredAt, descriptio
 
     const updateSelected = async () => { setSelected(!selected) }
 
-    const getLikedStatus = () => { if (!isLocal) setLiked(updateLikes(meme_id, false)) }
-    const updateLikeMeme = async () => {
-        if (isLocal) return
+    const getLikedStatus = () => { if (!isLocal) setLiked(updateLikes(meme_id)) }
+    const handleUpdateLike = async () => {
         setLiked(!liked)
-        if (liked ? await unlikeMeme(meme_id, local_id) : await likeMeme(meme_id, local_id)) updateLikes(meme_id)
+        if (liked ? await unlikeMeme(meme_id, local_id) : await likeMeme(meme_id, local_id)) updateLikes(meme_id, true)
         else setLiked(liked)
     }
 
@@ -42,7 +41,7 @@ export default function Chat({ meme: { meme_id, createdAt, expiredAt, descriptio
                             <DeleteIcon />
                         </IconButton>
                     </Tooltip> : <Tooltip title={`${liked ? 'Unlike' : 'Like'} Meme`} placement='right'>
-                        <IconButton onClick={updateLikeMeme}>
+                        <IconButton onClick={handleUpdateLike}>
                             {liked ? <ThumbUpIcon /> : <ThumbUpOutlinedIcon />}
                         </IconButton>
                     </Tooltip>}
@@ -54,7 +53,7 @@ export default function Chat({ meme: { meme_id, createdAt, expiredAt, descriptio
                 </>}
             </Grid>
             <Grid item xs={5}>
-                <div className={`chat ${type}Chat`}>
+                <div key={meme_id} className={`chat ${type}Chat`}>
                     {isExpired(expiredAt) ? <i>Message vanished</i> :
                         <div>
                             <b>{username}</b>

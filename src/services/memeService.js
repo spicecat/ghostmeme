@@ -1,65 +1,67 @@
 import superagent from 'superagent'
 import superagentCache from 'superagent-cache'
+import { identity, map, pickBy } from 'lodash'
 
-import { serverUrl, apiUrl, apiKey, nullifyUndefined, retry } from '../var.js'
+import { serverUrl, apiUrl, apiKey, nullifyUndefined, delay, retry } from '../var.js'
 
 import { getUsernames } from './userService'
 
 superagentCache(superagent, null, { preventDuplicateCalls: true })
 
-const addUsernames = async (memes, friends = {}) => {
-    const user_ids = memes.map(({ owner }) => owner)
-    const users = await getUsernames(user_ids, friends)
+const addUsernames = async (memes, usernames) => {
+    const users = usernames || await getUsernames(map(memes, 'owner'))
+    memes.map(meme => meme.username = users[meme.owner])
     return memes.map(meme => ({ ...meme, username: users[meme.owner] }))
-}
-
-export const getMemes = async () => {
-    try {
-        const URL = `${apiUrl}/memes`
-        const response = await superagent.get(URL).set('key', apiKey)
-        const { memes } = response.body
-        return addUsernames(memes)
-    } catch (err) { return retry(err, getMemes) }
 }
 
 export const isExpired = expiredAt => expiredAt !== -1 && expiredAt < Date.now()
 
-export const searchMemes = async (baseQuery, query = {}, friends = {}) => {
+export const getMemes = async (query, usernames) => {
     try {
-        const { owner = '', description, createdAfter, createdBefore } = query
-        if (createdAfter || createdBefore)
-            baseQuery.createdAt = {
-                ...(createdAfter && { $gt: (new Date(createdAfter)).getTime() }),
-                ...(createdBefore && { $lt: (new Date(createdBefore)).getTime() })
-            }
-        const regexQuery = {
-            ...description && { description }
-        }
-        const URL = `${apiUrl}/memes/search?match=${encodeURIComponent(JSON.stringify(baseQuery))}&regexMatch=${encodeURIComponent(JSON.stringify(regexQuery))}`
+        const URL = `${apiUrl}/memes/search?match=${encodeURIComponent(JSON.stringify(query))}`
+        await delay(600)
         const response = await superagent.get(URL).set('key', apiKey).forceUpdate(true)
-        let { memes } = response.body
-        memes = await addUsernames(memes, friends)
-        memes = memes.filter(meme => meme.username.includes(owner))
+        const memes = await addUsernames(response.body.memes, usernames)
         for (const meme of memes) {
             meme.createdAt = new Date(meme.createdAt)
             meme.expiredAt = meme.expiredAt === -1 ? -1 : new Date(meme.expiredAt)
         }
         return memes
-    } catch (err) { return retry(err, searchMemes, baseQuery, query, friends) }
+    } catch (err) { return retry(err, getMemes, query, usernames) || [] }
+}
+export const getVisibleMemes = async ({ user_id, username }, friends) => {
+    const receivedChatsMemes = keyMemes(await getMemes({ receiver: user_id, private: true, replyTo: null }), 'owner')
+    const { null: localStoryMemes = [], ...sentChatsMemes } = keyMemes(await getMemes({ owner: user_id, private: true, replyTo: null }, { [user_id]: username }), 'receiver')
+    const storyMemes = localStoryMemes.concat(await getMemes({ owner: Object.keys(friends).join('|'), receiver: null, private: true, replyTo: null }, friends))
+    const comments = await getComments(storyMemes)
+    const mentions = getMentions(storyMemes, comments)
+
+    const meme_idKeyedStoryMemes = {}
+    storyMemes.map(meme => meme_idKeyedStoryMemes[meme.meme_id] = meme)
+    const keyedComments = keyMemes(comments, 'replyTo')
+    Object.entries(keyedComments).map(([meme_id, comments]) => meme_idKeyedStoryMemes[meme_id].comments = comments)
+    const ownerKeyedStoryMemes = keyMemes(storyMemes, 'owner')
+    return { receivedChatsMemes, sentChatsMemes, storyMemes: ownerKeyedStoryMemes, mentions }
+}
+const keyMemes = (memes, key) => {
+    const keys = {}
+    map(memes, key).map(meme_id => keys[meme_id] = [])
+    memes.map(meme => keys[meme[key]].push(meme))
+    return keys
+}
+const getComments = async (memes) => {
+    const meme_ids = map(memes, 'meme_id')
+    return getMemes({ receiver: null, private: true, replyTo: meme_ids.join('|') })
 }
 
-export const searchChatsMemes = async (user_id, friends, query) => searchMemes({ receiver: user_id, private: true, replyTo: null }, query, friends)
-export const searchFriendsMemes = async (friends, query) => searchMemes({ receiver: null, private: true, owner: Object.keys(friends).join('|') }, query, friends)
-
-export const getConversation = async (user1, user2) => user1 && user2 && searchMemes({ owner: `${user1}|${user2}`, receiver: `${user1}|${user2}`, private: true, replyTo: null })
-export const getStoryMemes = async user_id => user_id && searchMemes({ owner: user_id, receiver: null, private: true, replyTo: null })
-export const getComments = async meme_ids => {
-    const memes = await searchMemes({ receiver: null, private: true, replyTo: meme_ids.join('|') })
-    const comments = {}
-    meme_ids.map(meme_id => comments[meme_id] = [])
-    memes.map(meme => comments[meme.replyTo].push(meme))
-    return comments
+const validate = (v, k, d) => {
+    if (k === 'createdAfter') return v > d
+    else if (k === 'createdBefore') return v < d
+    else return v === d || v.match(new RegExp(d))
 }
+export const searchMemes = (query = {}, memes) => Object.entries(pickBy(query, identity)).reduce((o, [k, v]) => o.filter(meme => validate(meme[k], k, v)), memes)
+
+const getMentions = (username, ...memes) => searchMemes({ description: `@${username}[^0-9a-zA-Z]` }, memes.reduce((o, i) => o.concat(i)))
 
 const postMeme = async meme => {
     const URL = `${apiUrl}/memes`
@@ -68,7 +70,6 @@ const postMeme = async meme => {
         return response.body.success
     } catch (err) { return retry(err, postMeme, meme) }
 }
-
 export const createMeme = async (user_id, receiver, { description, imageUrl, uploadImage: imageBase64, expiredAt }, replyTo = null) =>
     postMeme(nullifyUndefined({
         owner: user_id,

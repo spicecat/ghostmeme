@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Grid, Paper, Typography } from '@material-ui/core'
-
-import { deleteFromArray } from '../var.js'
+import { orderBy } from 'lodash'
 
 import Search from '../components/Search'
 import User from '../components/User'
@@ -9,13 +8,12 @@ import Form from '../components/Form'
 import Chat from '../components/Chat'
 
 import { getUsers, searchUsers, getUser } from '../services/userService'
-import { createMeme, getConversation } from '../services/memeService'
+import { createMeme } from '../services/memeService'
 import { memeSchema, userSearchSchema } from '../services/schemas'
 
-export default function Chats({ user: { user_id: local_id, username }, likes, updateLikes }) {
-    const [timer, setTimer] = useState()
-
+export default function Chats({ user: { user_id: local_id, username }, receivedChatsMemes, sentChatsMemes, updateMemes, updateLikes }) {
     const [memes, setMemes] = useState([])
+
     const [users, setUsers] = useState()
     const [selectedUser, setSelectedUser] = useState('')
     const [selectedUserInfo, setSelectedUserInfo] = useState()
@@ -39,20 +37,12 @@ export default function Chats({ user: { user_id: local_id, username }, likes, up
         else setStatus('Select User')
     }
 
-    const handleUpdateLikes = (meme_id, update = true) => {
-        if (update) {
-            if (likes.includes(meme_id)) deleteFromArray(likes, meme_id)
-            else likes.push(meme_id)
-            updateLikes(likes)
-        }
-        else return likes.includes(meme_id)
-    }
-
-    const updateMemes = () => {
-        clearTimeout(timer)
-        const getMemes = async () => { if (selectedUser) setMemes(await getConversation(local_id, selectedUser) || memes) }
-        getMemes()
-        setTimer(setInterval(getMemes, 7500))
+    const getConversation = () => {
+        console.log('Updating Conversation')
+        const receivedMemes = receivedChatsMemes[selectedUser] || []
+        const sentMemes = sentChatsMemes[selectedUser] || []
+        const memes = receivedMemes.concat(sentMemes)
+        setMemes(orderBy(memes, 'createdAt', 'desc'))
     }
 
     const handleCreateMeme = async values => {
@@ -60,7 +50,7 @@ export default function Chats({ user: { user_id: local_id, username }, likes, up
     }
 
     useEffect(() => { loadUsers() }, [])
-    useEffect(updateMemes, [selectedUser])
+    useEffect(getConversation, [selectedUser, receivedChatsMemes, sentChatsMemes])
 
     return <>
         {selectedUserInfo &&
@@ -68,8 +58,8 @@ export default function Chats({ user: { user_id: local_id, username }, likes, up
                 <Typography className='chat-header' variant='h4'>{`Conversation with ${selectedUserInfo.username}`}</Typography>
                 <Grid container spacing={1}>
                     {memes && memes.map(meme => meme.owner === local_id ?
-                        <Chat meme={meme} username={username} updateMemes={updateMemes} /> :
-                        <Chat meme={meme} username={selectedUserInfo.username} updateLikes={handleUpdateLikes} local_id={local_id} type='other' />
+                        <Chat key={meme.meme_id} {...{ meme, username, updateMemes }} /> :
+                        <Chat key={meme.meme_id} meme={meme} username={selectedUserInfo.username} updateLikes={updateLikes} local_id={local_id} type='other' />
                     )}
                 </Grid>
                 <hr />

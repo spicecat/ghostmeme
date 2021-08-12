@@ -12,7 +12,7 @@ export const fieldInfo = {
 
 const phoneRegExp = /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/
 const validateFileType = file => !file || ["image/jpg", "image/jpeg", "image/gif", "image/png"].includes(file.type)
-const validateFileSize = file => !file || file.size < 131072
+const validateFileSize = file => !file || file.size < 1000000
 
 export const registerSchema = Yup.object({
     name: Yup.string()
@@ -41,7 +41,7 @@ export const registerSchema = Yup.object({
     profilePicture: Yup.mixed()
         .nullable()
         .test('fileType', 'Only JPG, JPEG, PNG, GIF allowed', validateFileType)
-        .test('fileSize', 'File must be ≤ 130 KB', validateFileSize),
+        .test('fileSize', 'File must be ≤ 1 MB', validateFileSize),
     captcha: Yup.string()
         .required('CAPTCHA is required')
         .oneOf(['4'], 'Invalid CAPTCHA')
