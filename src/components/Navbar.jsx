@@ -1,10 +1,10 @@
 import { Link, useHistory } from 'react-router-dom'
-import { AppBar, Toolbar, Typography, IconButton, Button, Avatar } from '@material-ui/core'
+import { AppBar, Avatar, Button, IconButton, Toolbar, Typography } from '@material-ui/core'
 import MenuIcon from '@material-ui/icons/Menu'
 
 import { logout } from '../services/userService'
 
-export default function Navbar({ page, user: { username, loading, imageBase64 } }) {
+export default function Navbar({ page, user: { username, loading, imageUrl } }) {
     const history = useHistory()
 
     return (
@@ -27,7 +27,7 @@ export default function Navbar({ page, user: { username, loading, imageBase64 } 
                     <>
                         <Typography>Logged in as: {username}</Typography>
                         &nbsp;&nbsp;&nbsp;
-                        <Avatar alt={username} src={imageBase64} />
+                        <Avatar alt={username} src={imageUrl} />
                         &nbsp;&nbsp;&nbsp;
                         <Button color='inherit' variant='outlined' size='small' onClick={logout}>Logout</Button>
                     </> :
