@@ -29,25 +29,24 @@ export const getMemes = async (query, usernames) => {
         return memes
     } catch (err) { return retry(err, getMemes, query, usernames) || [] }
 }
-export const getVisibleMemes = async ({ user_id, username }, friends) => {
-    const receivedChatsMemes = keyMemes(await getMemes({ receiver: user_id, private: true, replyTo: null }), 'owner')
-    const { null: localStoryMemes = [], ...sentChatsMemes } = keyMemes(await getMemes({ owner: user_id, private: true, replyTo: null }, { [user_id]: username }), 'receiver')
-    const storyMemes = localStoryMemes.concat(await getMemes({ owner: Object.keys(friends).join('|'), receiver: null, private: true, replyTo: null }, friends))
-    const comments = await getComments(storyMemes)
-    const mentions = getMentions(storyMemes, comments)
-
-    const meme_idKeyedStoryMemes = {}
-    storyMemes.map(meme => meme_idKeyedStoryMemes[meme.meme_id] = meme)
-    const keyedComments = keyMemes(comments, 'replyTo')
-    Object.entries(keyedComments).map(([meme_id, comments]) => meme_idKeyedStoryMemes[meme_id].comments = comments)
-    const ownerKeyedStoryMemes = keyMemes(storyMemes, 'owner')
-    return { receivedChatsMemes, sentChatsMemes, storyMemes: ownerKeyedStoryMemes, mentions }
-}
 const keyMemes = (memes, key) => {
     const keys = {}
     map(memes, key).map(meme_id => keys[meme_id] = [])
     memes.map(meme => keys[meme[key]].push(meme))
     return keys
+}
+export const getVisibleMemes = async ({ user_id, username }, friends) => {
+    const receivedChatsMemes = keyMemes(await getMemes({ receiver: user_id, private: true, replyTo: null }), 'owner')
+    const { null: localStoryMemes = [], ...sentChatsMemes } = keyMemes(await getMemes({ owner: user_id, private: true, replyTo: null }, { [user_id]: username }), 'receiver')
+    const storyMemes = localStoryMemes.concat(await getMemes({ owner: Object.keys(friends).join('|'), receiver: null, private: true, replyTo: null }, friends))
+    const comments = await getComments(storyMemes)
+    const keyedComments = keyMemes(comments, 'replyTo')
+    const mentions = getMentions(storyMemes, comments)
+    const meme_idKeyedStoryMemes = {}
+    storyMemes.map(meme => meme_idKeyedStoryMemes[meme.meme_id] = meme)
+    Object.entries(keyedComments).map(([meme_id, comments]) => meme_idKeyedStoryMemes[meme_id].comments = comments)
+    const ownerKeyedStoryMemes = keyMemes(storyMemes, 'owner')
+    return { receivedChatsMemes, sentChatsMemes, storyMemes: ownerKeyedStoryMemes, mentions }
 }
 const getComments = async (memes) => {
     const meme_ids = map(memes, 'meme_id')

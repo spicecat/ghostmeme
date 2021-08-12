@@ -83,10 +83,10 @@ export const getLocalUser = async () => {
     const URL = userServerUrl + '/getUser'
     try {
         const response = await superagent.get(URL).set('Authorization', 'Bearer ' + token).forceUpdate(true)
-        const { user_id, notifications, blocked } = response.body
+        const { user_id, notifications, blocked, blockedBy } = response.body
         const user = await getUser(user_id)
         if (!user) return { loading: false }
-        return { ...user, notifications, blocked }
+        return { ...user, notifications, blocked, blockedBy }
     } catch (err) {
         if (err.status === 401) logout()
         return
@@ -217,6 +217,8 @@ export const blockUser = async target_id => {
     const URL = userServerUrl + '/blockUser'
     try {
         const response = await superagent.post(URL, { target_id }).set('Authorization', 'Bearer ' + token).forceUpdate(true)
+        const { user_id } = response.body
+        await removeFriend(user_id, target_id)
         return response.statusCode
     } catch (err) {
         if (err.status === 401) logout()

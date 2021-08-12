@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { useTrackedState } from 'reactive-react-redux'
 
 import { List, ListItem, Divider, ListItemText, ListItemAvatar, Avatar, Typography } from '@material-ui/core'
 import Alert from '@material-ui/lab/Alert'
@@ -9,6 +10,8 @@ import User from '../components/User'
 import { getUsers, removeFriendRequest, addFriend } from '../services/userService'
 
 export default function Notifications({ user: { user_id }, incomingFriendRequests, mentions }) {
+    const state = useTrackedState()
+
     const [users, setUsers] = useState()
     const loadUsers = async () => { setUsers(await getUsers()) }
 

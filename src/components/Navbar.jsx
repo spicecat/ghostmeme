@@ -1,20 +1,21 @@
 import { Link, useHistory } from 'react-router-dom'
+import { useTrackedState } from 'reactive-react-redux'
 import { AppBar, Avatar, Button, IconButton, Toolbar, Typography } from '@material-ui/core'
 import MenuIcon from '@material-ui/icons/Menu'
 
 import { logout } from '../services/userService'
 
-export default function Navbar({ page, user: { username, loading, imageUrl } }) {
+export default function Navbar() {
     const history = useHistory()
+    const state = useTrackedState()
 
+    const { loading, username, imageUrl } = state.user
     return (
         <AppBar position='static'>
             <Toolbar variant='dense'>
                 <IconButton color='inherit' className='menu-button' onClick={() => history.push('/')}>
                     <MenuIcon />
                 </IconButton>
-                &nbsp;
-                <Typography>{page}</Typography>
                 <>
                     <Button color='inherit' variant='outlined' size='small' to='/chats' component={Link}>Chats</Button>&nbsp;
                     <Button color='inherit' variant='outlined' size='small' to='/stories' component={Link}>Stories</Button>&nbsp;

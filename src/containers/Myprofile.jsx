@@ -1,14 +1,17 @@
-import { useState , useEffect} from "react"
+import { useState, useEffect } from 'react'
+import { useTrackedState } from 'reactive-react-redux'
+
 import Form from '../components/Form'
 import { login, register } from '../services/userService'
 import { lockedPageSchema, registerSchema } from '../services/schemas'
 import Alert from '../components/Alert'
 
-export default function UserProfile({user}) {
+export default function UserProfile({ user }) {
+    const state = useTrackedState()
     const [abletoview, setabletoview] = useState(false)
     const [statusCode, setStatusCode] = useState(100)
 
-    const handleClick = () => { 
+    const handleClick = () => {
         console.log(user)
         console.log(user.user_id)
     }
@@ -16,35 +19,35 @@ export default function UserProfile({user}) {
     useEffect(() => {
         if ([201, 202].includes(statusCode)) window.location.href = '/'
     }, [statusCode])
-    
 
 
-return (
-    
-    <div>
-    <>
-            <Alert statusCode={statusCode} />
-            <br />
-            <Form
-                name='Edit Profile'
-                action={async values => {
-                    setStatusCode(102)
-                    setStatusCode(await register(values))
-                }}
-                schema={registerSchema}
-                initialValues={user}
-                rememberMe={false}
-            />
-    </>
 
+    return (
 
-       {abletoview &&  
         <div>
-        <p> hyi!</p>
-        <button onClick={handleClick}> test</button>
+            <>
+                <Alert statusCode={statusCode} />
+                <br />
+                <Form
+                    name='Edit Profile'
+                    action={async values => {
+                        setStatusCode(102)
+                        setStatusCode(await register(values))
+                    }}
+                    schema={registerSchema}
+                    initialValues={user}
+                    rememberMe={false}
+                />
+            </>
+
+
+            {abletoview &&
+                <div>
+                    <p> hyi!</p>
+                    <button onClick={handleClick}> test</button>
+                </div>
+            }
         </div>
-       }
-    </div>
     )
 
 }

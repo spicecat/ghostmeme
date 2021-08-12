@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { useTrackedState } from 'reactive-react-redux'
 import { Button, Grid, Paper, Typography } from '@material-ui/core'
 import { orderBy } from 'lodash'
 
@@ -11,7 +12,10 @@ import { getUsers, searchUsers, getUser } from '../services/userService'
 import { createMeme } from '../services/memeService'
 import { memeSchema, userSearchSchema } from '../services/schemas'
 
-export default function Chats({ user: { user_id: local_id, username }, receivedChatsMemes, sentChatsMemes, updateMemes, updateLikes }) {
+export default function Chats({ updateMemes, updateLikes }) {
+    const state = useTrackedState()
+    const { user: { user_id: local_id, username }, receivedChatsMemes, sentChatsMemes } = state
+
     const [memes, setMemes] = useState([])
 
     const [users, setUsers] = useState()

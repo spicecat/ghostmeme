@@ -1,26 +1,86 @@
 import { useState, useEffect } from 'react'
+import { useDispatch, useTrackedState } from 'reactive-react-redux'
 import { Avatar, TableRow, TableCell, Button } from '@material-ui/core'
 
-import { blockUser } from '../services/userService'
+import { getUsers, searchUsers, sendFriendRequest, removeFriendRequest, addFriend, removeFriend, blockUser } from '../services/userService'
 
-export default function User({ user_id, username, email, phone, friends, liked, imageUrl, update }) {
+export default function User({ user_id: target_id, username, email, phone, friends: friendCount, liked, imageUrl, update }) {
+    const state = useTrackedState()
+    const dispatch = useDispatch()
+    const { user: { user_id, blocked, blockedBy }, friends, outgoingFriendRequests, incomingFriendRequests } = state
+
     const [status, setStatus] = useState('')
 
+    const getStatus = target_id => {
+        console.log(outgoingFriendRequests, state.arr)
+        if (blocked.includes(target_id)) setStatus('Unblock')
+        else if (blockedBy.includes(target_id)) setStatus('Blocked')
+        else if (target_id in friends) setStatus('Remove Friend')
+        else if (incomingFriendRequests.includes(target_id)) setStatus('Accept Friend')
+        else if (outgoingFriendRequests.includes(target_id)) setStatus('Pending')
+        else setStatus('Add Friend')
+    }
+
     const updateStatus = async newStatus => {
-        if (status === 'Unblock') {
-            if (await blockUser(user_id)) update(user_id, '', setStatus)
+        console.log('update', target_id, outgoingFriendRequests)
+        if (newStatus === 'Reject Friend') {
+            setStatus('Add Friend')
+            if (await removeFriendRequest(user_id, target_id)) {
+                dispatch({ type: 'delete', target: 'incomingFriendRequests', value: target_id })
+                return
+            }
         }
         else if (newStatus === 'Block') {
-            if (await blockUser(user_id)) setStatus('Unblock')
+            setStatus('Unblock')
+            if (await blockUser(user_id)) {
+                dispatch({ type: 'add', target: 'blocked', value: target_id })
+                return
+            }
         }
-        else update(user_id, status, setStatus)
+        else if (status === 'Add Friend') {
+            setStatus('Pending')
+            if (await sendFriendRequest(user_id, target_id)) {
+                console.log(dispatch({ type: 'push', target: 'outgoingFriendRequests', value: target_id }))
+                return
+            }
+        }
+        else if (status === 'Pending') {
+            setStatus('Add Friend')
+            if (await removeFriendRequest(user_id, target_id)) {
+                dispatch({ type: 'delete', target: 'outgoingFriendRequests', value: target_id })
+                return
+            }
+        }
+        else if (status === 'Accept Friend') {
+            setStatus('Remove Friend')
+            if (await addFriend(user_id, target_id)) {
+                dispatch({ type: 'add', target: 'friends', value: [target_id, username] })
+                dispatch({ type: 'delete', target: 'incomingFriendRequests', value: target_id })
+                return
+            }
+        }
+        else if (status === 'Remove Friend') {
+            setStatus('Add Friend')
+            if (await removeFriend(user_id, target_id)) {
+                dispatch({ type: 'delete', target: 'friends', value: target_id })
+                return
+            }
+        }
+        else if (status === 'Unblock') {
+            setStatus('Add Friend')
+            if (await blockUser(user_id)) {
+                dispatch({ type: 'delete', target: 'blocked', value: target_id })
+                return
+            }
+        }
+        setStatus(status)
     }
 
     const addRecipient = () => {
         update(user_id, 'Add Recipient', setStatus)
     }
 
-    useEffect(() => { updateStatus() }, [user_id])
+    useEffect(getStatus, [target_id])
 
     return (
         <TableRow>
@@ -28,7 +88,7 @@ export default function User({ user_id, username, email, phone, friends, liked, 
             <TableCell>{username}</TableCell>
             <TableCell>{email}</TableCell>
             <TableCell>{phone}</TableCell>
-            <TableCell>{friends}</TableCell>
+            <TableCell>{friendCount}</TableCell>
             <TableCell>{liked}</TableCell>
             <TableCell>
                 <Button variant='contained' color='primary' size='small' onClick={updateStatus}>{status}</Button>

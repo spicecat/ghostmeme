@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react'
 import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom'
-import { Paper } from '@material-ui/core'
 import { omit } from 'lodash'
+import { useDispatch, useTrackedState } from 'reactive-react-redux'
+import { Paper } from '@material-ui/core'
 
 import { deleteFromArray } from './var.js'
 
@@ -25,29 +26,32 @@ import { getLocalUser, getFriends, getFriendRequests, getUserLikes } from './ser
 import { getVisibleMemes } from './services/memeService'
 
 const RedirectComponent = (Component, redirect) => redirect ? <Redirect to='login' /> : Component
-
 export default function App() {
-  const [user, setUser] = useState({ loading: true })
-  const [friends, setFriends] = useState()
-  const [outgoingFriendRequests, setOutgoingFriendRequests] = useState()
-  const [incomingFriendRequests, setIncomingFriendRequests] = useState()
-  const [likes, setLikes] = useState()
+  const state = useTrackedState()
+  const dispatch = useDispatch()
+  const { user, friends, outgoingFriendRequests, incomingFriendRequests, likes, blocked, blockedBy } = state
 
-  const updateUser = async () => { setUser(await getLocalUser() || user) }
+  const updateUser = async () => {
+    dispatch({ type: 'set', target: 'user', value: await getLocalUser() || user })
+  }
   useEffect(() => { updateUser() }, [])
 
   const loadFriends = async () => {
-    setFriends(await getFriends(user.user_id) || friends)
-    setOutgoingFriendRequests(await getFriendRequests(user.user_id, 'outgoing') || outgoingFriendRequests)
-    setIncomingFriendRequests(await getFriendRequests(user.user_id, 'incoming') || incomingFriendRequests)
+    dispatch({ type: 'set', target: 'friends', value: await getFriends(user.user_id) || friends })
+    dispatch({ type: 'set', target: 'outgoingFriendRequest', value: await getFriendRequests(user.user_id, 'outgoing') || outgoingFriendRequests })
+    dispatch({ type: 'set', target: 'incomingFriendRequests', value: await getFriendRequests(user.user_id, 'incoming') || incomingFriendRequests })
   }
 
-  const loadLikes = async () => { setLikes(await getUserLikes(user.user_id) || likes) }
+  const loadLikes = async () => {
+    dispatch({
+      type: 'set', target: 'likes', value: await getUserLikes(user.user_id) || likes
+    })
+  }
   const updateLikes = (meme_id, update) => {
     if (update) {
       if (likes.includes(meme_id)) deleteFromArray(likes, meme_id)
       else likes.push(meme_id)
-      setLikes(likes)
+      dispatch({ type: 'set', target: 'likes', value: likes })
     }
     else return likes.includes(meme_id)
   }
@@ -60,11 +64,6 @@ export default function App() {
   }, [user])
 
   const [timer, setTimer] = useState()
-  const [receivedChatsMemes, setReceivedChatsMemes] = useState()
-  const [sentChatsMemes, setSentChatsMemes] = useState()
-  const [friendsMemes, setFriendsMemes] = useState()
-  const [storyMemes, setStoryMemes] = useState()
-  const [mentions, setMentions] = useState()
 
   const loadMemes = () => {
     if (!friends) return
@@ -72,49 +71,53 @@ export default function App() {
     const getMemes = async () => {
       console.log('Updating Memes')
       const { receivedChatsMemes, sentChatsMemes, storyMemes, mentions } = await getVisibleMemes(user, friends)
-      setReceivedChatsMemes(receivedChatsMemes)
-      setSentChatsMemes(sentChatsMemes)
-      setFriendsMemes(omit(storyMemes, user.user_id))
-      setStoryMemes(storyMemes)
-      setMentions(mentions)
+      dispatch({
+        type: 'set', target: 'receivedChatsMemes', value: receivedChatsMemes
+      })
+      dispatch({ type: 'set', target: 'sentChatsMemes', value: sentChatsMemes })
+      dispatch({
+        type: 'set', target: 'friendsMemes', value: omit(storyMemes, user.user_id)
+      })
+      dispatch({ type: 'set', target: 'storyMemes', value: storyMemes })
+      dispatch({
+        type: 'set', target: 'mentions', value: mentions
+      })
     }
     getMemes()
     // setTimer(setInterval(getMemes, 10000))
   }
   useEffect(loadMemes, [friends])
 
-  return (
-    <BrowserRouter>
-      <Navbar {...{ user, mentions }} />
-      <div className='body'>
-        <Paper className='paper' elevation={5}>
-          {user.loading === undefined && receivedChatsMemes && friendsMemes && <MemeSearch {...{ receivedChatsMemes, friendsMemes }} />}
-          <br /><br />
-          <Switch>
-            <Route exact path='/' component={Home} />
-            <Route exact path='/login' component={Login} />
-            <Route exact path='/register' component={Register} />
-            <Route exact path='/forgot_password' component={ForgotPassword} />
-            <Route exact path='/reset/:emailHash/:email' component={ResetPassword} />
-            <Route exact path='/myprofile' >
-              {RedirectComponent(user.loading === undefined && <UserProfile {...{ user }} />, user.loading === false)}
-            </Route>
-            <Route exact path='/chats'>
-              {RedirectComponent(user.loading === undefined && receivedChatsMemes && sentChatsMemes && likes && <Chats {...{ user, receivedChatsMemes, sentChatsMemes, updateMemes: loadMemes, updateLikes }} />, user.loading === false)}
-            </Route>
-            <Route exact path='/stories' >
-              {RedirectComponent(user.loading === undefined && friends && storyMemes && likes && <Stories {...{ user, friends, storyMemes, updateMemes: loadMemes, likes, updateLikes }} />, user.loading === false)}
-            </Route>
-            <Route exact path='/notifications' >
-              {RedirectComponent(user.loading === undefined && incomingFriendRequests && mentions && <Notifications {...{ user, incomingFriendRequests, mentions }} />, user.loading === false)}
-            </Route>
-            <Route exact path='/friends' >
-              {RedirectComponent(user.loading === undefined && friends && outgoingFriendRequests && incomingFriendRequests && <Friends {...{ user, friends, outgoingFriendRequests, incomingFriendRequests, setFriends, setOutgoingFriendRequests, setIncomingFriendRequests }} />, user.loading === false)}
-            </Route>
-            <Route path='*' component={NotFound} />
-          </Switch>
-        </Paper>
-      </div>
-    </BrowserRouter>
-  )
+  return <BrowserRouter>
+    <Navbar />
+    <div className='body'>
+      <Paper className='paper' elevation={5}>
+        {user.loading === undefined && <MemeSearch />}
+        <br /><br />
+        <Switch>
+          <Route exact path='/' component={Home} />
+          <Route exact path='/login' component={Login} />
+          <Route exact path='/register' component={Register} />
+          <Route exact path='/forgot_password' component={ForgotPassword} />
+          <Route exact path='/reset/:emailHash/:email' component={ResetPassword} />
+          <Route exact path='/myprofile' >
+            {RedirectComponent(user.loading === undefined && <UserProfile {...{ user: user }} />, user.loading === false)}
+          </Route>
+          <Route exact path='/chats'>
+            {RedirectComponent(user.loading === undefined && <Chats {...{ updateMemes: loadMemes, updateLikes }} />, user.loading === false)}
+          </Route>
+          <Route exact path='/stories' >
+            {RedirectComponent(user.loading === undefined && <Stories {...{ updateMemes: loadMemes, updateLikes }} />, user.loading === false)}
+          </Route>
+          <Route exact path='/notifications' >
+            {RedirectComponent(user.loading === undefined && <Notifications {...{}} />, user.loading === false)}
+          </Route>
+          <Route exact path='/friends' >
+            {RedirectComponent(user.loading === undefined && <Friends {...{}} />, user.loading === false)}
+          </Route>
+          <Route path='*' component={NotFound} />
+        </Switch>
+      </Paper>
+    </div>
+  </BrowserRouter>
 }
