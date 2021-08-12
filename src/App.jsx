@@ -99,7 +99,8 @@ export default function App() {
             {/* <Route exact path='/spotlight' component={Spotlight} /> */}
             <Route exact path='/reset/:emailHash/:email' component={ResetPassword} />
             <Route exact path='/spotlight'>
-              {(friends && storyMemes && likes && <Spotlight {...{ user, friends, storyMemes, updateMemes: loadMemes, likes, updateLikes }} />)}
+              {/* {(friends && storyMemes && likes && <Spotlight {...{ user, friends, storyMemes, updateMemes: loadMemes, likes, updateLikes }} />)} */}
+              {<Spotlight {...{ updateMemes: loadMemes }} />}
             </Route>
             <Route exact path='/myprofile' >
               {RedirectComponent(user.loading === undefined && <UserProfile {...{ user }} />, user.loading === false)}

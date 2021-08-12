@@ -16,6 +16,7 @@ export default function Navbar({ page, user: { username, loading, imageUrl } }) 
                 &nbsp;
                 <Typography>{page}</Typography>
                 <>
+                    <Button color='inherit' variant='outlined' size='small' to='/spotlight' component={Link}>Spotlight</Button>&nbsp;
                     <Button color='inherit' variant='outlined' size='small' to='/chats' component={Link}>Chats</Button>&nbsp;
                     <Button color='inherit' variant='outlined' size='small' to='/stories' component={Link}>Stories</Button>&nbsp;
                     <Button color='inherit' variant='outlined' size='small' to='/notifications' component={Link}>Notifications</Button>&nbsp;

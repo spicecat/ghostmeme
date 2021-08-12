@@ -21,7 +21,7 @@ export default function User({ user_id, username, email, phone, friends, liked, 
     }
 
     useEffect(() => { updateStatus() }, [user_id])
-
+    
     return (
         <TableRow>
             <TableCell>{imageUrl && <Avatar alt={username} src={imageUrl} />}</TableCell>
@@ -33,7 +33,7 @@ export default function User({ user_id, username, email, phone, friends, liked, 
             <TableCell>
                 <Button variant='contained' color='primary' size='small' onClick={updateStatus}>{status}</Button>
                 &nbsp;
-                <Button variant='contained' color='primary' size='small' onClick={addRecipient}>Add recipient</Button>
+                {status == 'Select User' && <Button variant='contained' color='primary' size='small' onClick={addRecipient}>Add recipient</Button>}
                 {status !== 'Unblock' && <>
                     &nbsp;
                     {status === 'Accept Friend' && <Button variant='contained' color='primary' size='small' onClick={() => updateStatus('Reject Friend')}>Reject Friend</Button>}
