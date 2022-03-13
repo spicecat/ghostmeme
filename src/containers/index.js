@@ -1,0 +1,15 @@
+import Chats from './Chats'
+import ForgotPassword from './ForgotPassword'
+import Friends from './Friends'
+import Home from './Home'
+import Login from './Login'
+import MemeSearch from './MemeSearch'
+import UserProfile from './Myprofile'
+import NotFound from './NotFound'
+import Notifications from './Notifications'
+import Register from './Register'
+import ResetPassword from './ResetPassword'
+import Spotlight from './Spotlight'
+import Stories from './Stories'
+
+export { Chats, ForgotPassword, Friends, Home, Login, MemeSearch, UserProfile, NotFound, Notifications, Register, ResetPassword, Spotlight, Stories }

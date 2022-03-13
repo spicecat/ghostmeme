@@ -4,8 +4,7 @@ import { List, ListItem, Divider, ListItemText, ListItemAvatar, Avatar, Typograp
 import Alert from '@material-ui/lab/Alert'
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
-import PaginatedTable from '../components/PaginatedTable'
-import User from '../components/User'
+import { PaginatedTable, User } from '../components'
 
 import { getUsers, removeFriendRequest, addFriend } from '../services/userService'
 

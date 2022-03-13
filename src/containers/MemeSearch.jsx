@@ -6,8 +6,7 @@ import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp'
 import { searchMemes } from '../services/memeService'
 import { memeSearchSchema } from '../services/schemas'
 
-import Meme from '../components/Meme'
-import Search from '../components/Search'
+import { Meme, Search } from '../components'
 
 export default function MemeSearch({ receivedChatsMemes, friendsMemes }) {
     const [openChats, setOpenChats] = useState(true)

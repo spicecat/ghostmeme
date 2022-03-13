@@ -5,7 +5,7 @@ import DeleteIcon from '@material-ui/icons/DeleteOutline'
 import ThumbUpIcon from '@material-ui/icons/ThumbUp'
 import ThumbUpOutlinedIcon from '@material-ui/icons/ThumbUpOutlined'
 
-import Form from '../components/Form'
+import {Form} from '../components'
 
 import { createMeme, likeMeme, unlikeMeme, vanishMeme, isExpired } from '../services/memeService'
 import { memeSchema } from '../services/schemas'

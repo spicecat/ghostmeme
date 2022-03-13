@@ -1,17 +1,17 @@
 import { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
 
 import { login } from '../services/userService'
 import { loginSchema } from '../services/schemas'
 
-import Form from '../components/Form'
-import Alert from '../components/Alert'
+import { Form, Alert } from '../components'
 
 export default function Login() {
+    const navigate = useNavigate()
     const [statusCode, setStatusCode] = useState(100)
 
     useEffect(() => {
-        if ([201, 202].includes(statusCode)) window.location.href = '/'
+        if ([201, 202].includes(statusCode)) navigate('/')
     }, [statusCode])
 
     return (

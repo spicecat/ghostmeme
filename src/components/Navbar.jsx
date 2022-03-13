@@ -1,17 +1,15 @@
-import { Link, useHistory } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { AppBar, Avatar, Button, IconButton, Toolbar, Typography } from '@material-ui/core'
-import MenuIcon from '@material-ui/icons/Menu'
-import HomeIcon from '@material-ui/icons/Home';
+import HomeIcon from '@material-ui/icons/Home'
 
 import { logout } from '../services/userService'
 
 export default function Navbar({ page, user: { username, loading, imageUrl } }) {
-    const history = useHistory()
 
     return (
         <AppBar position='static'>
             <Toolbar variant='dense'>
-                <IconButton color='inherit' className='menu-button' onClick={() => history.push('/')}>
+                <IconButton color='inherit' className='menu-button' component={Link} to='/' >
                     <HomeIcon />
                 </IconButton>
                 &nbsp;

@@ -2,8 +2,7 @@ import { Fragment } from 'react'
 import { Grid, Typography } from '@material-ui/core'
 import { orderBy } from 'lodash'
 
-import Chat from '../components/Chat'
-import Form from '../components/Form'
+import { Chat, Form } from '../components'
 
 import { createMeme } from '../services/memeService'
 import { memeSchema } from '../services/schemas'

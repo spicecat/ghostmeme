@@ -2,10 +2,7 @@ import { useState, useEffect } from 'react'
 import { Button, Grid, Paper, Typography } from '@material-ui/core'
 import { orderBy } from 'lodash'
 
-import Search from '../components/Search'
-import User from '../components/User'
-import Form from '../components/Form'
-import Chat from '../components/Chat'
+import { Search, User, Form, Chat } from '../components'
 
 import { getUsers, searchUsers, getUser } from '../services/userService'
 import { createMeme } from '../services/memeService'

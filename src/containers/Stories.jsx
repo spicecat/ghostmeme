@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Paper } from '@material-ui/core'
 
-import Story from '../components/Story'
-import Search from '../components/Search'
+import { Story, Search } from '../components'
 
 export default function Stories({ user, friends, storyMemes, updateMemes, updateLikes }) {
   const [memes, setMemes] = useState([])

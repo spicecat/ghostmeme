@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react'
 
-import Search from '../components/Search'
-import User from '../components/User'
+import { Search, User } from '../components'
 
 import { getUsers, searchUsers, sendFriendRequest, removeFriendRequest, addFriend, removeFriend } from '../services/userService'
 import { userSearchSchema } from '../services/schemas'

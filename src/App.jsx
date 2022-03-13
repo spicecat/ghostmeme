@@ -1,31 +1,19 @@
 import { useState, useEffect } from 'react'
-import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom'
+import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom'
 import { Paper } from '@material-ui/core'
 import { omit } from 'lodash'
 
-import { deleteFromArray } from './var.js'
+import { basename, deleteFromArray } from './var.js'
 
 import './index.css'
-import Navbar from './components/Navbar'
+import { Navbar } from './components'
 
-import Home from './containers/Home'
-import MemeSearch from './containers/MemeSearch'
-import Login from './containers/Login'
-import Register from './containers/Register'
-import ForgotPassword from './containers/ForgotPassword'
-import ResetPassword from './containers/ResetPassword'
-import Chats from './containers/Chats'
-import Stories from './containers/Stories'
-import Spotlight from './containers/Spotlight'
-import Notifications from './containers/Notifications'
-import Friends from './containers/Friends'
-import NotFound from './containers/NotFound'
-import UserProfile from './containers/Myprofile.jsx'
+import { Home, MemeSearch, Login, Register, ForgotPassword, ResetPassword, Chats, Stories, Spotlight, Notifications, Friends, NotFound, UserProfile } from './containers'
 
 import { getLocalUser, getFriends, getFriendRequests, getUserLikes } from './services/userService'
 import { getVisibleMemes } from './services/memeService'
 
-const RedirectComponent = (Component, redirect) => redirect ? <Redirect to='login' /> : Component
+function RedirectComponent(Component, redirect) { return redirect ? <Navigate to='/login' /> : <Component /> }
 
 export default function App() {
   const [user, setUser] = useState({ loading: true })
@@ -80,45 +68,31 @@ export default function App() {
       setMentions(mentions)
     }
     getMemes()
-    setTimer(setInterval(getMemes, 10000))
+    // setTimer(setInterval(getMemes, 10000))
   }
   useEffect(loadMemes, [friends])
 
   return (
-    <BrowserRouter>
+    <BrowserRouter basename={basename}>
       <Navbar {...{ user, mentions }} />
       <div className='body'>
         <Paper className='paper' elevation={5}>
           {user.loading === undefined && receivedChatsMemes && friendsMemes && <MemeSearch {...{ receivedChatsMemes, friendsMemes }} />}
           <br /><br />
-          <Switch>
-            <Route exact path='/' component={Home} />
-            <Route exact path='/login' component={Login} />
-            <Route exact path='/register' component={Register} />
-            <Route exact path='/forgot_password' component={ForgotPassword} />
-            {/* <Route exact path='/spotlight' component={Spotlight} /> */}
-            <Route exact path='/reset/:emailHash/:email' component={ResetPassword} />
-            <Route exact path='/spotlight'>
-              {/* {(friends && storyMemes && likes && <Spotlight {...{ user, friends, storyMemes, updateMemes: loadMemes, likes, updateLikes }} />)} */}
-              {<Spotlight {...{ user, updateMemes: loadMemes, likes, updateLikes }} />}
-            </Route>
-            <Route exact path='/myprofile' >
-              {RedirectComponent(user.loading === undefined && <UserProfile {...{ user }} />, user.loading === false)}
-            </Route>
-            <Route exact path='/chats'>
-              {RedirectComponent(user.loading === undefined && receivedChatsMemes && sentChatsMemes && likes && <Chats {...{ user, receivedChatsMemes, sentChatsMemes, updateMemes: loadMemes, updateLikes }} />, user.loading === false)}
-            </Route>
-            <Route exact path='/stories' >
-              {RedirectComponent(user.loading === undefined && friends && storyMemes && likes && <Stories {...{ user, friends, storyMemes, updateMemes: loadMemes, likes, updateLikes }} />, user.loading === false)}
-            </Route>
-            <Route exact path='/notifications' >
-              {RedirectComponent(user.loading === undefined && incomingFriendRequests && mentions && <Notifications {...{ user, incomingFriendRequests, mentions }} />, user.loading === false)}
-            </Route>
-            <Route exact path='/friends' >
-              {RedirectComponent(user.loading === undefined && friends && outgoingFriendRequests && incomingFriendRequests && <Friends {...{ user, friends, outgoingFriendRequests, incomingFriendRequests, setFriends, setOutgoingFriendRequests, setIncomingFriendRequests }} />, user.loading === false)}
-            </Route>
-            <Route path='*' component={NotFound} />
-          </Switch>
+          <Routes>
+            <Route exact path='/' element={<Home />} />
+            <Route exact path='/login' element={<Login />} />
+            <Route exact path='/register' element={<Register />} />
+            <Route exact path='/forgot_password' element={<ForgotPassword />} />
+            <Route exact path='/reset/:emailHash/:email' element={<ResetPassword />} />
+            <Route exact path='/spotlight' element={<Spotlight {...{ user, updateMemes: loadMemes, likes, updateLikes }} />} />
+            <Route exact path='/myprofile' element={RedirectComponent(user.loading === undefined && <UserProfile {...{ user }} />, user.loading === false)} />
+            <Route exact path='/chats' element={RedirectComponent(user.loading === undefined && receivedChatsMemes && sentChatsMemes && likes && <Chats {...{ user, receivedChatsMemes, sentChatsMemes, updateMemes: loadMemes, updateLikes }} />, user.loading === false)} />
+            <Route exact path='/stories' element={RedirectComponent(user.loading === undefined && friends && storyMemes && likes && <Stories {...{ user, friends, storyMemes, updateMemes: loadMemes, likes, updateLikes }} />, user.loading === false)} />
+            <Route exact path='/notifications' element={RedirectComponent(user.loading === undefined && incomingFriendRequests && mentions && <Notifications {...{ user, incomingFriendRequests, mentions }} />, user.loading === false)} />
+            <Route exact path='/friends' element={RedirectComponent(user.loading === undefined && friends && outgoingFriendRequests && incomingFriendRequests && <Friends {...{ user, friends, outgoingFriendRequests, incomingFriendRequests, setFriends, setOutgoingFriendRequests, setIncomingFriendRequests }} />, user.loading === false)} />
+            <Route path='*' element={NotFound} />
+          </Routes>
         </Paper>
       </div>
     </BrowserRouter>

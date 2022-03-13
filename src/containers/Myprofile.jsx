@@ -1,10 +1,9 @@
-import { useState , useEffect} from "react"
-import Form from '../components/Form'
-import {  register, editProfile } from '../services/userService'
+import { useState, useEffect } from "react"
+import { register, editProfile } from '../services/userService'
 import { loginSchema, lockedPageSchema, registerSchema, EditAccountSchema } from '../services/schemas'
-import Alert from '../components/Alert'
+import { Form, Alert } from '../components'
 
-export default function UserProfile({user}) {
+export default function UserProfile({ user }) {
     // const [abletoview, setabletoview] = useState(false)
     const [statusCode, setStatusCode] = useState(100)
 
@@ -17,12 +16,12 @@ export default function UserProfile({user}) {
     //     console.log(user.user_id)
     // }
 
-    
 
 
-return (
-    <div>
-    {/* <>
+
+    return (
+        <div>
+            {/* <>
              <Alert statusCode={statusCode} />
              <br />
             <Form
@@ -37,7 +36,7 @@ return (
             />
     </> */}
             <h1> Edit Account Details</h1>
-             <br />
+            <br />
             <Form
                 name='Edit Your Account'
                 action={async values => {
@@ -51,7 +50,7 @@ return (
 
 
 
-    </div>
+        </div>
     )
 
 }

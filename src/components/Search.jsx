@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react'
 
-import PaginatedTable from '../components/PaginatedTable'
-import Form from '../components/Form'
+import { PaginatedTable, Form } from '../components'
 
 export default function Search({ name, headCells, action, schema, Component, update }) {
     const [data, setData] = useState([])
