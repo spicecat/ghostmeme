@@ -1,13 +1,13 @@
 {
   "files": {
     "main.css": "/ghostmeme/static/css/main.efb0cfdf.css",
-    "main.js": "/ghostmeme/static/js/main.1c9fd467.js",
+    "main.js": "/ghostmeme/static/js/main.11475cd2.js",
     "index.html": "/ghostmeme/index.html",
     "main.efb0cfdf.css.map": "/ghostmeme/static/css/main.efb0cfdf.css.map",
-    "main.1c9fd467.js.map": "/ghostmeme/static/js/main.1c9fd467.js.map"
+    "main.11475cd2.js.map": "/ghostmeme/static/js/main.11475cd2.js.map"
   },
   "entrypoints": [
     "static/css/main.efb0cfdf.css",
-    "static/js/main.1c9fd467.js"
+    "static/js/main.11475cd2.js"
   ]
 }
