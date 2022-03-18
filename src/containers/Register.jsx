@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
+
+import { basename } from '../var'
 
 import { register } from '../services/userService'
 import { registerSchema } from '../services/schemas'
@@ -7,11 +8,10 @@ import { registerSchema } from '../services/schemas'
 import { Form, Alert } from '../components'
 
 export default function Register() {
-    const navigate = useNavigate()
     const [statusCode, setStatusCode] = useState(100)
 
     useEffect(() => {
-        if ([201, 202].includes(statusCode)) navigate('/')
+        if ([201, 202].includes(statusCode)) window.location.href = basename
     }, [statusCode])
 
     return (

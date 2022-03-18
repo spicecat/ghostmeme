@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react'
-import { useNavigate, Link } from 'react-router-dom'
+import { Link } from 'react-router-dom'
+
+import { basename } from '../var'
 
 import { login } from '../services/userService'
 import { loginSchema } from '../services/schemas'
@@ -7,11 +9,10 @@ import { loginSchema } from '../services/schemas'
 import { Form, Alert } from '../components'
 
 export default function Login() {
-    const navigate = useNavigate()
     const [statusCode, setStatusCode] = useState(100)
 
     useEffect(() => {
-        if ([201, 202].includes(statusCode)) navigate('/')
+        if ([201, 202].includes(statusCode)) window.location.href = basename
     }, [statusCode])
 
     return (

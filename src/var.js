@@ -1,8 +1,8 @@
 import { identity } from 'lodash'
 
 export const basename = '/ghostmeme'
-export const serverUrl = 'http://localhost:3030'
-export const apiUrl = 'https://waxf9wbkre.execute-api.us-east-2.amazonaws.com/latest'
+export const serverUrl = 'https://waxf9wbkre.execute-api.us-east-2.amazonaws.com/latest'
+export const apiUrl = 'https://ghostmeme.api.hscc.bdpa.org/v1'
 export const apiKey = process.env.REACT_APP_API_KEY
 
 export const nullifyUndefined = obj => Object.fromEntries(Object.entries(obj).map(([k, v]) => [k, v || null]))
