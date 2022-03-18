@@ -15,33 +15,19 @@ export const register = async ({ username, password, profilePicture, rememberMe,
     try {
         delete info.confirmPassword
         const auth = Buffer.from(username + ':' + password, 'ascii').toString('base64')
-        var response = await superagent.post(URL, nullifyUndefined({ ...info, ...profilePicture && { imageBase64: await toBase64(profilePicture) } })).query({ rememberMe }).set('Authorization', 'Basic ' + auth)
+        const response = await superagent.post(URL, nullifyUndefined({ ...info, ...profilePicture && { imageBase64: await toBase64(profilePicture) } })).query({ rememberMe }).set('Authorization', 'Basic ' + auth)
+        const { token } = response.body
+        cookies.set('token', token)
+        cookies.remove('loginAttempts')
+        return response.statusCode
     } catch (err) { return err.status }
-    const { token } = response.body
-    cookies.set('token', token)
-    cookies.remove('loginAttempts')
-    return response.statusCode
 }
 
 export const editProfile = async ({ newPassword, confirmPassword, password, email, name, phone, profilePicture, user_id }) => {
-    console.log('summit')
-    const toBase64 = file => new Promise(resolve => {
-        try {
-            const reader = new FileReader()
-            reader.readAsDataURL(file)
-            reader.onload = () => resolve(reader.result)
-        }
-        catch { resolve(file) }
-    })
-    // const auth = Buffer.from(email + ':' + password, 'ascii').toString('base64')
     const token = cookies.get('token')
     if (!token) return { loading: false }
 
-
-    // const response = await superagent.get(URL).set('Authorization', 'Bearer ' + token).forceUpdate(true)
-
-    // var response = await superagent.post('http://localhost:3030/users/updateProfile', nullifyUndefined({ ...info, ...profilePicture && { imageBase64: await toBase64(profilePicture) } })).query({ rememberMe }).set('Authorization', 'Basic ' + auth)
-    var response = await superagent.post('http://localhost:3030/users/updateProfile', {
+    const response = await superagent.post('http://localhost:3030/users/updateProfile', {
         user_id,
         newPassword,
         name,
@@ -53,18 +39,6 @@ export const editProfile = async ({ newPassword, confirmPassword, password, emai
     console.log(response.statusCode)
     return (response.statusCode)
 }
-// const toBase64 = file => new Promise((resolve, reject) => {
-//     const reader = new FileReader();
-//     reader.readAsDataURL(file);
-//     reader.onload = () => resolve(reader.result);
-//     reader.onerror = error => reject(error);
-// })
-
-// try {
-// const auth = Buffer.from(username + ':' + password, 'ascii').toString('base64')
-// var response = await superagent.post(URL).set('Authorization', 'Basic ' + auth)
-// } catch (err) { return err.status }
-// return response.statusCode
 
 
 export const login = async ({ username, password, rememberMe }) => {
@@ -73,7 +47,11 @@ export const login = async ({ username, password, rememberMe }) => {
     const url = userServerUrl
     try {
         const auth = Buffer.from(username + ':' + password, 'ascii').toString('base64')
-        var response = await superagent.get(url).query({ rememberMe }).set('Authorization', 'Basic ' + auth).forceUpdate(true)
+        const response = await superagent.get(url).query({ rememberMe }).set('Authorization', 'Basic ' + auth).forceUpdate(true)
+        const { token } = response.body
+        cookies.set('token', token)
+        cookies.remove('loginAttempts')
+        return response.statusCode
     } catch (err) {
         console.log(err)
         if (err.status === 401) {
@@ -86,27 +64,7 @@ export const login = async ({ username, password, rememberMe }) => {
         }
         return err.status
     }
-    const { token } = response.body
-    cookies.set('token', token)
-    cookies.remove('loginAttempts')
-    return response.statusCode
 }
-
-// export const loginEditUnlock = async ({ username, password, rememberMe }) => {
-//     if (getLoginTimeout() > 0) return 403
-
-//     const url = userServerUrl
-//     try {
-//         const auth = Buffer.from(username + ':' + password, 'ascii').toString('base64')
-//         var response = await superagent.get(url).set('Authorization', 'Basic ' + auth)
-//     } catch (err) {
-//         return err.status
-//     }
-//     return response.statusCode
-// }
-
-
-
 
 export const logout = () => {
     cookies.remove('token')
@@ -166,12 +124,6 @@ export const getUsers = async (after = '') => {
         const response = await superagent.get(URL).set('key', apiKey)
         const { users } = response.body
         return users
-        // if (users.length) {
-        //     const last_id = users[users.length - 1].user_id
-        //     console.log(313, users, after, last_id, Date.now())
-        //     return await delay(users.concat(await getUsers(after = last_id)))
-        // }
-        // else return []
     } catch (err) { return retry(err, getUsers) || [] }
 }
 
