@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Button, Grid, Paper, Typography } from '@material-ui/core'
+import { Grid, Paper, Typography } from '@material-ui/core'
 import { orderBy } from 'lodash'
 
 import { Search, User, Form, Chat } from '../components'
@@ -8,7 +8,7 @@ import { getUsers, searchUsers, getUser } from '../services/userService'
 import { createMeme } from '../services/memeService'
 import { memeSchema, userSearchSchema } from '../services/schemas'
 
-export default function Chats({ user: { user_id: local_id, username }, receivedChatsMemes, sentChatsMemes, updateMemes, updateLikes }) {
+export default function Chats({ user: { user_id: local_id, username }, receivedChatsMemes=[], sentChatsMemes=[], updateMemes, updateLikes }) {
     const [memes, setMemes] = useState([])
 
     const [users, setUsers] = useState()
@@ -53,7 +53,7 @@ export default function Chats({ user: { user_id: local_id, username }, receivedC
             // Otherwise, add user
             else {
                 console.log(`Add recipient ${user_id}`)
-                setMultipleRecipients(multipleRecipients => [...multipleRecipients, user_id])
+                setMultipleRecipients(recipient => [...recipient, user_id])
             }
         }
 
@@ -64,12 +64,10 @@ export default function Chats({ user: { user_id: local_id, username }, receivedC
         console.log('Updating Conversation')
         const receivedMemes = receivedChatsMemes[selectedUser] || []
         const sentMemes = sentChatsMemes[selectedUser] || []
-        const memes = receivedMemes.concat(sentMemes)
-        setMemes(orderBy(memes, 'createdAt', 'desc'))
+        setMemes(orderBy(receivedMemes.concat(sentMemes), 'createdAt', 'desc'))
     }
 
     const handleCreateMeme = async values => {
-        // if (await createMeme(local_id, selectedUser, values)) await updateMemes()
         await createMeme(local_id, selectedUser, values)
         for (const user in multipleRecipients) {
             await createMeme(local_id, multipleRecipients[user], values)

@@ -3,7 +3,7 @@ import { Paper } from '@material-ui/core'
 
 import { Story, Search } from '../components'
 
-export default function Stories({ user, friends, storyMemes, updateMemes, updateLikes }) {
+export default function Stories({ user, friends=[], storyMemes=[], updateMemes, updateLikes }) {
   const [memes, setMemes] = useState([])
 
   const [users, setUsers] = useState()

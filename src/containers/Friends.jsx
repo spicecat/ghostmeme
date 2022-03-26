@@ -5,7 +5,7 @@ import { Search, User } from '../components'
 import { getUsers, searchUsers, sendFriendRequest, removeFriendRequest, addFriend, removeFriend } from '../services/userService'
 import { userSearchSchema } from '../services/schemas'
 
-export default function Friends({ user: { user_id }, friends, outgoingFriendRequests, incomingFriendRequests, setFriends, setOutgoingFriendRequests, setIncomingFriendRequests }) {
+export default function Friends({ user: { user_id }, friends = [], outgoingFriendRequests = [], incomingFriendRequests = [], setFriends, setOutgoingFriendRequests, setIncomingFriendRequests }) {
     const [users, setUsers] = useState()
     const loadUsers = async () => { setUsers(await getUsers()) }
 

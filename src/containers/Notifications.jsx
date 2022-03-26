@@ -8,7 +8,7 @@ import { PaginatedTable, User } from '../components'
 
 import { getUsers, removeFriendRequest, addFriend } from '../services/userService'
 
-export default function Notifications({ user: { user_id }, incomingFriendRequests, mentions }) {
+export default function Notifications({ user: { user_id }, incomingFriendRequests = [], mentions = [] }) {
     const [users, setUsers] = useState()
     const loadUsers = async () => { setUsers(await getUsers()) }
     useEffect(() => { loadUsers() }, [])
